@@ -44,6 +44,41 @@ const Register = ({ setCurrentView }: Props) => {
             data-testid="last-name-input"
           />
           <Input
+            label="Father last name"
+            name="father_last_name"
+            required
+            data-testid="father-last-name-input"
+          />
+          <Input
+            label="Birthday date (DD/MM/YY)"
+            name="birthday_date"
+            required
+            pattern="[0-9]{2}/[0-9]{2}/[0-9]{2}"
+            data-testid="birthday-date-input"
+          />
+          <div className="flex flex-col gap-y-1">
+            <label className="text-sm font-medium">Binary position<span className="text-rose-500">*</span></label>
+            <div className="flex gap-x-4">
+              <label className="flex items-center gap-x-1">
+                <input type="radio" name="binary_position" value="0" required data-testid="binary-position-0" /> 0
+              </label>
+              <label className="flex items-center gap-x-1">
+                <input type="radio" name="binary_position" value="1" required data-testid="binary-position-1" /> 1
+              </label>
+            </div>
+          </div>
+          <div className="flex flex-col gap-y-1">
+            <label className="text-sm font-medium">Customer type<span className="text-rose-500">*</span></label>
+            <div className="flex gap-x-4">
+              <label className="flex items-center gap-x-1">
+                <input type="checkbox" name="customer_type" value="retail" data-testid="customer-type-retail" /> Retail
+              </label>
+              <label className="flex items-center gap-x-1">
+                <input type="checkbox" name="customer_type" value="associate" data-testid="customer-type-associate" /> Associate
+              </label>
+            </div>
+          </div>
+          <Input
             label="Email"
             name="email"
             required

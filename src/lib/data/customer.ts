@@ -66,6 +66,12 @@ export async function signup(_currentState: unknown, formData: FormData) {
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
     phone: formData.get("phone") as string,
+    metadata: {
+      father_last_name: formData.get("father_last_name") as string,
+      birthday_date: formData.get("birthday_date") as string,
+      binary_position: formData.get("binary_position") as string,
+      customer_type: Array.from(formData.getAll("customer_type")) as string[],
+    },
   }
 
   try {
