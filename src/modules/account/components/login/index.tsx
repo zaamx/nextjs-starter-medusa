@@ -7,6 +7,7 @@ import { useActionState } from "react"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
+  redirectTo?: string
 }
 
 const Login = ({ setCurrentView }: Props) => {

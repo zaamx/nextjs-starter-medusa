@@ -10,6 +10,7 @@ import { signup } from "@lib/data/customer"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
+  redirectTo?: string
 }
 
 const Register = ({ setCurrentView }: Props) => {
