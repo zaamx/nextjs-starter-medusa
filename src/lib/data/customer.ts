@@ -14,6 +14,7 @@ import {
   removeCartId,
   setAuthToken,
 } from "./cookies"
+import { revalidateProductsCache } from "@lib/util/revalidate-cache"
 
 export const retrieveCustomer =
   async (): Promise<HttpTypes.StoreCustomer | null> => {
@@ -101,6 +102,10 @@ export async function signup(_currentState: unknown, formData: FormData) {
 
     const customerCacheTag = await getCacheTag("customers")
     revalidateTag(customerCacheTag)
+    
+    // Revalidate products cache to ensure user gets correct pricing based on their customer group
+    const cacheId = await getCacheTag("products")
+    await revalidateProductsCache(cacheId)
 
     await transferCart()
 
@@ -121,6 +126,10 @@ export async function login(_currentState: unknown, formData: FormData) {
         await setAuthToken(token as string)
         const customerCacheTag = await getCacheTag("customers")
         revalidateTag(customerCacheTag)
+        
+        // Revalidate products cache to ensure user gets correct pricing based on their customer group
+        const cacheId = await getCacheTag("products")
+        await revalidateProductsCache(cacheId)
       })
   } catch (error: any) {
     return error.toString()
