@@ -18,9 +18,9 @@ const Login = ({ setCurrentView }: Props) => {
       className="max-w-sm w-full flex flex-col items-center"
       data-testid="login-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">Welcome back</h1>
+      <h1 className="text-large-semi uppercase mb-6">Bienvenido de nuevo</h1>
       <p className="text-center text-base-regular text-ui-fg-base mb-8">
-        Sign in to access an enhanced shopping experience.
+        Inicia sesión para acceder a una experiencia de compra mejorada.
       </p>
       <form className="w-full" action={formAction}>
         <div className="flex flex-col w-full gap-y-2">
@@ -44,19 +44,16 @@ const Login = ({ setCurrentView }: Props) => {
         </div>
         <ErrorMessage error={message} data-testid="login-error-message" />
         <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
-          Sign in
+          Iniciar sesión
         </SubmitButton>
       </form>
       <span className="text-center text-ui-fg-base text-small-regular mt-6">
-        Not a member?{" "}
-        <button
-          onClick={() => setCurrentView(LOGIN_VIEW.REGISTER)}
-          className="underline"
-          data-testid="register-button"
-        >
-          Join us
+        No eres miembro?{" "} <br />
+        <button 
+        onClick={() => setCurrentView(LOGIN_VIEW.REGISTER)}
+        className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          Únete a nosotros
         </button>
-        .
       </span>
     </div>
   )

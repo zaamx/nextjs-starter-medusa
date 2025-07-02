@@ -10,10 +10,10 @@ import CountrySelect from "../country-select"
 import { HttpTypes } from "@medusajs/types"
 
 const SideMenuItems = {
-  Home: "/",
-  Store: "/store",
-  Account: "/account",
-  Cart: "/cart",
+  Inicio: "/",
+  Tienda: "/store",
+  "Tu Cuenta": "/account",
+  Contacto: "/contact",
 }
 
 const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
@@ -90,8 +90,8 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
                         />
                       </div>
                       <Text className="flex justify-between txt-compact-small">
-                        © {new Date().getFullYear()} Medusa Store. All rights
-                        reserved.
+                        © {new Date().getFullYear()} We Now. Todos los derechos
+                        reservados.
                       </Text>
                     </div>
                   </div>
