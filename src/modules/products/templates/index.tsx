@@ -9,6 +9,8 @@ import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
 import { notFound } from "next/navigation"
 import ProductActionsWrapper from "./product-actions-wrapper"
+import ProductTemplateWrapper from "./product-template-wrapper"
+import BundleAwareActions from "@modules/products/components/bundle-aware-actions"
 import { HttpTypes } from "@medusajs/types"
 
 type ProductTemplateProps = {
@@ -27,7 +29,11 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   }
 
   return (
-    <>
+    <ProductTemplateWrapper
+      product={product}
+      region={region}
+      countryCode={countryCode}
+    >
       <div
         className="content-container flex flex-col small:flex-row small:items-start py-6 relative"
         data-testid="product-container"
@@ -41,6 +47,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
         <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
           <ProductOnboardingCta />
+          XXXXXX
           <Suspense
             fallback={
               <ProductActions
@@ -50,8 +57,10 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
               />
             }
           >
-            <ProductActionsWrapper id={product.id} region={region} />
+            <BundleAwareActions product={product} region={region} />
+            XXXX
           </Suspense>
+          XXX
         </div>
       </div>
       <div
@@ -62,7 +71,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           <RelatedProducts product={product} countryCode={countryCode} />
         </Suspense>
       </div>
-    </>
+    </ProductTemplateWrapper>
   )
 }
 

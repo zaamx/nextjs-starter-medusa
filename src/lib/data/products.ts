@@ -134,3 +134,21 @@ export const listProductsWithSort = async ({
     queryParams,
   }
 }
+
+/**
+ * Fetch bundle product data by making a request to the bundle endpoint
+ */
+export const fetchBundleProduct = async (productId: string) => {
+  try {
+    const response = await sdk.client.fetch(
+      `/store/products/${productId}/bundle`,
+      {
+        method: "GET",
+      }
+    )
+    return response
+  } catch (error) {
+    console.error('Failed to fetch bundle product:', error)
+    throw error
+  }
+}

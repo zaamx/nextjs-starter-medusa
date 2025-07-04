@@ -62,18 +62,54 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
 
 export async function signup(_currentState: unknown, formData: FormData) {
   const password = formData.get("password") as string
+  
+  // Get MLM-specific form data
+  const sponsorProfileId = formData.get("sponsor_profile_id") as string
+  const profileTypesId = formData.get("profile_types_id") as string
+  const gender = formData.get("gender") as string
+  const personalId = formData.get("personal_id") as string
+  const birthDate = formData.get("birth_date") as string
+  const preferredSide = formData.get("preferred_side") as string
+  
+  // Get address fields
+  const street = formData.get("street") as string
+  const district = formData.get("district") as string
+  const city = formData.get("city") as string
+  const state = formData.get("state") as string
+  const postalCode = formData.get("postal_code") as string
+  
+  // Get tax information (assuming it's a JSON string or structured data)
+  const taxId = formData.get("tax_id") as string
+  
+  
+  
   const customerForm = {
     email: formData.get("email") as string,
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
     phone: formData.get("phone") as string,
     metadata: {
-      father_last_name: formData.get("father_last_name") as string,
-      birthday_date: formData.get("birthday_date") as string,
-      binary_position: formData.get("binary_position") as string,
-      customer_type: Array.from(formData.getAll("customer_type")) as string[],
+      // Add MLM-specific metadata
+      mlm_enabled: true,
+      mlm_data: {
+        sponsor_profile_id: sponsorProfileId ? parseInt(sponsorProfileId) : undefined,
+        profile_types_id: profileTypesId ? parseInt(profileTypesId) : 1,
+        gender: gender || undefined,
+        personal_id: personalId || undefined,
+        tax_id: taxId ? { tax_id: taxId } : undefined,
+        address: {
+          street: street || undefined,
+          district: district || undefined,
+          city: city || undefined,
+          state: state || undefined,
+          postal_code: postalCode || undefined,
+        },
+        birth_date: birthDate || undefined,
+        preferred_side: preferredSide ? parseInt(preferredSide) : undefined,
+      }
     },
   }
+  console.log('Full customerForm:', JSON.stringify(customerForm, null, 2))
 
   try {
     const token = await sdk.auth.register("customer", "emailpass", {
