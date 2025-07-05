@@ -91,6 +91,7 @@ const Register = ({ setCurrentView }: Props) => {
             name="phone"
             type="tel"
             autoComplete="tel"
+            required
             data-testid="phone-input"
           />
           <Input
@@ -108,6 +109,7 @@ const Register = ({ setCurrentView }: Props) => {
             name="sponsor_profile_id"
             value={sponsorId}
             onChange={handleSponsorSelect}
+            required
             data-testid="sponsor-profile-id-input"
           />
 
@@ -195,13 +197,13 @@ const Register = ({ setCurrentView }: Props) => {
 
           {/* Binary Position Preference */}
           <div className="flex flex-col gap-y-1">
-            <label className="text-sm font-medium">Preferred Binary Side</label>
+            <label className="text-sm font-medium">Preferred Binary Side<span className="text-rose-500">*</span></label>
             <div className="flex gap-x-4">
               <label className="flex items-center gap-x-1">
-                <input type="radio" name="preferred_side" value="0" data-testid="preferred-side-left" /> Left (0)
+                <input type="radio" name="preferred_side" value="0" required data-testid="preferred-side-left" /> Left (0)
               </label>
               <label className="flex items-center gap-x-1">
-                <input type="radio" name="preferred_side" value="1" data-testid="preferred-side-right" /> Right (1)
+                <input type="radio" name="preferred_side" value="1" required data-testid="preferred-side-right" /> Right (1)
               </label>
               {/* <label className="flex items-center gap-x-1">
                 <input type="radio" name="preferred_side" value="" data-testid="preferred-side-auto" /> Auto-assign
