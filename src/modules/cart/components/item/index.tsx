@@ -24,6 +24,8 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const isBundleChild = !!item.metadata?.bundled_by;
+
   const changeQuantity = async (quantity: number) => {
     setError(null)
     setUpdating(true)
@@ -75,29 +77,33 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
       {type === "full" && (
         <Table.Cell>
           <div className="flex gap-2 items-center w-28">
-            <DeleteButton id={item.id} data-testid="product-delete-button" />
-            <CartItemSelect
-              value={item.quantity}
-              onChange={(value) => changeQuantity(parseInt(value.target.value))}
-              className="w-14 h-10 p-4"
-              data-testid="product-select-button"
-            >
-              {/* TODO: Update this with the v2 way of managing inventory */}
-              {Array.from(
-                {
-                  length: Math.min(maxQuantity, 10),
-                },
-                (_, i) => (
-                  <option value={i + 1} key={i}>
-                    {i + 1}
-                  </option>
-                )
-              )}
+            {!isBundleChild && (
+              <>
+                <DeleteButton id={item.id} data-testid="product-delete-button" />
+                <CartItemSelect
+                  value={item.quantity}
+                  onChange={(value) => changeQuantity(parseInt(value.target.value))}
+                  className="w-14 h-10 p-4"
+                  data-testid="product-select-button"
+                >
+                  {/* TODO: Update this with the v2 way of managing inventory */}
+                  {Array.from(
+                    {
+                      length: Math.min(maxQuantity, 10),
+                    },
+                    (_, i) => (
+                      <option value={i + 1} key={i}>
+                        {i + 1}
+                      </option>
+                    )
+                  )}
 
-              <option value={1} key={1}>
-                1
-              </option>
-            </CartItemSelect>
+                  <option value={1} key={1}>
+                    1
+                  </option>
+                </CartItemSelect>
+              </>
+            )}
             {updating && <Spinner />}
           </div>
           <ErrorMessage error={error} data-testid="product-error-message" />

@@ -4,13 +4,33 @@ import { Heading, Table } from "@medusajs/ui"
 
 import Item from "@modules/cart/components/item"
 import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
+import BundleCartItem from "@modules/cart/components/bundle-cart-item"
+
+// Utility functions for bundle grouping
+function isBundleParent(item) {
+  return !!item.metadata?.bundle_id;
+}
+function isBundleChild(item) {
+  return !!item.metadata?.bundled_by;
+}
+function getBundleChildren(parent, items) {
+  return items.filter(
+    (item) => item.metadata?.bundled_by === parent.metadata.bundle_id
+  );
+}
+
+// ItemsTemplate
 
 type ItemsTemplateProps = {
   cart?: HttpTypes.StoreCart
 }
 
 const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
-  const items = cart?.items
+  const items = cart?.items || [];
+  const parents = items.filter(isBundleParent);
+  const children = items.filter(isBundleChild);
+  const regulars = items.filter(item => !isBundleParent(item) && !isBundleChild(item));
+
   return (
     <div>
       <div className="pb-3 flex items-center">
@@ -31,23 +51,28 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {items
-            ? items
-                .sort((a, b) => {
-                  return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
-                })
-                .map((item) => {
-                  return (
-                    <Item
-                      key={item.id}
-                      item={item}
-                      currencyCode={cart?.currency_code}
-                    />
-                  )
-                })
-            : repeat(5).map((i) => {
-                return <SkeletonLineItem key={i} />
+          {items.length > 0 ? (
+            <>
+              {parents.map(parent => {
+                const bundleChildren = getBundleChildren(parent, children);
+                return (
+                  <BundleCartItem
+                    key={parent.id}
+                    parentItem={parent}
+                    childItems={bundleChildren}
+                    currencyCode={cart?.currency_code}
+                  />
+                );
               })}
+              {regulars.map(item => (
+                <Item key={item.id} item={item} currencyCode={cart?.currency_code} />
+              ))}
+            </>
+          ) : (
+            repeat(5).map((i) => {
+              return <SkeletonLineItem key={i} />
+            })
+          )}
         </Table.Body>
       </Table>
     </div>
