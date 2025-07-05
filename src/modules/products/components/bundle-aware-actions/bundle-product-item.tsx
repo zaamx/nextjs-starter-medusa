@@ -163,9 +163,9 @@ const BundleProductItem: React.FC<BundleProductItemProps> = ({
                     <span className="text-sm font-medium text-gray-900">
                       {variant.label}
                     </span>
-                    <span className="text-sm text-gray-600">
+                    {/* <span className="text-sm text-gray-600">
                       ${(variant.price / 100).toFixed(2)}
-                    </span>
+                    </span> */}
                   </div>
                   {variant.sku && (
                     <p className="text-xs text-gray-500 mt-1">SKU: {variant.sku}</p>

@@ -7,6 +7,8 @@ import { v4 as uuidv4 } from "uuid"
 import { addBundleToCart } from "@lib/data/cart"
 import { useParams } from "next/navigation"
 import BundleProductItem from "@modules/products/components/bundle-aware-actions/bundle-product-item"
+import ProductActions from "@modules/products/components/product-actions"
+import ProductPrice from "@modules/products/components/product-price"
 
 type BundleAwareActionsProps = {
   product: HttpTypes.StoreProduct
@@ -124,6 +126,9 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
     }))
   }, [])
 
+  // Always use the only variant for the bundle parent
+  const bundleVariant = product.variants?.[0];
+
   // Add bundle to cart
   const handleAddBundleToCart = async () => {
     if (!isValidSelection || !bundleData) return
@@ -136,7 +141,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
       // Add parent product with bundle metadata
       await addBundleToCart({
         items: [{
-          variant_id: product.variants?.[0]?.id || '',
+          variant_id: bundleVariant?.id || '',
           quantity,
           metadata: {
             bundle_id: bundleId,
@@ -191,6 +196,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
           <p className="text-blue-700 text-sm">
             {bundleMeta.bundle_description || `Create your custom bundle with ${bundleData.bundle.child_products.data.length} available products.`}
           </p>
+          <ProductPrice product={product} variant={bundleVariant} />
         </div>
 
         {/* Bundle Validation Status */}
@@ -296,9 +302,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
 
   // Fallback to regular product actions
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded p-4">
-      <p className="text-gray-600">Loading product options...</p>
-    </div>
+    <ProductActions product={product} region={region} />
   )
 }
 

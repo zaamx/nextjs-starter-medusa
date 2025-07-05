@@ -94,4 +94,4 @@ npm run test:cache
 - **Performance**: Efficient cache invalidation without unnecessary revalidation
 - **Security**: Webhook signature verification prevents unauthorized cache invalidation
 
-The implementation follows Next.js best practices and integrates seamlessly with your existing Medusa storefront architecture. 
+The implementation follows Next.js best practices and integrates seamlessly with your existing We Nowfront architecture. 

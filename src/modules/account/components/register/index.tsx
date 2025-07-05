@@ -41,10 +41,10 @@ const Register = ({ setCurrentView }: Props) => {
       data-testid="register-page"
     >
       <h1 className="text-large-semi uppercase mb-6">
-        Become a Medusa Store Member
+        Become a We Now Member
       </h1>
       <p className="text-center text-base-regular text-ui-fg-base mb-4">
-        Create your Medusa Store Member profile, and get access to an enhanced
+        Create your We Now Member profile, and get access to an enhanced
         shopping experience.
       </p>
       <form 
@@ -111,6 +111,20 @@ const Register = ({ setCurrentView }: Props) => {
             data-testid="sponsor-profile-id-input"
           />
 
+          {/* Hidden fields with demo values - TEMPORARY */}
+          <input type="hidden" name="profile_types_id" value="1" />
+          <input type="hidden" name="gender" value="M" />
+          <input type="hidden" name="personal_id" value="DEMO123456789" />
+          <input type="hidden" name="birth_date" value="1990-01-01" />
+          <input type="hidden" name="street" value="Demo Street 123" />
+          <input type="hidden" name="district" value="Demo District" />
+          <input type="hidden" name="city" value="Demo City" />
+          <input type="hidden" name="state" value="Demo State" />
+          <input type="hidden" name="postal_code" value="12345" />
+          <input type="hidden" name="tax_id" value="DEMO-TAX-123" />
+
+          {/* Original fields - HIDDEN FOR NOW */}
+          {/* 
           <Input
             label="Profile Type ID"
             name="profile_types_id"
@@ -146,7 +160,6 @@ const Register = ({ setCurrentView }: Props) => {
             data-testid="birth-date-input"
           />
 
-          {/* Address Fields */}
           <Input
             label="Street"
             name="street"
@@ -173,12 +186,12 @@ const Register = ({ setCurrentView }: Props) => {
             data-testid="postal-code-input"
           />
 
-          {/* Tax Information */}
           <Input
             label="Tax ID"
             name="tax_id"
             data-testid="tax-id-input"
           />
+          */}
 
           {/* Binary Position Preference */}
           <div className="flex flex-col gap-y-1">
@@ -190,15 +203,15 @@ const Register = ({ setCurrentView }: Props) => {
               <label className="flex items-center gap-x-1">
                 <input type="radio" name="preferred_side" value="1" data-testid="preferred-side-right" /> Right (1)
               </label>
-              <label className="flex items-center gap-x-1">
+              {/* <label className="flex items-center gap-x-1">
                 <input type="radio" name="preferred_side" value="" data-testid="preferred-side-auto" /> Auto-assign
-              </label>
+              </label> */}
             </div>
           </div>
         </div>
         <ErrorMessage error={message} data-testid="register-error" />
         <span className="text-center text-ui-fg-base text-small-regular mt-6">
-          By creating an account, you agree to Medusa Store&apos;s{" "}
+          By creating an account, you agree to We Now&apos;s{" "}
           <LocalizedClientLink
             href="/content/privacy-policy"
             className="underline"
