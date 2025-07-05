@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
 // Optional: Add GET method for webhook verification
 export async function GET(req: NextRequest) {
   return NextResponse.json({ 
-    message: "Medusa webhook endpoint is active",
+    message: "We Now webhook endpoint is active",
     status: "ok"
   }, { status: 200 })
 } 
