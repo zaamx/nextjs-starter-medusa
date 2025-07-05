@@ -154,6 +154,57 @@ export async function addToCart({
     .catch(medusaError)
 }
 
+export async function addBundleToCart({
+  items,
+  countryCode,
+}: {
+  items: Array<{
+    variant_id: string
+    quantity: number
+    metadata?: Record<string, any>
+  }>
+  countryCode: string
+}) {
+  if (!items || items.length === 0) {
+    throw new Error("No items provided for bundle")
+  }
+
+  const cart = await getOrSetCart(countryCode)
+
+  if (!cart) {
+    throw new Error("Error retrieving or creating cart")
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  // Add items one by one as the API doesn't support batch operations
+  for (const item of items) {
+    const response = await sdk.client.fetch(
+      `/store/carts/${cart.id}/bundle-line-items`,
+      {
+        method: "POST",
+        body: {
+          items: [
+            {
+              variant_id: item.variant_id,
+              quantity: item.quantity,
+              metadata: item.metadata
+            }
+          ]
+        }
+      }
+    ).then(async () => {
+      const cartCacheTag = await getCacheTag("carts")
+      revalidateTag(cartCacheTag)
+
+      const fulfillmentCacheTag = await getCacheTag("fulfillment")
+      revalidateTag(fulfillmentCacheTag)
+    }).catch(medusaError)
+  }
+}
+
 export async function updateLineItem({
   lineId,
   quantity,

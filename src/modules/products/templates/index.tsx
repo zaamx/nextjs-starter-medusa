@@ -47,7 +47,6 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
         <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
           <ProductOnboardingCta />
-          XXXXXX
           <Suspense
             fallback={
               <ProductActions
@@ -57,10 +56,10 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
               />
             }
           >
-            <BundleAwareActions product={product} region={region} />
-            XXXX
+            <BundleAwareActions product={product} region={region} 
+              countryCode={countryCode}
+            />
           </Suspense>
-          XXX
         </div>
       </div>
       <div

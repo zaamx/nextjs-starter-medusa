@@ -137,6 +137,38 @@ export const listProductsWithSort = async ({
 
 /**
  * Fetch bundle product data by making a request to the bundle endpoint
+ * query: {
+          fields: "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags,+categories",
+        },
+ */
+export const fetchProduct = async (productId: string, countryCode: string, regionId: string) => {
+  try {
+    let region: HttpTypes.StoreRegion | undefined | null
+    if (countryCode) {
+      region = await getRegion(countryCode)
+    } else {
+      region = await retrieveRegion(regionId!)
+    }
+
+    const response = await sdk.client.fetch<{ product: HttpTypes.StoreProduct }>(
+      `/store/products/${productId}`,
+      {
+        method: "GET",
+        query: {
+          region_id: region?.id,
+          fields: '*categories'
+        }
+      }
+    )
+    return response.product
+  } catch (error) {
+    console.error('Failed to fetch bundle product:', error)
+    throw error
+  }
+}
+
+/**
+ * Fetch bundle product data by making a request to the bundle endpoint
  */
 export const fetchBundleProduct = async (productId: string) => {
   try {
