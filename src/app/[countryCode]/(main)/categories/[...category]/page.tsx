@@ -16,36 +16,50 @@ type Props = {
 }
 
 export async function generateStaticParams() {
-  const product_categories = await listCategories()
+  try {
+    const product_categories = await listCategories()
 
-  if (!product_categories) {
-    return []
-  }
+    if (!product_categories) {
+      return []
+    }
 
-  const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
-    regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
-  )
-
-  const categoryHandles = product_categories.map(
-    (category: any) => category.handle
-  )
-
-  const staticParams = countryCodes
-    ?.map((countryCode: string | undefined) =>
-      categoryHandles.map((handle: any) => ({
-        countryCode,
-        category: [handle],
-      }))
+    const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
+      regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
     )
-    .flat()
 
-  return staticParams
+    const categoryHandles = product_categories.map(
+      (category: any) => category.handle
+    )
+
+    const staticParams = countryCodes
+      ?.map((countryCode: string | undefined) =>
+        categoryHandles.map((handle: any) => ({
+          countryCode,
+          category: [handle],
+        }))
+      )
+      .flat()
+
+    return staticParams || []
+  } catch (error) {
+    console.error('Error generating static params for categories:', error)
+    // Return fallback params to prevent build failure
+    return [
+      { countryCode: 'us', category: ['default'] },
+      { countryCode: 'ca', category: ['default'] },
+      { countryCode: 'mx', category: ['default'] }
+    ]
+  }
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
   try {
     const productCategory = await getCategoryByHandle(params.category)
+
+    if (!productCategory) {
+      notFound()
+    }
 
     const title = productCategory.name + " | We Now"
 
@@ -64,22 +78,27 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage(props: Props) {
-  const searchParams = await props.searchParams
-  const params = await props.params
-  const { sortBy, page } = searchParams
+  try {
+    const searchParams = await props.searchParams
+    const params = await props.params
+    const { sortBy, page } = searchParams
 
-  const productCategory = await getCategoryByHandle(params.category)
+    const productCategory = await getCategoryByHandle(params.category)
 
-  if (!productCategory) {
+    if (!productCategory) {
+      notFound()
+    }
+
+    return (
+      <CategoryTemplate
+        category={productCategory}
+        sortBy={sortBy}
+        page={page}
+        countryCode={params.countryCode}
+      />
+    )
+  } catch (error) {
+    console.error('Error in CategoryPage:', error)
     notFound()
   }
-
-  return (
-    <CategoryTemplate
-      category={productCategory}
-      sortBy={sortBy}
-      page={page}
-      countryCode={params.countryCode}
-    />
-  )
 }

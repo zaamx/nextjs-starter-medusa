@@ -6,18 +6,26 @@ import { HttpTypes } from "@medusajs/types"
 import { getCacheOptions } from "./cookies"
 
 export const listRegions = async () => {
-  const next = {
-    ...(await getCacheOptions("regions")),
-  }
+  try {
+    const next = {
+      ...(await getCacheOptions("regions")),
+    }
 
-  return sdk.client
-    .fetch<{ regions: HttpTypes.StoreRegion[] }>(`/store/regions`, {
-      method: "GET",
-      next,
-      cache: "force-cache",
-    })
-    .then(({ regions }) => regions)
-    .catch(medusaError)
+    return sdk.client
+      .fetch<{ regions: HttpTypes.StoreRegion[] }>(`/store/regions`, {
+        method: "GET",
+        next,
+        cache: "force-cache",
+      })
+      .then(({ regions }) => regions)
+      .catch((error) => {
+        console.error('Error fetching regions:', error)
+        return []
+      })
+  } catch (error) {
+    console.error('Error in listRegions:', error)
+    return []
+  }
 }
 
 export const retrieveRegion = async (id: string) => {

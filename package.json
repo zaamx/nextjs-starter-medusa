@@ -9,11 +9,13 @@
   ],
   "scripts": {
     "dev": "next dev --turbopack -p 8000",
-    "build": "next build",
+    "build": "node scripts/check-api.js && next build",
+    "build:skip-api-check": "next build",
     "start": "next start -p 8000",
     "lint": "next lint",
     "analyze": "ANALYZE=true next build",
-    "test:cache": "node test-cache-revalidation.js"
+    "test:cache": "node test-cache-revalidation.js",
+    "check-api": "node scripts/check-api.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
