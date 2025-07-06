@@ -27,7 +27,7 @@ export const paymentInfoMap: Record<
     icon: <PayPal />,
   },
   pp_system_default: {
-    title: "Manual Payment",
+    title: "Pago en sucursal",
     icon: <CreditCard />,
   },
   // Add more payment providers here
