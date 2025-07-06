@@ -8,13 +8,17 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { signup } from "@lib/data/customer"
+import { hasRequiredRegistrationProduct, getRequiredProductUrl } from "@lib/util/cart-validation"
+import { HttpTypes } from "@medusajs/types"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
   redirectTo?: string
+  cart?: HttpTypes.StoreCart | null
+  countryCode?: string
 }
 
-const Register = ({ setCurrentView }: Props) => {
+const Register = ({ setCurrentView, cart, countryCode }: Props) => {
   const [message, formAction] = useActionState(signup, null)
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -27,13 +31,69 @@ const Register = ({ setCurrentView }: Props) => {
     setSponsorId(sponsorId)
   }
 
+  // Check if user has required product in cart
+  const hasRequiredProduct = hasRequiredRegistrationProduct(cart || null)
+  const productUrl = getRequiredProductUrl()
+
   // Log render state
-  console.log('=== REGISTER RENDER ===', { sponsorId })
+  console.log('=== REGISTER RENDER ===', { sponsorId, hasRequiredProduct })
 
   // Log when sponsorId changes
   React.useEffect(() => {
     console.log('=== REGISTER SPONSOR ID CHANGE ===', { sponsorId })
   }, [sponsorId])
+
+  // If user doesn't have required product, show message
+  if (!hasRequiredProduct) {
+    return (
+      <div
+        className="max-w-sm flex flex-col items-center"
+        data-testid="register-page"
+      >
+        <h1 className="text-large-semi uppercase mb-6">
+          Become a We Now Member
+        </h1>
+        <div className="w-full bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-amber-800">
+                Registration Package Required
+              </h3>
+              <div className="mt-2 text-sm text-amber-700">
+                <p>
+                  To become a We Now Member, you need to purchase the "Paquete de Inscripción" 
+                  (Registration Package) first. This package is required for all new members.
+                </p>
+              </div>
+              <div className="mt-4">
+                <LocalizedClientLink
+                  href={productUrl}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                >
+                  Add Registration Package to Cart
+                </LocalizedClientLink>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span className="text-center text-ui-fg-base text-small-regular mt-6">
+          Already a member?{" "}
+          <button
+            onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
+            className="underline"
+          >
+            Sign in
+          </button>
+          .
+        </span>
+      </div>
+    )
+  }
 
   return (
     <div

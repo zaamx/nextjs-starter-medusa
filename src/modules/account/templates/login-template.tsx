@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { HttpTypes } from "@medusajs/types"
 
 import Register from "@modules/account/components/register"
 import Login from "@modules/account/components/login"
@@ -10,7 +11,15 @@ export enum LOGIN_VIEW {
   REGISTER = "register",
 }
 
-const LoginTemplate = ({ redirectTo }: { redirectTo?: string }) => {
+const LoginTemplate = ({ 
+  redirectTo, 
+  cart, 
+  countryCode 
+}: { 
+  redirectTo?: string
+  cart?: HttpTypes.StoreCart | null
+  countryCode?: string
+}) => {
   const [currentView, setCurrentView] = useState("sign-in")
 
   return (
@@ -18,7 +27,12 @@ const LoginTemplate = ({ redirectTo }: { redirectTo?: string }) => {
       {currentView === "sign-in" ? (
         <Login setCurrentView={setCurrentView} redirectTo={redirectTo} />
       ) : (
-        <Register setCurrentView={setCurrentView} redirectTo={redirectTo} />
+        <Register 
+          setCurrentView={setCurrentView} 
+          redirectTo={redirectTo} 
+          cart={cart}
+          countryCode={countryCode}
+        />
       )}
     </div>
   )
