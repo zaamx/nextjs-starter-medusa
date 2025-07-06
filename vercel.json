@@ -1,0 +1,9 @@
+{
+  "buildCommand": "yarn build",
+  "installCommand": "yarn install",
+  "framework": "nextjs",
+  "env": {
+    "NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY": "@next_public_medusa_publishable_key",
+    "MEDUSA_BACKEND_URL": "@medusa_backend_url"
+  }
+} 

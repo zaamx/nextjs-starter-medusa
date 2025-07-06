@@ -13,7 +13,7 @@ interface SponsorProfile {
   email: string
   phone: string
   has_account: boolean
-  netme_id: number
+  netme_id: number | null
   // Other fields exist but we only display name, last name, and email
 }
 
@@ -52,7 +52,9 @@ const SponsorSearch: React.FC<SponsorSearchProps> = ({
         }
       )
       
-      setSponsors(response.results || [])
+      // Filter out sponsors without netme_id
+      const validSponsors = (response.results || []).filter(sponsor => sponsor.netme_id !== null)
+      setSponsors(validSponsors)
     } catch (err) {
       console.error("Error searching sponsors:", err)
       setError("Failed to search sponsors. Please try again.")
@@ -77,7 +79,7 @@ const SponsorSearch: React.FC<SponsorSearchProps> = ({
     // console.log('Sponsor netme_id:', sponsor.netme_id)
     // console.log('Sponsor netme_id type:', typeof sponsor.netme_id)
     // console.log('Converting to string:', sponsor.netme_id.toString())
-    onSelect(sponsor.netme_id.toString())
+    onSelect(sponsor.netme_id?.toString() || "")
     onClose()
   }
 
@@ -117,7 +119,7 @@ const SponsorSearch: React.FC<SponsorSearchProps> = ({
             <div className="space-y-2">
               {sponsors.length === 0 && query.trim() && (
                 <div className="text-center py-8 text-gray-500">
-                  No sponsors found for "{query}"
+                  No valid sponsors found for "{query}"
                 </div>
               )}
 
@@ -125,7 +127,7 @@ const SponsorSearch: React.FC<SponsorSearchProps> = ({
                 <div
                   key={sponsor.id}
                   className={`p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${
-                    selectedSponsorId === sponsor.netme_id.toString() ? 'bg-blue-50 border-blue-200' : 'border-gray-200'
+                    selectedSponsorId === sponsor.netme_id?.toString() ? 'bg-blue-50 border-blue-200' : 'border-gray-200'
                   }`}
                   onClick={() => handleSelectSponsor(sponsor)}
                   data-testid={`sponsor-option-${sponsor.id}`}
@@ -137,7 +139,7 @@ const SponsorSearch: React.FC<SponsorSearchProps> = ({
                       </div>
                       <div className="text-sm text-gray-600">{sponsor.email}</div>
                     </div>
-                    <div className="text-sm text-gray-500">ID: {sponsor.netme_id}</div>
+                    <div className="text-sm text-gray-500">ID: {sponsor.netme_id || 'N/A'}</div>
                   </div>
                 </div>
               ))}
