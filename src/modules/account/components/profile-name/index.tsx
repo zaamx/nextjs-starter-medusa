@@ -54,6 +54,7 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
         isError={!!state?.error}
         clearState={clearState}
         data-testid="account-name-editor"
+        disableEdit={true}
       >
         <div className="grid grid-cols-2 gap-x-4">
           <Input

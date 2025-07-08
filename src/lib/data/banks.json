@@ -1,0 +1,2978 @@
+[
+    {
+        "id": 66,
+        "market_id": 9,
+        "label": "Chase Manhattan Bank",
+        "legalname": "Chase Manhattan Bank",
+        "code": "65",
+        "created_at": "2024-11-05T18:59:42.511448+00:00",
+        "updated_at": "2024-11-05T18:59:42.511448+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 67,
+        "market_id": 9,
+        "label": "Chemical Bank",
+        "legalname": "Chemical Bank",
+        "code": "66",
+        "created_at": "2024-11-05T19:00:06.342788+00:00",
+        "updated_at": "2024-11-05T19:00:06.342788+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 68,
+        "market_id": 9,
+        "label": "Citibank",
+        "legalname": "Citibank",
+        "code": "67",
+        "created_at": "2024-11-05T19:00:22.642884+00:00",
+        "updated_at": "2024-11-05T19:00:22.642884+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 69,
+        "market_id": 9,
+        "label": "Citigroup",
+        "legalname": "Citigroup",
+        "code": "68",
+        "created_at": "2024-11-05T19:00:41.007516+00:00",
+        "updated_at": "2024-11-05T19:00:41.007516+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 3,
+        "market_id": 10,
+        "label": "BAC CREDOMATIC",
+        "legalname": "BAC CREDOMATIC HONDURAS",
+        "code": "0002",
+        "created_at": "2024-10-26T00:22:57.840662+00:00",
+        "updated_at": "2024-10-26T00:22:57.840662+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 35,
+        "market_id": 2,
+        "label": "NU Colombia",
+        "legalname": "NU Colombia",
+        "code": "32",
+        "created_at": "2024-11-05T18:36:14.376184+00:00",
+        "updated_at": "2024-11-05T18:36:14.376184+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 4,
+        "market_id": 9,
+        "label": "Members Choice Credit Union",
+        "legalname": "Members Choice Credit Union",
+        "code": "03",
+        "created_at": "2024-11-01T18:37:55.56219+00:00",
+        "updated_at": "2024-11-01T18:37:55.56219+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 5,
+        "market_id": 9,
+        "label": "SCE Federal Credit Union",
+        "legalname": "Federal Credit Union",
+        "code": "2",
+        "created_at": "2024-11-04T22:49:55.82092+00:00",
+        "updated_at": "2024-11-04T22:49:55.82092+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 6,
+        "market_id": 9,
+        "label": "Rize Credit Union",
+        "legalname": "Rize Credit Union",
+        "code": "3",
+        "created_at": "2024-11-05T18:13:21.238933+00:00",
+        "updated_at": "2024-11-05T18:13:21.238933+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 7,
+        "market_id": 9,
+        "label": "Seacoast Bank",
+        "legalname": "Seacoast Bank",
+        "code": "4",
+        "created_at": "2024-11-05T18:13:39.438193+00:00",
+        "updated_at": "2024-11-05T18:13:39.438193+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 8,
+        "market_id": 2,
+        "label": "Banco Popular",
+        "legalname": "Banco Popular",
+        "code": "5",
+        "created_at": "2024-11-05T18:15:13.610028+00:00",
+        "updated_at": "2024-11-05T18:15:13.610028+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 9,
+        "market_id": 2,
+        "label": "Banco Santander de Negocios Colombia S.A.",
+        "legalname": "Banco Santander de Negocios Colombia S.A.",
+        "code": "6",
+        "created_at": "2024-11-05T18:15:59.699436+00:00",
+        "updated_at": "2024-11-05T18:15:59.699436+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 10,
+        "market_id": 2,
+        "label": "Banco Serfinanza",
+        "legalname": "Serfinanza",
+        "code": "7",
+        "created_at": "2024-11-05T18:16:29.827681+00:00",
+        "updated_at": "2024-11-05T18:16:29.827681+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 11,
+        "market_id": 2,
+        "label": "Banco Union S.A.",
+        "legalname": "Banco Union S.A.",
+        "code": "8",
+        "created_at": "2024-11-05T18:16:56.976575+00:00",
+        "updated_at": "2024-11-05T18:16:56.976575+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 12,
+        "market_id": 2,
+        "label": "Bancolombia ",
+        "legalname": "Bancolombia",
+        "code": "9",
+        "created_at": "2024-11-05T18:17:28.788549+00:00",
+        "updated_at": "2024-11-05T18:17:28.788549+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 13,
+        "market_id": 2,
+        "label": "Bancoomeva",
+        "legalname": "Bancoomeva",
+        "code": "10",
+        "created_at": "2024-11-05T18:18:31.841015+00:00",
+        "updated_at": "2024-11-05T18:18:31.841015+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 14,
+        "market_id": 2,
+        "label": "Banco W",
+        "legalname": "Banco W",
+        "code": "11",
+        "created_at": "2024-11-05T18:18:50.525989+00:00",
+        "updated_at": "2024-11-05T18:18:50.525989+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 15,
+        "market_id": 2,
+        "label": "Bancóldex S.A.",
+        "legalname": "Bancóldex S.A.",
+        "code": "12",
+        "created_at": "2024-11-05T18:19:42.065549+00:00",
+        "updated_at": "2024-11-05T18:19:42.065549+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 16,
+        "market_id": 2,
+        "label": "Banco Bold CF",
+        "legalname": "Banco Bold CF",
+        "code": "13",
+        "created_at": "2024-11-05T18:20:37.354523+00:00",
+        "updated_at": "2024-11-05T18:20:37.354523+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 17,
+        "market_id": 2,
+        "label": "Citibank",
+        "legalname": "Citibank",
+        "code": "14",
+        "created_at": "2024-11-05T18:21:00.88427+00:00",
+        "updated_at": "2024-11-05T18:21:00.88427+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 18,
+        "market_id": 2,
+        "label": "Coink",
+        "legalname": "Coink",
+        "code": "15",
+        "created_at": "2024-11-05T18:21:32.417449+00:00",
+        "updated_at": "2024-11-05T18:21:32.417449+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 19,
+        "market_id": 2,
+        "label": "Coltefinanciera",
+        "legalname": "Coltefinanciera",
+        "code": "16",
+        "created_at": "2024-11-05T18:24:24.016558+00:00",
+        "updated_at": "2024-11-05T18:24:24.016558+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 20,
+        "market_id": 2,
+        "label": "Confiar",
+        "legalname": "Confiar",
+        "code": "17",
+        "created_at": "2024-11-05T18:24:54.422235+00:00",
+        "updated_at": "2024-11-05T18:24:54.422235+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 21,
+        "market_id": 2,
+        "label": "Cooperativa Financiera de Antioquia",
+        "legalname": "Cooperativa Financiera de Antioquia",
+        "code": "18",
+        "created_at": "2024-11-05T18:25:21.941785+00:00",
+        "updated_at": "2024-11-05T18:25:21.941785+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 22,
+        "market_id": 2,
+        "label": "Cotrafa Cooperativa Financiera",
+        "legalname": "Cotrafa Cooperativa Financiera",
+        "code": "19",
+        "created_at": "2024-11-05T18:26:18.754453+00:00",
+        "updated_at": "2024-11-05T18:26:18.754453+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 23,
+        "market_id": 2,
+        "label": "Daviplata ",
+        "legalname": "Daviplata ",
+        "code": "20",
+        "created_at": "2024-11-05T18:26:38.331532+00:00",
+        "updated_at": "2024-11-05T18:26:38.331532+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 24,
+        "market_id": 2,
+        "label": "Ding Tecnipagos S.A.",
+        "legalname": "Ding Tecnipagos S.A.",
+        "code": "21",
+        "created_at": "2024-11-05T18:27:09.062393+00:00",
+        "updated_at": "2024-11-05T18:27:09.062393+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 25,
+        "market_id": 2,
+        "label": "Fiduciaria Bancolombia",
+        "legalname": "Fiduciaria Bancolombia",
+        "code": "22",
+        "created_at": "2024-11-05T18:28:16.412267+00:00",
+        "updated_at": "2024-11-05T18:28:16.412267+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 26,
+        "market_id": 2,
+        "label": "Financiera Juriscoop S.A",
+        "legalname": "Financiera Juriscoop S.A",
+        "code": "23",
+        "created_at": "2024-11-05T18:29:06.299259+00:00",
+        "updated_at": "2024-11-05T18:29:06.299259+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 27,
+        "market_id": 2,
+        "label": "Global66",
+        "legalname": "Global66",
+        "code": "24",
+        "created_at": "2024-11-05T18:29:34.848497+00:00",
+        "updated_at": "2024-11-05T18:29:34.848497+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 28,
+        "market_id": 2,
+        "label": "Iris",
+        "legalname": "Iris",
+        "code": "25",
+        "created_at": "2024-11-05T18:29:47.706265+00:00",
+        "updated_at": "2024-11-05T18:29:47.706265+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 29,
+        "market_id": 2,
+        "label": "Itaú",
+        "legalname": "Itaú",
+        "code": "26",
+        "created_at": "2024-11-05T18:30:04.862759+00:00",
+        "updated_at": "2024-11-05T18:30:04.862759+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 30,
+        "market_id": 2,
+        "label": "JFK Cooperativa Financiera",
+        "legalname": "JFK Cooperativa Financiera",
+        "code": "27",
+        "created_at": "2024-11-05T18:30:45.608954+00:00",
+        "updated_at": "2024-11-05T18:30:45.608954+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 31,
+        "market_id": 2,
+        "label": "Lulo Bank S.A.",
+        "legalname": "Lulo Bank S.A.",
+        "code": "28",
+        "created_at": "2024-11-05T18:31:07.426625+00:00",
+        "updated_at": "2024-11-05T18:31:07.426625+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 32,
+        "market_id": 2,
+        "label": "Mibanco",
+        "legalname": "Mibanco",
+        "code": "29",
+        "created_at": "2024-11-05T18:31:29.902678+00:00",
+        "updated_at": "2024-11-05T18:31:29.902678+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 33,
+        "market_id": 2,
+        "label": "Movii",
+        "legalname": "Movii",
+        "code": "30",
+        "created_at": "2024-11-05T18:35:37.758363+00:00",
+        "updated_at": "2024-11-05T18:35:37.758363+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 34,
+        "market_id": 2,
+        "label": "Nequi",
+        "legalname": "Nequi",
+        "code": "31",
+        "created_at": "2024-11-05T18:35:58.473088+00:00",
+        "updated_at": "2024-11-05T18:35:58.473088+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 36,
+        "market_id": 2,
+        "label": "Pibank",
+        "legalname": "Pibank",
+        "code": "33",
+        "created_at": "2024-11-05T18:36:42.129084+00:00",
+        "updated_at": "2024-11-05T18:36:42.129084+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 37,
+        "market_id": 2,
+        "label": "Powwi",
+        "legalname": "Powwi",
+        "code": "34",
+        "created_at": "2024-11-05T18:37:14.448308+00:00",
+        "updated_at": "2024-11-05T18:37:14.448308+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 38,
+        "market_id": 2,
+        "label": "RappiPay ",
+        "legalname": "RappiPay ",
+        "code": "35",
+        "created_at": "2024-11-05T18:37:46.489816+00:00",
+        "updated_at": "2024-11-05T18:37:46.489816+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 39,
+        "market_id": 2,
+        "label": "Scotiabank Colpatria S.A.",
+        "legalname": "Scotiabank Colpatria S.A.",
+        "code": "36",
+        "created_at": "2024-11-05T18:38:14.323963+00:00",
+        "updated_at": "2024-11-05T18:38:14.323963+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 40,
+        "market_id": 2,
+        "label": "Ualá",
+        "legalname": "Ualá",
+        "code": "37",
+        "created_at": "2024-11-05T18:39:15.770658+00:00",
+        "updated_at": "2024-11-05T18:39:15.770658+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 41,
+        "market_id": 2,
+        "label": "Valores Bancolombia",
+        "legalname": "Valores Bancolombia",
+        "code": "38",
+        "created_at": "2024-11-05T18:39:35.274901+00:00",
+        "updated_at": "2024-11-05T18:39:35.274901+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 42,
+        "market_id": 2,
+        "label": "Ban100 S.A.",
+        "legalname": "Ban100 S.A.",
+        "code": "39",
+        "created_at": "2024-11-05T18:40:09.553636+00:00",
+        "updated_at": "2024-11-05T18:40:09.553636+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 43,
+        "market_id": 2,
+        "label": "Banco Agrario",
+        "legalname": "Banco Agrario",
+        "code": "40",
+        "created_at": "2024-11-05T18:40:29.066506+00:00",
+        "updated_at": "2024-11-05T18:40:29.066506+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 44,
+        "market_id": 2,
+        "label": "Banco AV Villas",
+        "legalname": "Banco AV Villas",
+        "code": "41",
+        "created_at": "2024-11-05T18:41:27.951749+00:00",
+        "updated_at": "2024-11-05T18:41:27.951749+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 45,
+        "market_id": 2,
+        "label": "Banco BBVA Colombia",
+        "legalname": "Banco BBVA Colombia",
+        "code": "42",
+        "created_at": "2024-11-05T18:41:49.202942+00:00",
+        "updated_at": "2024-11-05T18:41:49.202942+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 46,
+        "market_id": 2,
+        "label": "Banco BTG Pactual",
+        "legalname": "Banco BTG Pactual",
+        "code": "43",
+        "created_at": "2024-11-05T18:42:20.69637+00:00",
+        "updated_at": "2024-11-05T18:42:20.69637+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 47,
+        "market_id": 2,
+        "label": "Banco Caja Social",
+        "legalname": "Banco Caja Social",
+        "code": "44",
+        "created_at": "2024-11-05T18:42:48.888344+00:00",
+        "updated_at": "2024-11-05T18:42:48.888344+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 48,
+        "market_id": 2,
+        "label": "Banco Cooperativo Coopcentral",
+        "legalname": "Banco Cooperativo Coopcentral",
+        "code": "45",
+        "created_at": "2024-11-05T18:45:44.919551+00:00",
+        "updated_at": "2024-11-05T18:45:44.919551+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 49,
+        "market_id": 2,
+        "label": "Banco Davivienda",
+        "legalname": "Banco Davivienda",
+        "code": "46",
+        "created_at": "2024-11-05T18:46:15.926771+00:00",
+        "updated_at": "2024-11-05T18:46:15.926771+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 50,
+        "market_id": 2,
+        "label": "Banco de Bogota",
+        "legalname": "Banco de Bogota",
+        "code": "47",
+        "created_at": "2024-11-05T18:46:29.91708+00:00",
+        "updated_at": "2024-11-05T18:46:29.91708+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 51,
+        "market_id": 2,
+        "label": "Banco de las Microfinanzas - Bancamia S.A.",
+        "legalname": "Banco de las Microfinanzas - Bancamia S.A.",
+        "code": "48",
+        "created_at": "2024-11-05T18:48:24.982892+00:00",
+        "updated_at": "2024-11-05T18:48:24.982892+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 52,
+        "market_id": 2,
+        "label": "Banco de Occidente",
+        "legalname": "Banco de Occidente",
+        "code": "51",
+        "created_at": "2024-11-05T18:49:50.522057+00:00",
+        "updated_at": "2024-11-05T18:49:50.522057+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 53,
+        "market_id": 2,
+        "label": "Banco Falabella S.A.",
+        "legalname": "Banco Falabella S.A.",
+        "code": "52",
+        "created_at": "2024-11-05T18:51:07.784132+00:00",
+        "updated_at": "2024-11-05T18:51:07.784132+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 54,
+        "market_id": 2,
+        "label": "Banco Finandina S.A.",
+        "legalname": "Banco Finandina S.A.",
+        "code": "53",
+        "created_at": "2024-11-05T18:51:37.206248+00:00",
+        "updated_at": "2024-11-05T18:51:37.206248+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 55,
+        "market_id": 2,
+        "label": "Banco GNB Sudameris",
+        "legalname": "Banco GNB Sudameris",
+        "code": "54",
+        "created_at": "2024-11-05T18:53:34.254027+00:00",
+        "updated_at": "2024-11-05T18:53:34.254027+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 56,
+        "market_id": 2,
+        "label": "Banco J.P. Morgan Colombia S.A.",
+        "legalname": "Banco J.P. Morgan Colombia S.A.",
+        "code": "55",
+        "created_at": "2024-11-05T18:54:06.084184+00:00",
+        "updated_at": "2024-11-05T18:54:06.084184+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 57,
+        "market_id": 2,
+        "label": "Banco Mundo Mujer",
+        "legalname": "Banco Mundo Mujer",
+        "code": "56",
+        "created_at": "2024-11-05T18:54:43.770183+00:00",
+        "updated_at": "2024-11-05T18:54:43.770183+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 58,
+        "market_id": 2,
+        "label": "Banco Pichincha",
+        "legalname": "Banco Pichincha",
+        "code": "57",
+        "created_at": "2024-11-05T18:55:04.447455+00:00",
+        "updated_at": "2024-11-05T18:55:04.447455+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 59,
+        "market_id": 2,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "58",
+        "created_at": "2024-11-05T18:56:01.804703+00:00",
+        "updated_at": "2024-11-05T18:56:01.804703+00:00",
+        "markets": {
+            "name": "CO"
+        }
+    },
+    {
+        "id": 60,
+        "market_id": 9,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "59",
+        "created_at": "2024-11-05T18:56:14.164213+00:00",
+        "updated_at": "2024-11-05T18:56:14.164213+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 61,
+        "market_id": 9,
+        "label": "Alex. Brow & Sons",
+        "legalname": "Alex. Brow & Sons",
+        "code": "60",
+        "created_at": "2024-11-05T18:56:53.476217+00:00",
+        "updated_at": "2024-11-05T18:56:53.476217+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 62,
+        "market_id": 9,
+        "label": "American Express",
+        "legalname": "American Express",
+        "code": "61",
+        "created_at": "2024-11-05T18:57:50.916963+00:00",
+        "updated_at": "2024-11-05T18:57:50.916963+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 63,
+        "market_id": 9,
+        "label": "Apple Bank for Savings",
+        "legalname": "Apple Bank for Savings",
+        "code": "62",
+        "created_at": "2024-11-05T18:58:13.9104+00:00",
+        "updated_at": "2024-11-05T18:58:13.9104+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 64,
+        "market_id": 9,
+        "label": "Atlantic National Bank (Nueva York)",
+        "legalname": "Atlantic National Bank (Nueva York)",
+        "code": "63",
+        "created_at": "2024-11-05T18:58:51.170485+00:00",
+        "updated_at": "2024-11-05T18:58:51.170485+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 65,
+        "market_id": 9,
+        "label": "Cantor Fitzgerald",
+        "legalname": "Cantor Fitzgerald",
+        "code": "64",
+        "created_at": "2024-11-05T18:59:16.431159+00:00",
+        "updated_at": "2024-11-05T18:59:16.431159+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 70,
+        "market_id": 9,
+        "label": "Citizens Financial Group",
+        "legalname": "Citizens Financial Group",
+        "code": "69",
+        "created_at": "2024-11-05T19:01:09.333946+00:00",
+        "updated_at": "2024-11-05T19:01:09.333946+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 71,
+        "market_id": 9,
+        "label": "Customers Bancorp",
+        "legalname": "Customers Bancorp",
+        "code": "70",
+        "created_at": "2024-11-05T19:01:36.984628+00:00",
+        "updated_at": "2024-11-05T19:01:36.984628+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 72,
+        "market_id": 9,
+        "label": "Dime Savings Bank of New York",
+        "legalname": "Dime Savings Bank of New York",
+        "code": "71",
+        "created_at": "2024-11-05T19:04:27.9816+00:00",
+        "updated_at": "2024-11-05T19:04:27.9816+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 73,
+        "market_id": 9,
+        "label": "Dime Savings Bank of Williamsburgh",
+        "legalname": "Dime Savings Bank of Williamsburgh",
+        "code": "72",
+        "created_at": "2024-11-05T19:05:12.78434+00:00",
+        "updated_at": "2024-11-05T19:05:12.78434+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 74,
+        "market_id": 9,
+        "label": "Drexel Burnham Lambert",
+        "legalname": "Drexel Burnham Lambert",
+        "code": "73",
+        "created_at": "2024-11-05T19:05:44.976815+00:00",
+        "updated_at": "2024-11-05T19:05:44.976815+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 75,
+        "market_id": 9,
+        "label": "First Boston",
+        "legalname": "First Boston",
+        "code": "74",
+        "created_at": "2024-11-05T19:06:00.692029+00:00",
+        "updated_at": "2024-11-05T19:06:00.692029+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 76,
+        "market_id": 9,
+        "label": "First Financial Bank (Ohio)",
+        "legalname": "First Financial Bank (Ohio)",
+        "code": "75",
+        "created_at": "2024-11-05T19:06:39.891423+00:00",
+        "updated_at": "2024-11-05T19:06:39.891423+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 77,
+        "market_id": 9,
+        "label": "First Horizon Bank",
+        "legalname": "First Horizon Bank",
+        "code": "76",
+        "created_at": "2024-11-05T19:07:12.717783+00:00",
+        "updated_at": "2024-11-05T19:07:12.717783+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 78,
+        "market_id": 9,
+        "label": "First Republic Bank",
+        "legalname": "First Republic Bank",
+        "code": "77",
+        "created_at": "2024-11-05T19:07:40.923978+00:00",
+        "updated_at": "2024-11-05T19:07:40.923978+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 79,
+        "market_id": 9,
+        "label": "FNB Corporation",
+        "legalname": "FNB Corporation",
+        "code": "78",
+        "created_at": "2024-11-05T19:08:03.987111+00:00",
+        "updated_at": "2024-11-05T19:08:03.987111+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 80,
+        "market_id": 9,
+        "label": "Goldman Sachs",
+        "legalname": "Goldman Sachs",
+        "code": "79",
+        "created_at": "2024-11-05T19:08:30.577411+00:00",
+        "updated_at": "2024-11-05T19:08:30.577411+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 81,
+        "market_id": 9,
+        "label": "Greenwich Savings Bank",
+        "legalname": "Greenwich Savings Bank",
+        "code": "80",
+        "created_at": "2024-11-05T19:09:00.597573+00:00",
+        "updated_at": "2024-11-05T19:09:00.597573+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 82,
+        "market_id": 9,
+        "label": "HSBC Bank USA",
+        "legalname": "HSBC Bank USA",
+        "code": "81",
+        "created_at": "2024-11-05T19:09:26.401885+00:00",
+        "updated_at": "2024-11-05T19:09:26.401885+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 83,
+        "market_id": 9,
+        "label": "Huntington Bancshares",
+        "legalname": "Huntington Bancshares",
+        "code": "82",
+        "created_at": "2024-11-05T19:10:02.557044+00:00",
+        "updated_at": "2024-11-05T19:10:02.557044+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 84,
+        "market_id": 9,
+        "label": "JP Morgan Chase",
+        "legalname": "JP Morgan Chase",
+        "code": "83",
+        "created_at": "2024-11-05T19:10:18.309807+00:00",
+        "updated_at": "2024-11-05T19:10:18.309807+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 85,
+        "market_id": 9,
+        "label": "KeyBank",
+        "legalname": "KeyBank",
+        "code": "84",
+        "created_at": "2024-11-05T19:10:54.340815+00:00",
+        "updated_at": "2024-11-05T19:10:54.340815+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 86,
+        "market_id": 9,
+        "label": "Kuhn Loeb & Co.",
+        "legalname": "Kuhn Loeb & Co.",
+        "code": "84",
+        "created_at": "2024-11-05T19:12:14.098763+00:00",
+        "updated_at": "2024-11-05T19:12:14.098763+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 87,
+        "market_id": 9,
+        "label": "Lazard",
+        "legalname": "Lazard",
+        "code": "85",
+        "created_at": "2024-11-05T19:12:37.241066+00:00",
+        "updated_at": "2024-11-05T19:12:37.241066+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 88,
+        "market_id": 9,
+        "label": "Lehman Brothers",
+        "legalname": "Lehman Brothers",
+        "code": "86",
+        "created_at": "2024-11-05T19:14:06.909977+00:00",
+        "updated_at": "2024-11-05T19:14:06.909977+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 89,
+        "market_id": 9,
+        "label": "Merrill Lynch",
+        "legalname": "Merrill Lynch",
+        "code": "87",
+        "created_at": "2024-11-05T19:14:25.578887+00:00",
+        "updated_at": "2024-11-05T19:14:25.578887+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 90,
+        "market_id": 9,
+        "label": "Moore Capital Management",
+        "legalname": "Moore Capital Management",
+        "code": "88",
+        "created_at": "2024-11-05T19:14:56.941729+00:00",
+        "updated_at": "2024-11-05T19:14:56.941729+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 91,
+        "market_id": 9,
+        "label": "Morgan Stanley",
+        "legalname": "Morgan Stanley",
+        "code": "89",
+        "created_at": "2024-11-05T19:29:30.469481+00:00",
+        "updated_at": "2024-11-05T19:29:30.469481+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 92,
+        "market_id": 9,
+        "label": "New York Community Bank ",
+        "legalname": "New York Community Bank ",
+        "code": "90",
+        "created_at": "2024-11-05T19:30:02.214814+00:00",
+        "updated_at": "2024-11-05T19:30:02.214814+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 93,
+        "market_id": 9,
+        "label": "New York Savings Bank",
+        "legalname": "New York Savings Bank",
+        "code": "91",
+        "created_at": "2024-11-05T19:30:28.407753+00:00",
+        "updated_at": "2024-11-05T19:30:28.407753+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 94,
+        "market_id": 9,
+        "label": "PacWest Bancorp",
+        "legalname": "PacWest Bancorp",
+        "code": "92",
+        "created_at": "2024-11-05T19:30:54.049181+00:00",
+        "updated_at": "2024-11-05T19:30:54.049181+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 95,
+        "market_id": 9,
+        "label": "Primer Banco de los Estados Unidos",
+        "legalname": "Primer Banco de los Estados Unidos",
+        "code": "93",
+        "created_at": "2024-11-05T19:31:15.449572+00:00",
+        "updated_at": "2024-11-05T19:31:15.449572+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 96,
+        "market_id": 9,
+        "label": "Republic First Bancorp",
+        "legalname": "Republic First Bancorp",
+        "code": "94",
+        "created_at": "2024-11-05T19:31:44.352724+00:00",
+        "updated_at": "2024-11-05T19:31:44.352724+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 97,
+        "market_id": 9,
+        "label": "Riggs Bank",
+        "legalname": "Riggs Bank",
+        "code": "95",
+        "created_at": "2024-11-05T19:32:06.676757+00:00",
+        "updated_at": "2024-11-05T19:32:06.676757+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 98,
+        "market_id": 9,
+        "label": "Royal Business Bank",
+        "legalname": "Royal Business Bank",
+        "code": "96",
+        "created_at": "2024-11-05T19:32:38.825911+00:00",
+        "updated_at": "2024-11-05T19:32:38.825911+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 99,
+        "market_id": 9,
+        "label": "Salomon Brothers",
+        "legalname": "Salomon Brothers",
+        "code": "97",
+        "created_at": "2024-11-05T19:32:57.072987+00:00",
+        "updated_at": "2024-11-05T19:32:57.072987+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 100,
+        "market_id": 9,
+        "label": "Santander Bank",
+        "legalname": "Santander Bank",
+        "code": "98",
+        "created_at": "2024-11-05T19:33:18.692712+00:00",
+        "updated_at": "2024-11-05T19:33:18.692712+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 101,
+        "market_id": 9,
+        "label": "Segundo Banco de los Estados Unidos",
+        "legalname": "Segundo Banco de los Estados Unidos",
+        "code": "99",
+        "created_at": "2024-11-05T19:33:47.359536+00:00",
+        "updated_at": "2024-11-05T19:33:47.359536+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 102,
+        "market_id": 9,
+        "label": "Signature Bank",
+        "legalname": "Signature Bank",
+        "code": "100",
+        "created_at": "2024-11-05T19:34:08.341548+00:00",
+        "updated_at": "2024-11-05T19:34:08.341548+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 103,
+        "market_id": 9,
+        "label": "Silicon Valley Bank",
+        "legalname": "Silicon Valley Bank",
+        "code": "101",
+        "created_at": "2024-11-05T19:40:31.024185+00:00",
+        "updated_at": "2024-11-05T19:40:31.024185+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 104,
+        "market_id": 9,
+        "label": "Silvergate Bank",
+        "legalname": "Silvergate Bank",
+        "code": "102",
+        "created_at": "2024-11-05T19:40:53.859388+00:00",
+        "updated_at": "2024-11-05T19:40:53.859388+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 105,
+        "market_id": 9,
+        "label": "State Street Corporation ",
+        "legalname": "State Street Corporation ",
+        "code": "103",
+        "created_at": "2024-11-05T19:41:13.789651+00:00",
+        "updated_at": "2024-11-05T19:41:13.789651+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 106,
+        "market_id": 9,
+        "label": "SunTrust Banks",
+        "legalname": "SunTrust Banks",
+        "code": "104",
+        "created_at": "2024-11-05T19:41:36.432765+00:00",
+        "updated_at": "2024-11-05T19:41:36.432765+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 107,
+        "market_id": 9,
+        "label": "U.S. Bancorp",
+        "legalname": "U.S. Bancorp",
+        "code": "105",
+        "created_at": "2024-11-05T19:41:59.484208+00:00",
+        "updated_at": "2024-11-05T19:41:59.484208+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 108,
+        "market_id": 9,
+        "label": "Wachovia",
+        "legalname": "Wachovia",
+        "code": "106",
+        "created_at": "2024-11-05T19:42:15.315335+00:00",
+        "updated_at": "2024-11-05T19:42:15.315335+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 109,
+        "market_id": 9,
+        "label": "Washington Mutual",
+        "legalname": "Washington Mutual",
+        "code": "107",
+        "created_at": "2024-11-05T19:42:36.491936+00:00",
+        "updated_at": "2024-11-05T19:42:36.491936+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 110,
+        "market_id": 9,
+        "label": "Wells Fargo",
+        "legalname": "Wells Fargo",
+        "code": "108",
+        "created_at": "2024-11-05T19:42:51.058591+00:00",
+        "updated_at": "2024-11-05T19:42:51.058591+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 111,
+        "market_id": 9,
+        "label": "Western Alliance Bancorporation",
+        "legalname": "Western Alliance Bancorporation",
+        "code": "109",
+        "created_at": "2024-11-05T19:43:22.54021+00:00",
+        "updated_at": "2024-11-05T19:43:22.54021+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 112,
+        "market_id": 9,
+        "label": "White Weld & Co.",
+        "legalname": "White Weld & Co.",
+        "code": "110",
+        "created_at": "2024-11-05T19:43:46.206284+00:00",
+        "updated_at": "2024-11-05T19:43:46.206284+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 113,
+        "market_id": 9,
+        "label": "Zions Bancorporation",
+        "legalname": "Zions Bancorporation",
+        "code": "111",
+        "created_at": "2024-11-05T19:45:04.330264+00:00",
+        "updated_at": "2024-11-05T19:45:04.330264+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 114,
+        "market_id": 9,
+        "label": "Bank of America",
+        "legalname": "Bank of America",
+        "code": "112",
+        "created_at": "2024-11-05T19:45:22.530558+00:00",
+        "updated_at": "2024-11-05T19:45:22.530558+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 115,
+        "market_id": 9,
+        "label": "Comerica Bank",
+        "legalname": "Comerica Bank",
+        "code": "113",
+        "created_at": "2024-11-05T19:45:43.885235+00:00",
+        "updated_at": "2024-11-05T19:45:43.885235+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 116,
+        "market_id": 10,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "114",
+        "created_at": "2024-11-06T18:44:22.22609+00:00",
+        "updated_at": "2024-11-06T18:44:22.22609+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 117,
+        "market_id": 10,
+        "label": "Banco Atlántida S.A.",
+        "legalname": "Banco Atlántida S.A.",
+        "code": "115",
+        "created_at": "2024-11-06T18:44:48.844945+00:00",
+        "updated_at": "2024-11-06T18:44:48.844945+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 118,
+        "market_id": 10,
+        "label": "Banco de Occidente S.A.",
+        "legalname": "Banco de Occidente S.A.",
+        "code": "116",
+        "created_at": "2024-11-06T18:48:18.336526+00:00",
+        "updated_at": "2024-11-06T18:48:18.336526+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 119,
+        "market_id": 10,
+        "label": "Banco de los Trabajadores",
+        "legalname": "Banco de los Trabajadores",
+        "code": "117",
+        "created_at": "2024-11-06T18:51:04.267869+00:00",
+        "updated_at": "2024-11-06T18:51:04.267869+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 120,
+        "market_id": 10,
+        "label": "Banco Financiera Centroamericana S.A. (FICENSA)",
+        "legalname": "Banco Financiera Centroamericana S.A. (FICENSA)",
+        "code": "118",
+        "created_at": "2024-11-06T18:51:41.878163+00:00",
+        "updated_at": "2024-11-06T18:51:41.878163+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 121,
+        "market_id": 10,
+        "label": "Banco Hondureño del Café S.A. (BANHCAFE)",
+        "legalname": "Banco Hondureño del Café S.A. (BANHCAFE)",
+        "code": "119",
+        "created_at": "2024-11-06T18:52:27.0637+00:00",
+        "updated_at": "2024-11-06T18:52:27.0637+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 122,
+        "market_id": 10,
+        "label": "Banco del País S.A.",
+        "legalname": "Banco del País S.A.",
+        "code": "120",
+        "created_at": "2024-11-06T18:52:47.726529+00:00",
+        "updated_at": "2024-11-06T18:52:47.726529+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 123,
+        "market_id": 10,
+        "label": "Banco Financiera Comercial Hondureña S.A. (FICOHSA)",
+        "legalname": "Banco Financiera Comercial Hondureña S.A. (FICOHSA)",
+        "code": "121",
+        "created_at": "2024-11-06T18:52:51.901416+00:00",
+        "updated_at": "2024-11-06T18:52:51.901416+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 124,
+        "market_id": 10,
+        "label": "Banco Lafise Honduras S.A.",
+        "legalname": "Banco Lafise Honduras S.A.",
+        "code": "121",
+        "created_at": "2024-11-06T18:54:11.250031+00:00",
+        "updated_at": "2024-11-06T18:54:11.250031+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 125,
+        "market_id": 10,
+        "label": "Banco Davivienda Honduras S.A.",
+        "legalname": "Banco Davivienda Honduras S.A.",
+        "code": "122",
+        "created_at": "2024-11-06T18:54:44.637004+00:00",
+        "updated_at": "2024-11-06T18:54:44.637004+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 126,
+        "market_id": 10,
+        "label": "Banco Promérica S.A.",
+        "legalname": "Banco Promérica S.A.",
+        "code": "123",
+        "created_at": "2024-11-06T18:55:26.726214+00:00",
+        "updated_at": "2024-11-06T18:55:26.726214+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 127,
+        "market_id": 10,
+        "label": "Banco de Desarrollo Rural Honduras S.A.",
+        "legalname": "Banco de Desarrollo Rural Honduras S.A.",
+        "code": "124",
+        "created_at": "2024-11-06T18:55:57.654554+00:00",
+        "updated_at": "2024-11-06T18:55:57.654554+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 128,
+        "market_id": 10,
+        "label": "Banco Azteca de Honduras S.A.",
+        "legalname": "Banco Azteca de Honduras S.A.",
+        "code": "125",
+        "created_at": "2024-11-06T18:57:38.904043+00:00",
+        "updated_at": "2024-11-06T18:57:38.904043+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 129,
+        "market_id": 10,
+        "label": "Banco Popular S.A.",
+        "legalname": "Banco Popular S.A.",
+        "code": "126",
+        "created_at": "2024-11-06T18:58:02.08818+00:00",
+        "updated_at": "2024-11-06T18:58:02.08818+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 130,
+        "market_id": 10,
+        "label": "Banco de América Central Honduras S.A.",
+        "legalname": "Banco de América Central Honduras S.A.",
+        "code": "127",
+        "created_at": "2024-11-06T18:58:33.39311+00:00",
+        "updated_at": "2024-11-06T18:58:33.39311+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 131,
+        "market_id": 10,
+        "label": "Banco de Honduras (Citi Honduras)",
+        "legalname": "Banco de Honduras (Citi Honduras)",
+        "code": "128",
+        "created_at": "2024-11-06T18:58:58.893252+00:00",
+        "updated_at": "2024-11-06T18:58:58.893252+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 132,
+        "market_id": 10,
+        "label": "Banco Nacional de Desarrollo Agrícola",
+        "legalname": "Banco Nacional de Desarrollo Agrícola",
+        "code": "129",
+        "created_at": "2024-11-06T18:59:26.522612+00:00",
+        "updated_at": "2024-11-06T18:59:26.522612+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 133,
+        "market_id": 10,
+        "label": "Banco Hondureño para la Producción y la Vivienda (BANHPROVI)",
+        "legalname": "Banco Hondureño para la Producción y la Vivienda (BANHPROVI)",
+        "code": "130",
+        "created_at": "2024-11-06T19:00:20.111845+00:00",
+        "updated_at": "2024-11-06T19:00:20.111845+00:00",
+        "markets": {
+            "name": "HN"
+        }
+    },
+    {
+        "id": 134,
+        "market_id": 11,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "131",
+        "created_at": "2024-11-06T19:02:51.542498+00:00",
+        "updated_at": "2024-11-06T19:02:51.542498+00:00",
+        "markets": {
+            "name": "SV"
+        }
+    },
+    {
+        "id": 135,
+        "market_id": 12,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "132",
+        "created_at": "2024-11-06T19:03:11.690412+00:00",
+        "updated_at": "2024-11-06T19:03:11.690412+00:00",
+        "markets": {
+            "name": "PR"
+        }
+    },
+    {
+        "id": 136,
+        "market_id": 13,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "133",
+        "created_at": "2024-11-06T19:03:28.240877+00:00",
+        "updated_at": "2024-11-06T19:03:28.240877+00:00",
+        "markets": {
+            "name": "CA"
+        }
+    },
+    {
+        "id": 137,
+        "market_id": 14,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "134",
+        "created_at": "2024-11-06T19:03:57.882192+00:00",
+        "updated_at": "2024-11-06T19:03:57.882192+00:00",
+        "markets": {
+            "name": "CR"
+        }
+    },
+    {
+        "id": 138,
+        "market_id": 15,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "135",
+        "created_at": "2024-11-06T19:04:20.473928+00:00",
+        "updated_at": "2024-11-06T19:04:20.473928+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 139,
+        "market_id": 15,
+        "label": "Crédito Hipotecario Nacional de Guatemala",
+        "legalname": "Crédito Hipotecario Nacional de Guatemala",
+        "code": "137",
+        "created_at": "2024-11-06T19:06:48.921234+00:00",
+        "updated_at": "2024-11-06T19:06:48.921234+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 140,
+        "market_id": 15,
+        "label": "Banco Inmobiliario S.A.",
+        "legalname": "Banco Inmobiliario S.A.",
+        "code": "138",
+        "created_at": "2024-11-06T19:07:22.026643+00:00",
+        "updated_at": "2024-11-06T19:07:22.026643+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 141,
+        "market_id": 15,
+        "label": "Banco de los Trabajadores ",
+        "legalname": "Banco de los Trabajadores ",
+        "code": "139",
+        "created_at": "2024-11-06T19:07:45.401537+00:00",
+        "updated_at": "2024-11-06T19:07:45.401537+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 142,
+        "market_id": 15,
+        "label": "Banco Industrial S.A.",
+        "legalname": "Banco Industrial S.A.",
+        "code": "140",
+        "created_at": "2024-11-06T19:08:27.075282+00:00",
+        "updated_at": "2024-11-06T19:08:27.075282+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 143,
+        "market_id": 15,
+        "label": "Banco de Desarrollo Rural S.A.",
+        "legalname": "Banco de Desarrollo Rural S.A.",
+        "code": "141",
+        "created_at": "2024-11-06T19:09:01.708463+00:00",
+        "updated_at": "2024-11-06T19:09:01.708463+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 144,
+        "market_id": 15,
+        "label": "Banco Internacional S.A.",
+        "legalname": "Banco Internacional S.A.",
+        "code": "142",
+        "created_at": "2024-11-06T19:09:31.859861+00:00",
+        "updated_at": "2024-11-06T19:09:31.859861+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 145,
+        "market_id": 15,
+        "label": "Citibank N.A. Sucursal Guatemala",
+        "legalname": "Citibank N.A. Sucursal Guatemala",
+        "code": "143",
+        "created_at": "2024-11-06T19:10:04.318573+00:00",
+        "updated_at": "2024-11-06T19:10:04.318573+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 146,
+        "market_id": 15,
+        "label": "Vivibanco S.A.",
+        "legalname": "Vivibanco S.A.",
+        "code": "144",
+        "created_at": "2024-11-06T19:10:24.627614+00:00",
+        "updated_at": "2024-11-06T19:10:24.627614+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 147,
+        "market_id": 15,
+        "label": "Banco Ficohsa Guatemala S.A.",
+        "legalname": "Banco Ficohsa Guatemala S.A.",
+        "code": "145",
+        "created_at": "2024-11-06T19:10:55.436829+00:00",
+        "updated_at": "2024-11-06T19:10:55.436829+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 148,
+        "market_id": 15,
+        "label": "Banco Promerica S.A.",
+        "legalname": "Banco Promerica S.A.",
+        "code": "146",
+        "created_at": "2024-11-06T19:24:42.611782+00:00",
+        "updated_at": "2024-11-06T19:24:42.611782+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 149,
+        "market_id": 15,
+        "label": "Banco de Antigua S.A.",
+        "legalname": "Banco de Antigua S.A.",
+        "code": "147",
+        "created_at": "2024-11-06T19:26:32.384576+00:00",
+        "updated_at": "2024-11-06T19:26:32.384576+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 150,
+        "market_id": 15,
+        "label": "Banco de América Central S.A.",
+        "legalname": "Banco de América Central S.A.",
+        "code": "148",
+        "created_at": "2024-11-06T19:27:08.59847+00:00",
+        "updated_at": "2024-11-06T19:27:08.59847+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 151,
+        "market_id": 15,
+        "label": "Banco Agromercantil de Guatemala S.A.",
+        "legalname": "Banco Agromercantil de Guatemala S.A.",
+        "code": "149",
+        "created_at": "2024-11-06T19:27:50.489108+00:00",
+        "updated_at": "2024-11-06T19:27:50.489108+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 152,
+        "market_id": 15,
+        "label": "Banco G&T Continental S.A.",
+        "legalname": "Banco G&T Continental S.A.",
+        "code": "150",
+        "created_at": "2024-11-06T19:28:24.359422+00:00",
+        "updated_at": "2024-11-06T19:28:24.359422+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 153,
+        "market_id": 15,
+        "label": "Banco Azteca de Guatemala S.A.",
+        "legalname": "Banco Azteca de Guatemala S.A.",
+        "code": "151",
+        "created_at": "2024-11-06T19:28:47.694891+00:00",
+        "updated_at": "2024-11-06T19:28:47.694891+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 154,
+        "market_id": 15,
+        "label": "Banco Inv S.A.",
+        "legalname": "Banco Inv S.A.",
+        "code": "152",
+        "created_at": "2024-11-06T19:29:33.50252+00:00",
+        "updated_at": "2024-11-06T19:29:33.50252+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 155,
+        "market_id": 15,
+        "label": "Banco Credicorp S.A.",
+        "legalname": "Banco Credicorp S.A.",
+        "code": "153",
+        "created_at": "2024-11-06T19:30:09.491327+00:00",
+        "updated_at": "2024-11-06T19:30:09.491327+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 156,
+        "market_id": 15,
+        "label": "Banco Nexa S.A.",
+        "legalname": "Banco Nexa S.A.",
+        "code": "154",
+        "created_at": "2024-11-06T19:30:36.83538+00:00",
+        "updated_at": "2024-11-06T19:30:36.83538+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 157,
+        "market_id": 15,
+        "label": "BAC Credomatic",
+        "legalname": "BAC Credomatic",
+        "code": "155",
+        "created_at": "2024-11-06T19:31:06.054923+00:00",
+        "updated_at": "2024-11-06T19:31:06.054923+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 158,
+        "market_id": 16,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "156",
+        "created_at": "2024-11-06T19:31:39.019849+00:00",
+        "updated_at": "2024-11-06T19:31:39.019849+00:00",
+        "markets": {
+            "name": "EC"
+        }
+    },
+    {
+        "id": 159,
+        "market_id": 17,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "157",
+        "created_at": "2024-11-06T19:32:04.361255+00:00",
+        "updated_at": "2024-11-06T19:32:04.361255+00:00",
+        "markets": {
+            "name": "PE"
+        }
+    },
+    {
+        "id": 160,
+        "market_id": 18,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "158",
+        "created_at": "2024-11-06T19:32:38.769778+00:00",
+        "updated_at": "2024-11-06T19:32:38.769778+00:00",
+        "markets": {
+            "name": "EU"
+        }
+    },
+    {
+        "id": 161,
+        "market_id": 19,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "159",
+        "created_at": "2024-11-06T19:33:00.552967+00:00",
+        "updated_at": "2024-11-06T19:33:00.552967+00:00",
+        "markets": {
+            "name": "AS"
+        }
+    },
+    {
+        "id": 162,
+        "market_id": 9,
+        "label": "First Convenience Bank",
+        "legalname": "First Convenience Bank",
+        "code": "160",
+        "created_at": "2024-11-06T23:43:58.435686+00:00",
+        "updated_at": "2024-11-06T23:43:58.435686+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 163,
+        "market_id": 9,
+        "label": "First National Bank",
+        "legalname": "First National Bank",
+        "code": "161",
+        "created_at": "2024-11-06T23:44:14.461423+00:00",
+        "updated_at": "2024-11-06T23:44:14.461423+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 164,
+        "market_id": 1,
+        "label": "ABC Capital",
+        "legalname": "ABC Capital",
+        "code": "162",
+        "created_at": "2024-11-07T17:57:26.367831+00:00",
+        "updated_at": "2024-11-07T17:57:26.367831+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 165,
+        "market_id": 1,
+        "label": "Banco Afirme",
+        "legalname": "Banco Afirme",
+        "code": "163",
+        "created_at": "2024-11-07T17:58:00.603642+00:00",
+        "updated_at": "2024-11-07T17:58:00.603642+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 166,
+        "market_id": 1,
+        "label": "Banco Mifel",
+        "legalname": "Banco Mifel",
+        "code": "164",
+        "created_at": "2024-11-07T17:58:57.181833+00:00",
+        "updated_at": "2024-11-07T17:58:57.181833+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 167,
+        "market_id": 1,
+        "label": "Banco Actinver",
+        "legalname": "Banco Actinver",
+        "code": "165",
+        "created_at": "2024-11-07T17:59:12.604547+00:00",
+        "updated_at": "2024-11-07T17:59:12.604547+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 168,
+        "market_id": 1,
+        "label": "Banco Autofin México",
+        "legalname": "Banco Autofin México",
+        "code": "166",
+        "created_at": "2024-11-07T17:59:35.191014+00:00",
+        "updated_at": "2024-11-07T17:59:35.191014+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 169,
+        "market_id": 1,
+        "label": "Banco Azteca",
+        "legalname": "Banco Azteca",
+        "code": "167",
+        "created_at": "2024-11-07T18:01:18.989122+00:00",
+        "updated_at": "2024-11-07T18:01:18.989122+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 170,
+        "market_id": 1,
+        "label": "Banco Bancrea",
+        "legalname": "Banco Bancrea",
+        "code": "168",
+        "created_at": "2024-11-07T18:01:34.077528+00:00",
+        "updated_at": "2024-11-07T18:01:34.077528+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 171,
+        "market_id": 1,
+        "label": "Banco Base",
+        "legalname": "Banco Base",
+        "code": "169",
+        "created_at": "2024-11-07T18:01:53.890835+00:00",
+        "updated_at": "2024-11-07T18:01:53.890835+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 172,
+        "market_id": 1,
+        "label": "Banco Bineo",
+        "legalname": "Banco Bineo",
+        "code": "170",
+        "created_at": "2024-11-07T18:02:11.105195+00:00",
+        "updated_at": "2024-11-07T18:02:11.105195+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 173,
+        "market_id": 1,
+        "label": "Banco Compartamos",
+        "legalname": "Banco Compartamos",
+        "code": "171",
+        "created_at": "2024-11-07T18:02:25.07705+00:00",
+        "updated_at": "2024-11-07T18:02:25.07705+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 174,
+        "market_id": 1,
+        "label": "Banco Covalto",
+        "legalname": "Banco Covalto",
+        "code": "172",
+        "created_at": "2024-11-07T18:02:41.917792+00:00",
+        "updated_at": "2024-11-07T18:02:41.917792+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 175,
+        "market_id": 1,
+        "label": "Banco Credit Suisse (México)",
+        "legalname": "Banco Credit Suisse (México)",
+        "code": "173",
+        "created_at": "2024-11-07T18:04:17.506189+00:00",
+        "updated_at": "2024-11-07T18:04:17.506189+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 176,
+        "market_id": 1,
+        "label": "Banco de Inversión Afirme",
+        "legalname": "Banco de Inversión Afirme",
+        "code": "174",
+        "created_at": "2024-11-07T18:04:55.990904+00:00",
+        "updated_at": "2024-11-07T18:04:55.990904+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 177,
+        "market_id": 1,
+        "label": "Banco del Bajío",
+        "legalname": "Banco del Bajío",
+        "code": "175",
+        "created_at": "2024-11-07T18:05:26.330113+00:00",
+        "updated_at": "2024-11-07T18:05:26.330113+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 178,
+        "market_id": 1,
+        "label": "Banco Forjadores",
+        "legalname": "Banco Forjadores",
+        "code": "176",
+        "created_at": "2024-11-07T18:05:42.463144+00:00",
+        "updated_at": "2024-11-07T18:05:42.463144+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 179,
+        "market_id": 1,
+        "label": "Banco Inbursa",
+        "legalname": "Banco Inbursa",
+        "code": "177",
+        "created_at": "2024-11-07T18:05:56.699334+00:00",
+        "updated_at": "2024-11-07T18:05:56.699334+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 180,
+        "market_id": 1,
+        "label": "Banco Inmobiliario Mexicano",
+        "legalname": "Banco Inmobiliario Mexicano",
+        "code": "178",
+        "created_at": "2024-11-07T18:06:41.628798+00:00",
+        "updated_at": "2024-11-07T18:06:41.628798+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 181,
+        "market_id": 1,
+        "label": "Banco Invex",
+        "legalname": "Banco Invex",
+        "code": "179",
+        "created_at": "2024-11-07T18:07:15.792885+00:00",
+        "updated_at": "2024-11-07T18:07:15.792885+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 182,
+        "market_id": 1,
+        "label": "Banco JP Morgan",
+        "legalname": "Banco JP Morgan",
+        "code": "180",
+        "created_at": "2024-11-07T18:07:29.470412+00:00",
+        "updated_at": "2024-11-07T18:07:29.470412+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 183,
+        "market_id": 1,
+        "label": "Banco KEB Hana México",
+        "legalname": "Banco KEB Hana México",
+        "code": "181",
+        "created_at": "2024-11-07T18:08:04.908805+00:00",
+        "updated_at": "2024-11-07T18:08:04.908805+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 184,
+        "market_id": 1,
+        "label": "Banco Monex",
+        "legalname": "Banco Monex",
+        "code": "182",
+        "created_at": "2024-11-07T18:08:20.032463+00:00",
+        "updated_at": "2024-11-07T18:08:20.032463+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 185,
+        "market_id": 1,
+        "label": "Banco Multiva",
+        "legalname": "Banco Multiva",
+        "code": "183",
+        "created_at": "2024-11-07T18:08:35.746218+00:00",
+        "updated_at": "2024-11-07T18:08:35.746218+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 186,
+        "market_id": 1,
+        "label": "Banco PagaTodo",
+        "legalname": "Banco PagaTodo",
+        "code": "184",
+        "created_at": "2024-11-07T18:08:51.988329+00:00",
+        "updated_at": "2024-11-07T18:08:51.988329+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 187,
+        "market_id": 1,
+        "label": "Banco Regional de Monterrey",
+        "legalname": "Banco Regional de Monterrey",
+        "code": "185",
+        "created_at": "2024-11-07T18:09:11.495253+00:00",
+        "updated_at": "2024-11-07T18:09:11.495253+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 188,
+        "market_id": 1,
+        "label": "Banco S3 Caceis México",
+        "legalname": "Banco S3 Caceis México",
+        "code": "186",
+        "created_at": "2024-11-07T18:09:35.990898+00:00",
+        "updated_at": "2024-11-07T18:09:35.990898+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 189,
+        "market_id": 1,
+        "label": "Banco Sabadell",
+        "legalname": "Banco Sabadell",
+        "code": "187",
+        "created_at": "2024-11-07T18:09:52.564403+00:00",
+        "updated_at": "2024-11-07T18:09:52.564403+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 190,
+        "market_id": 1,
+        "label": "Banco Santander",
+        "legalname": "Banco Santander",
+        "code": "188",
+        "created_at": "2024-11-07T18:10:22.987221+00:00",
+        "updated_at": "2024-11-07T18:10:22.987221+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 191,
+        "market_id": 1,
+        "label": "Banco Shinhan de México",
+        "legalname": "Banco Shinhan de México",
+        "code": "189",
+        "created_at": "2024-11-07T18:12:25.922352+00:00",
+        "updated_at": "2024-11-07T18:12:25.922352+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 192,
+        "market_id": 1,
+        "label": "Banco Ve por Más",
+        "legalname": "Banco Ve por Más",
+        "code": "190",
+        "created_at": "2024-11-07T18:12:52.293435+00:00",
+        "updated_at": "2024-11-07T18:12:52.293435+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 193,
+        "market_id": 1,
+        "label": "BanCoppel",
+        "legalname": "BanCoppel",
+        "code": "191",
+        "created_at": "2024-11-07T18:13:15.196002+00:00",
+        "updated_at": "2024-11-07T18:13:15.196002+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 194,
+        "market_id": 1,
+        "label": "Bank of America México",
+        "legalname": "Bank of America México",
+        "code": "192",
+        "created_at": "2024-11-07T18:13:34.736975+00:00",
+        "updated_at": "2024-11-07T18:13:34.736975+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 195,
+        "market_id": 1,
+        "label": "Bank of China México",
+        "legalname": "Bank of China México",
+        "code": "193",
+        "created_at": "2024-11-07T18:13:53.214244+00:00",
+        "updated_at": "2024-11-07T18:13:53.214244+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 196,
+        "market_id": 1,
+        "label": "Bankaool",
+        "legalname": "Bankaool",
+        "code": "194",
+        "created_at": "2024-11-07T18:14:37.344438+00:00",
+        "updated_at": "2024-11-07T18:14:37.344438+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 197,
+        "market_id": 1,
+        "label": "Banorte",
+        "legalname": "Banorte",
+        "code": "195",
+        "created_at": "2024-11-07T18:14:49.842823+00:00",
+        "updated_at": "2024-11-07T18:14:49.842823+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 198,
+        "market_id": 1,
+        "label": "Bansí",
+        "legalname": "Bansí",
+        "code": "196",
+        "created_at": "2024-11-07T18:15:03.491671+00:00",
+        "updated_at": "2024-11-07T18:15:03.491671+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 199,
+        "market_id": 1,
+        "label": "Barclays Bank México",
+        "legalname": "Barclays Bank México",
+        "code": "197",
+        "created_at": "2024-11-07T18:15:29.283341+00:00",
+        "updated_at": "2024-11-07T18:15:29.283341+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 200,
+        "market_id": 1,
+        "label": "BBVA México",
+        "legalname": "BBVA México",
+        "code": "198",
+        "created_at": "2024-11-07T18:16:01.484966+00:00",
+        "updated_at": "2024-11-07T18:16:01.484966+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 201,
+        "market_id": 1,
+        "label": "BNP Paribas",
+        "legalname": "BNP Paribas",
+        "code": "199",
+        "created_at": "2024-11-07T18:16:17.819802+00:00",
+        "updated_at": "2024-11-07T18:16:17.819802+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 202,
+        "market_id": 1,
+        "label": "CIBanco",
+        "legalname": "CIBanco",
+        "code": "200",
+        "created_at": "2024-11-07T18:16:35.064076+00:00",
+        "updated_at": "2024-11-07T18:16:35.064076+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 203,
+        "market_id": 1,
+        "label": "Citibanamex",
+        "legalname": "Citibanamex",
+        "code": "201",
+        "created_at": "2024-11-07T18:16:50.284149+00:00",
+        "updated_at": "2024-11-07T18:16:50.284149+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 204,
+        "market_id": 1,
+        "label": "Consubanco",
+        "legalname": "Consubanco",
+        "code": "202",
+        "created_at": "2024-11-07T18:17:07.173317+00:00",
+        "updated_at": "2024-11-07T18:17:07.173317+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 205,
+        "market_id": 1,
+        "label": "Fundación Dondé Banco",
+        "legalname": "Fundación Dondé Banco",
+        "code": "203",
+        "created_at": "2024-11-07T18:17:29.678353+00:00",
+        "updated_at": "2024-11-07T18:17:29.678353+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 206,
+        "market_id": 1,
+        "label": "HSBC México",
+        "legalname": "HSBC México",
+        "code": "204",
+        "created_at": "2024-11-07T18:17:50.349272+00:00",
+        "updated_at": "2024-11-07T18:17:50.349272+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 207,
+        "market_id": 1,
+        "label": "Industrial and Commercial Bank of China",
+        "legalname": "Industrial and Commercial Bank of China",
+        "code": "205",
+        "created_at": "2024-11-07T18:18:18.650169+00:00",
+        "updated_at": "2024-11-07T18:18:18.650169+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 208,
+        "market_id": 1,
+        "label": "Intercam Banco",
+        "legalname": "Intercam Banco",
+        "code": "206",
+        "created_at": "2024-11-07T18:18:35.265382+00:00",
+        "updated_at": "2024-11-07T18:18:35.265382+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 209,
+        "market_id": 1,
+        "label": "Mizuho Bank",
+        "legalname": "Mizuho Bank",
+        "code": "207",
+        "created_at": "2024-11-07T18:18:57.701403+00:00",
+        "updated_at": "2024-11-07T18:18:57.701403+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 210,
+        "market_id": 1,
+        "label": "MUFG Bank México",
+        "legalname": "MUFG Bank México",
+        "code": "208",
+        "created_at": "2024-11-07T18:19:32.273129+00:00",
+        "updated_at": "2024-11-07T18:19:32.273129+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 211,
+        "market_id": 1,
+        "label": "Scotiabank",
+        "legalname": "Scotiabank",
+        "code": "209",
+        "created_at": "2024-11-07T18:19:57.153932+00:00",
+        "updated_at": "2024-11-07T18:19:57.153932+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 212,
+        "market_id": 1,
+        "label": "Tarjeta Toka",
+        "legalname": "Tarjeta Toka",
+        "code": "210",
+        "created_at": "2024-11-07T18:20:16.409825+00:00",
+        "updated_at": "2024-11-07T18:20:16.409825+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 213,
+        "market_id": 1,
+        "label": "Banca Serfin, S.A.",
+        "legalname": "Banca Serfin, S.A.",
+        "code": "210",
+        "created_at": "2024-11-07T18:21:21.863538+00:00",
+        "updated_at": "2024-11-07T18:21:21.863538+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 214,
+        "market_id": 1,
+        "label": "Banco del Atlántico, S.A.",
+        "legalname": "Banco del Atlántico, S.A.",
+        "code": "211",
+        "created_at": "2024-11-07T18:21:47.823549+00:00",
+        "updated_at": "2024-11-07T18:21:47.823549+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 215,
+        "market_id": 1,
+        "label": "Banobras",
+        "legalname": "Banobras",
+        "code": "212",
+        "created_at": "2024-11-07T18:22:50.362091+00:00",
+        "updated_at": "2024-11-07T18:22:50.362091+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 216,
+        "market_id": 1,
+        "label": "Banjercito",
+        "legalname": "Banjercito",
+        "code": "213",
+        "created_at": "2024-11-07T18:23:09.989074+00:00",
+        "updated_at": "2024-11-07T18:23:09.989074+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 217,
+        "market_id": 1,
+        "label": "IXE",
+        "legalname": "IXE",
+        "code": "214",
+        "created_at": "2024-11-07T18:24:04.474211+00:00",
+        "updated_at": "2024-11-07T18:24:04.474211+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 218,
+        "market_id": 1,
+        "label": "INVEX",
+        "legalname": "INVEX",
+        "code": "215",
+        "created_at": "2024-11-07T18:24:23.003216+00:00",
+        "updated_at": "2024-11-07T18:24:23.003216+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 219,
+        "market_id": 1,
+        "label": "BANSEFI",
+        "legalname": "BANSEFI",
+        "code": "216",
+        "created_at": "2024-11-07T18:24:40.144563+00:00",
+        "updated_at": "2024-11-07T18:24:40.144563+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 220,
+        "market_id": 1,
+        "label": "American Express",
+        "legalname": "American Express",
+        "code": "218",
+        "created_at": "2024-11-07T18:25:04.319487+00:00",
+        "updated_at": "2024-11-07T18:25:04.319487+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 221,
+        "market_id": 1,
+        "label": "BANSEFI ",
+        "legalname": "BANSEFI ",
+        "code": "219",
+        "created_at": "2024-11-07T18:26:43.490851+00:00",
+        "updated_at": "2024-11-07T18:26:43.490851+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 222,
+        "market_id": 1,
+        "label": "MAPFRE",
+        "legalname": "MAPFRE",
+        "code": "220",
+        "created_at": "2024-11-07T18:27:14.309045+00:00",
+        "updated_at": "2024-11-07T18:27:14.309045+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 223,
+        "market_id": 9,
+        "label": "First National Bank Texas / First Convenience Bank",
+        "legalname": "First National Bank Texas / First Convenience Bank",
+        "code": "221",
+        "created_at": "2024-11-07T18:28:32.325188+00:00",
+        "updated_at": "2024-11-07T18:28:32.325188+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 224,
+        "market_id": 9,
+        "label": "Regions Financial Corporation",
+        "legalname": "Regions Financial Corporation",
+        "code": "222",
+        "created_at": "2024-11-14T17:49:46.396215+00:00",
+        "updated_at": "2024-11-14T17:49:46.396215+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 225,
+        "market_id": 9,
+        "label": "San Diego County Credit Union",
+        "legalname": "San Diego County Credit Union",
+        "code": "223",
+        "created_at": "2024-11-14T20:36:39.829181+00:00",
+        "updated_at": "2024-11-14T20:36:39.829181+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 226,
+        "market_id": 9,
+        "label": "Woodforest National Bank",
+        "legalname": "Woodforest National Bank",
+        "code": "301",
+        "created_at": "2024-11-26T17:24:30.990569+00:00",
+        "updated_at": "2024-11-26T17:24:30.990569+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 227,
+        "market_id": 18,
+        "label": "Wise",
+        "legalname": "Wise",
+        "code": "300",
+        "created_at": "2024-11-27T16:53:15.288877+00:00",
+        "updated_at": "2024-11-27T16:53:15.288877+00:00",
+        "markets": {
+            "name": "EU"
+        }
+    },
+    {
+        "id": 228,
+        "market_id": 18,
+        "label": "Banco ING",
+        "legalname": "Banco ING",
+        "code": "301",
+        "created_at": "2024-11-29T17:52:54.964138+00:00",
+        "updated_at": "2024-11-29T17:52:54.964138+00:00",
+        "markets": {
+            "name": "EU"
+        }
+    },
+    {
+        "id": 229,
+        "market_id": 1,
+        "label": "STP",
+        "legalname": "STP",
+        "code": "400",
+        "created_at": "2024-12-12T23:50:39.480708+00:00",
+        "updated_at": "2024-12-12T23:50:39.480708+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 230,
+        "market_id": 9,
+        "label": "US BANK",
+        "legalname": "US BANK",
+        "code": "401",
+        "created_at": "2024-12-13T00:04:41.220233+00:00",
+        "updated_at": "2024-12-13T00:04:41.220233+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 231,
+        "market_id": 9,
+        "label": "TD Bank",
+        "legalname": "TD Bank",
+        "code": "403",
+        "created_at": "2024-12-16T20:04:38.131918+00:00",
+        "updated_at": "2024-12-16T20:04:38.131918+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 232,
+        "market_id": 9,
+        "label": "Mountain America Credit Union ",
+        "legalname": "Mountain America Credit Union ",
+        "code": "432",
+        "created_at": "2024-12-16T20:40:18.406121+00:00",
+        "updated_at": "2024-12-16T20:40:18.406121+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 233,
+        "market_id": 15,
+        "label": "BANRURAL",
+        "legalname": "BANRURAL",
+        "code": "410",
+        "created_at": "2024-12-16T23:10:40.300751+00:00",
+        "updated_at": "2024-12-16T23:10:40.300751+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 234,
+        "market_id": 15,
+        "label": "PENDIENTE",
+        "legalname": "PENDIENTE",
+        "code": "305",
+        "created_at": "2024-12-17T17:18:13.719676+00:00",
+        "updated_at": "2024-12-17T17:18:13.719676+00:00",
+        "markets": {
+            "name": "GT"
+        }
+    },
+    {
+        "id": 235,
+        "market_id": 9,
+        "label": "PNC BANK",
+        "legalname": "PNC BANK",
+        "code": "410",
+        "created_at": "2025-01-20T16:36:12.644201+00:00",
+        "updated_at": "2025-01-20T16:36:12.644201+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 236,
+        "market_id": 9,
+        "label": "Capital One",
+        "legalname": "Capital One",
+        "code": "413",
+        "created_at": "2025-01-21T18:20:06.672984+00:00",
+        "updated_at": "2025-01-21T18:20:06.672984+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 237,
+        "market_id": 9,
+        "label": "Southern Bank",
+        "legalname": "Southern Bank",
+        "code": "500",
+        "created_at": "2025-01-23T17:53:30.605783+00:00",
+        "updated_at": "2025-01-23T17:53:30.605783+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 238,
+        "market_id": 18,
+        "label": "Banco General Panama",
+        "legalname": "Banco General Panama",
+        "code": "900",
+        "created_at": "2025-02-10T17:28:38.823174+00:00",
+        "updated_at": "2025-02-10T17:28:38.823174+00:00",
+        "markets": {
+            "name": "EU"
+        }
+    },
+    {
+        "id": 239,
+        "market_id": 1,
+        "label": "Hey Banco",
+        "legalname": "Hey Banco",
+        "code": "500",
+        "created_at": "2025-02-20T23:59:31.547835+00:00",
+        "updated_at": "2025-02-20T23:59:31.547835+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 240,
+        "market_id": 9,
+        "label": "BMO",
+        "legalname": "BMO",
+        "code": "402",
+        "created_at": "2025-02-26T17:08:57.614718+00:00",
+        "updated_at": "2025-02-26T17:08:57.614718+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 241,
+        "market_id": 9,
+        "label": "Thread Bank (SEIS)",
+        "legalname": "Thread Bank (SEIS)",
+        "code": "407",
+        "created_at": "2025-03-04T18:46:06.754995+00:00",
+        "updated_at": "2025-03-04T18:46:06.754995+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 242,
+        "market_id": 9,
+        "label": "Old Second National Bank",
+        "legalname": "Old Second National Bank",
+        "code": "407",
+        "created_at": "2025-03-10T16:27:14.907183+00:00",
+        "updated_at": "2025-03-10T16:27:14.907183+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 243,
+        "market_id": 9,
+        "label": "Fifth Third Bank",
+        "legalname": "Fifth Third Bank",
+        "code": "3",
+        "created_at": "2025-04-21T18:14:02.161127+00:00",
+        "updated_at": "2025-04-21T18:14:02.161127+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 244,
+        "market_id": 9,
+        "label": "Mechanics Bank",
+        "legalname": "Mechanics Bank",
+        "code": "4",
+        "created_at": "2025-04-22T16:43:10.981633+00:00",
+        "updated_at": "2025-04-22T16:43:10.981633+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 245,
+        "market_id": 9,
+        "label": " RANDOLPH RBFCU - Credit Union",
+        "legalname": "RBFCU - Credit Union",
+        "code": "3",
+        "created_at": "2025-04-25T20:32:11.179402+00:00",
+        "updated_at": "2025-04-25T20:32:11.179402+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 246,
+        "market_id": 1,
+        "label": "Compartamos Banco",
+        "legalname": "Compartamos Banco",
+        "code": "11",
+        "created_at": "2025-05-08T00:38:52.657486+00:00",
+        "updated_at": "2025-05-08T00:38:52.657486+00:00",
+        "markets": {
+            "name": "MX"
+        }
+    },
+    {
+        "id": 247,
+        "market_id": 9,
+        "label": "Prosperity Bank",
+        "legalname": "Prosperity Bank",
+        "code": "301",
+        "created_at": "2025-05-19T20:49:40.092157+00:00",
+        "updated_at": "2025-05-19T20:49:40.092157+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 248,
+        "market_id": 9,
+        "label": "Bank of the Sierra",
+        "legalname": "Bank of the Sierra",
+        "code": "189",
+        "created_at": "2025-05-30T17:37:58.002619+00:00",
+        "updated_at": "2025-05-30T17:37:58.002619+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 249,
+        "market_id": 9,
+        "label": "Secu Smarter Barking",
+        "legalname": "Secu Smarter Barking",
+        "code": "2",
+        "created_at": "2025-05-30T17:46:48.130075+00:00",
+        "updated_at": "2025-05-30T17:46:48.130075+00:00",
+        "markets": {
+            "name": "US"
+        }
+    },
+    {
+        "id": 250,
+        "market_id": 9,
+        "label": "Westamerica Bank",
+        "legalname": "Westamercia Bank",
+        "code": "13",
+        "created_at": "2025-06-30T19:44:05.080665+00:00",
+        "updated_at": "2025-06-30T19:44:05.080665+00:00",
+        "markets": {
+            "name": "US"
+        }
+    }
+]
