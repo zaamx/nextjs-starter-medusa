@@ -173,7 +173,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
         clearState={() => {/* clear logic if needed */}}
         data-testid="account-payment-method-editor"
         // if customer has metadata.netme_payment_method, disable edit
-        disableEdit={!!customer.metadata?.netme_payment_method}
+        // disableEdit={!!customer.metadata?.netme_payment_method}
       >
         <div className="grid grid-cols-1 gap-y-2">
           <NativeSelect
