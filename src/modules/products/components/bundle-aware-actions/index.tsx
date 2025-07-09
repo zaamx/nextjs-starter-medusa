@@ -249,23 +249,23 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
             Bundle Quantity
           </label>
           <div className="flex items-center space-x-2">
-            <Button
+            {/* <Button
               variant="secondary"
               size="small"
               onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
               disabled={quantity <= 1}
             >
               -
-            </Button>
+            </Button> */}
             <span className="w-12 text-center font-medium">{quantity}</span>
-            <Button
+            {/* <Button
               variant="secondary"
               size="small"
               onClick={() => setQuantity(prev => prev + 1)}
               disabled={quantity >= parseInt(bundleMeta.total_max_quantity || '5')}
             >
               +
-            </Button>
+            </Button> */}
           </div>
         </div>
 
