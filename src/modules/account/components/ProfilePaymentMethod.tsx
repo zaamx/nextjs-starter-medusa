@@ -31,6 +31,7 @@ const updatePaymentMethod = async (_currentState: Record<string, unknown>, formD
   const repeat_account = formData.get("repeat_account") as string
   const clabe = formData.get("clabe") as string
   const repeat_clabe = formData.get("repeat_clabe") as string
+  const phone_linked = formData.get("phone_linked") as string
 
   // Validation (repeat fields)
   if (account !== repeat_account) {
@@ -46,7 +47,8 @@ const updatePaymentMethod = async (_currentState: Record<string, unknown>, formD
     currency,
     bank,
     account,
-    clabe
+    clabe,
+    phone_linked
   }
 
   // Merge with existing metadata
@@ -91,7 +93,8 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
     account: initialPayment.account || "",
     repeat_account: initialPayment.account || "",
     clabe: initialPayment.clabe || "",
-    repeat_clabe: initialPayment.clabe || ""
+    repeat_clabe: initialPayment.clabe || "",
+    phone_linked: initialPayment.phone_linked || ""
   })
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
@@ -244,6 +247,15 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             onChange={handleChange}
             required
             data-testid="payment-repeat-clabe-input"
+          />
+          <Input
+            label="Teléfono celular vinculado a la cuenta"
+            name="phone_linked"
+            type="tel"
+            value={form.phone_linked}
+            onChange={handleChange}
+            required
+            data-testid="payment-phone-linked-input"
           />
         </div>
       </AccountInfo>
