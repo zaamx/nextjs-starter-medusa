@@ -20,7 +20,7 @@ interface SponsorProfile {
 interface SponsorSearchProps {
   isOpen: boolean
   onClose: () => void
-  onSelect: (sponsorId: string) => void
+  onSelect: (sponsorId: string, sponsorInfo?: SponsorProfile) => void
   selectedSponsorId?: string
 }
 
@@ -79,12 +79,12 @@ const SponsorSearch: React.FC<SponsorSearchProps> = ({
     // console.log('Sponsor netme_id:', sponsor.netme_id)
     // console.log('Sponsor netme_id type:', typeof sponsor.netme_id)
     // console.log('Converting to string:', sponsor.netme_id.toString())
-    onSelect(sponsor.netme_id?.toString() || "")
+    onSelect(sponsor.netme_id?.toString() || "", sponsor)
     onClose()
   }
 
   const handleClearSelection = () => {
-    onSelect("") // Clear selection
+    onSelect("", undefined) // Clear selection
     onClose()
   }
 

@@ -71,6 +71,22 @@ export async function signup(_currentState: unknown, formData: FormData) {
   const birthDate = formData.get("birth_date") as string
   const preferredSide = formData.get("preferred_side") as string
   
+  // Validate sponsor profile ID
+  if (!sponsorProfileId || sponsorProfileId.trim() === "") {
+    return "Sponsor Profile ID is required"
+  }
+  
+  // Validate sponsor profile ID format (must be a number)
+  if (!/^\d+$/.test(sponsorProfileId.trim())) {
+    return "Invalid Sponsor Profile ID format"
+  }
+  
+  // Convert to number and validate it's positive
+  const sponsorIdNumber = parseInt(sponsorProfileId.trim())
+  if (isNaN(sponsorIdNumber) || sponsorIdNumber <= 0) {
+    return "Sponsor Profile ID must be a valid positive number"
+  }
+  
   // Get address fields
   const street = formData.get("street") as string
   const district = formData.get("district") as string
@@ -92,7 +108,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
       // Add MLM-specific metadata
       mlm_enabled: true,
       mlm_data: {
-        sponsor_profile_id: sponsorProfileId ? parseInt(sponsorProfileId) : undefined,
+        sponsor_profile_id: sponsorIdNumber, // Use validated sponsor ID
         profile_types_id: profileTypesId ? parseInt(profileTypesId) : 1,
         gender: gender || undefined,
         personal_id: personalId || undefined,

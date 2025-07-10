@@ -24,9 +24,10 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
 
   const [sponsorId, setSponsorId] = useState("")
 
-  const handleSponsorSelect = (sponsorId: string) => {
+  const handleSponsorSelect = (sponsorId: string, sponsorInfo?: any) => {
     console.log('=== SPONSOR SELECTION ===')
     console.log('Selected sponsor ID:', sponsorId)
+    console.log('Selected sponsor info:', sponsorInfo)
     console.log('Selected sponsor ID type:', typeof sponsorId)
     setSponsorId(sponsorId)
   }
@@ -115,6 +116,20 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
           console.log('=== FORM SUBMISSION ===')
           console.log('Form submitted')
           console.log('Current sponsorId state:', sponsorId)
+          
+          // Client-side validation for sponsor ID
+          if (!sponsorId || sponsorId.trim() === "") {
+            e.preventDefault()
+            alert("Please select a sponsor before submitting the form.")
+            return
+          }
+          
+          if (!/^\d+$/.test(sponsorId.trim())) {
+            e.preventDefault()
+            alert("Invalid sponsor ID format. Please select a sponsor using the search function.")
+            return
+          }
+          
           console.log('Form elements:')
           const formData = new FormData(e.currentTarget)
           Array.from(formData.entries()).forEach(([key, value]) => {
