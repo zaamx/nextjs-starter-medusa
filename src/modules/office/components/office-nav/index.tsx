@@ -29,15 +29,15 @@ const OfficeNav = ({
     { label: "Dashboard", href: "/office", icon: <User size={20} /> },
     { label: "Genealogía Binaria", href: "/office/binary-genealogy", icon: <Package size={20} /> },
     { label: "Genealogía Unilevel", href: "/office/unilevel-genealogy", icon: <Package size={20} /> },
-    { label: "Calculadora de Avance / Rango", href: "/office/rank-calculator", icon: <ChevronDown className='rotate-180' /> },
+    // { label: "Calculadora de Avance / Rango", href: "/office/rank-calculator", icon: <ChevronDown className='rotate-180' /> },
     { label: "Estado de Comisiones", href: "/office/commissions", icon: <Package size={20} /> },
     { label: "Órdenes & Autoship", href: "/office/orders-autoship", icon: <Package size={20} /> },
-    { label: "Billetera digital", href: "/office/wallet", icon: <User size={20} /> },
-    { label: "Reportes avanzados", href: "/office/reports", icon: <Package size={20} /> },
+    // { label: "Billetera digital", href: "/office/wallet", icon: <User size={20} /> },
+    // { label: "Reportes avanzados", href: "/office/reports", icon: <Package size={20} /> },
     { label: "Materiales de Marketing", href: "/office/marketing-materials", icon: <User size={20} /> },
     { label: "Centro de Formación", href: "/office/training-center", icon: <User size={20} /> },
     { label: "Soporte & Cumplimiento", href: "/office/support-compliance", icon: <User size={20} /> },
-    { label: "Herramientas administrativas", href: "/office/admin-tools", icon: <User size={20} /> },
+    // { label: "Herramientas administrativas", href: "/office/admin-tools", icon: <User size={20} /> },
   ]
 
   return (

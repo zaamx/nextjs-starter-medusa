@@ -24,7 +24,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
   }, [order])
 
   return (
-    <div className="bg-white flex flex-col" data-testid="order-card">
+    <div className=" flex flex-col" data-testid="order-card">
       <div className="uppercase text-large-semi mb-1">
         #<span data-testid="order-display-id">{order.display_id}</span>
       </div>
@@ -47,11 +47,13 @@ const OrderCard = ({ order }: OrderCardProps) => {
           return (
             <div
               key={i.id}
-              className="flex flex-col gap-y-2"
+              className="flex flex-col gap-y-2 items-center"
               data-testid="order-item"
             >
-              <Thumbnail thumbnail={i.thumbnail} images={[]} size="full" />
-              <div className="flex items-center text-small-regular text-ui-fg-base">
+              <div className="w-24 h-24 rounded-lg border border-gray-200 shadow-sm bg-white flex items-center justify-center overflow-hidden">
+                <Thumbnail thumbnail={i.thumbnail} images={[]} size="full" />
+              </div>
+              <div className="flex items-center text-small-regular text-ui-fg-base mt-1">
                 <span
                   className="text-ui-fg-base font-semibold"
                   data-testid="item-title"
@@ -65,8 +67,8 @@ const OrderCard = ({ order }: OrderCardProps) => {
           )
         })}
         {numberOfProducts > 4 && (
-          <div className="w-full h-full flex flex-col items-center justify-center">
-            <span className="text-small-regular text-ui-fg-base">
+          <div className="w-24 h-24 rounded-lg border border-gray-200 shadow-sm bg-gray-50 flex flex-col items-center justify-center">
+            <span className="text-small-regular text-ui-fg-base font-semibold text-lg">
               + {numberOfLines - 4}
             </span>
             <span className="text-small-regular text-ui-fg-base">more</span>
