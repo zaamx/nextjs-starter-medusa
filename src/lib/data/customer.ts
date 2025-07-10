@@ -194,6 +194,55 @@ export async function signout(countryCode: string) {
   redirect(`/${countryCode}/account`)
 }
 
+export async function requestPasswordReset(_currentState: unknown, formData: FormData) {
+  const email = formData.get("email") as string
+
+  if (!email) {
+    return "El email es requerido"
+  }
+
+  try {
+    await sdk.auth.resetPassword("customer", "emailpass", {
+      identifier: email,
+    })
+    return null // Success
+  } catch (error: any) {
+    return error.toString()
+  }
+}
+
+export async function resetPassword(_currentState: unknown, formData: FormData) {
+  const token = formData.get("token") as string
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
+
+  if (!token) {
+    return "Token de restablecimiento no válido"
+  }
+
+  if (!email) {
+    return "Email no válido"
+  }
+
+  if (!password) {
+    return "La contraseña es requerida"
+  }
+
+  if (password.length < 8) {
+    return "La contraseña debe tener al menos 8 caracteres"
+  }
+
+  try {
+    await sdk.auth.updateProvider("customer", "emailpass", {
+      email,
+      password,
+    }, token)
+    return null // Success
+  } catch (error: any) {
+    return error.toString()
+  }
+}
+
 export async function transferCart() {
   const cartId = await getCartId()
 

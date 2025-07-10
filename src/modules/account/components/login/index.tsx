@@ -42,6 +42,15 @@ const Login = ({ setCurrentView }: Props) => {
             data-testid="password-input"
           />
         </div>
+        <div className="flex justify-end mt-2">
+          <button
+            type="button"
+            onClick={() => setCurrentView(LOGIN_VIEW.FORGOT_PASSWORD)}
+            className="text-sm text-indigo-600 hover:text-indigo-500 underline"
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
+        </div>
         <ErrorMessage error={message} data-testid="login-error-message" />
         <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
           Iniciar sesión
