@@ -18,3 +18,20 @@ export const fetchBinaryNetwork = async (mlmId: number) => {
     return []
   }
 } 
+
+
+export const fetchUnilevelNetwork = async (mlmId: number) => {
+  try {
+    const { data, error } = await supabase
+      .rpc('get_unilevel_tree', { _root_profile_id: mlmId })
+
+    if (error) {
+      console.error('Error fetching unilevel network:', error)
+      return []
+    }
+    return data || []
+  } catch (error) {
+    console.error('Error in fetchUnilevelNetwork:', error)
+    return []
+  }
+}

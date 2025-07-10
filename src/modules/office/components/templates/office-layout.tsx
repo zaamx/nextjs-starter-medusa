@@ -31,7 +31,7 @@ const OfficeLayout: React.FC<OfficeLayoutProps> = ({
           {customer && <OfficeNav customer={customer} />}
         </aside>
         {/* Main Content */}
-        <main className="flex-1 flex flex-col p-8 overflow-y-auto">
+        <main className="flex-1 flex flex-col overflow-y-auto">
           {children}
         </main>
         {/* Right Panel */}

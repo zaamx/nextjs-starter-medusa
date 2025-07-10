@@ -17,8 +17,6 @@ export default async function BinaryGenealogyPage() {
 
   return (
     <div>
-      <h1>Genealogía Binaria</h1>
-      <p>Información de tu genealogía binaria</p>
       {netmeProfileId ? (
         <BinaryNetworkWidget netmeProfileId={Number(netmeProfileId)} />
       ) : (

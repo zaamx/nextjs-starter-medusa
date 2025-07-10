@@ -21,7 +21,7 @@ const valueClass =
 
 const Overview = ({ customer, orders }: OverviewProps) => {
   return (
-    <div data-testid="overview-page-wrapper">
+    <div data-testid="overview-page-wrapper" className="p-8">
       {/* DASHBOARD GRID */}
       <div className="text-xl-semi flex justify-between items-center mb-4">
         <span data-testid="welcome-message" data-value={customer?.first_name}>
