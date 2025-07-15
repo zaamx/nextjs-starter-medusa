@@ -37,9 +37,8 @@ interface CommissionSummaryGrouped {
 }
 
 export default function CommissionsPage() {
-  const { periods, currentPeriod } = useOffice();
+  const { periods, selectedPeriod, setSelectedPeriodById } = useOffice();
   const [customer, setCustomer] = useState<HttpTypes.StoreCustomer | null>(null);
-  const [selectedPeriod, setSelectedPeriod] = useState<number | null>(null);
   const [commissionSummary, setCommissionSummary] = useState<CommissionSummaryGrouped[]>([]);
   const [commissionDetails, setCommissionDetails] = useState<CommissionDetail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,13 +65,6 @@ export default function CommissionsPage() {
 
     fetchCustomer();
   }, []);
-
-  // Set initial selected period
-  useEffect(() => {
-    if (currentPeriod && !selectedPeriod) {
-      setSelectedPeriod(currentPeriod.id);
-    }
-  }, [currentPeriod, selectedPeriod]);
 
   // Fetch commission data
   useEffect(() => {
@@ -117,7 +109,7 @@ export default function CommissionsPage() {
 
         // Fetch commission details for selected period
         if (selectedPeriod) {
-          const detailsData = await fetchCommissionDetails(Number(netmeProfileId), selectedPeriod);
+          const detailsData = await fetchCommissionDetails(Number(netmeProfileId), selectedPeriod.id);
           setCommissionDetails(detailsData);
         }
 
@@ -134,7 +126,7 @@ export default function CommissionsPage() {
 
   // Get current period summary
   const currentPeriodSummary = commissionSummary.find(summary => 
-    summary.period_name === periods.find(p => p.id === selectedPeriod)?.name
+    summary.period_name === selectedPeriod?.name
   );
 
   // Calculate total earnings for current period
@@ -251,8 +243,8 @@ export default function CommissionsPage() {
         </label>
         <select
           id="period-select"
-          value={selectedPeriod || ""}
-          onChange={(e) => setSelectedPeriod(Number(e.target.value))}
+          value={selectedPeriod?.id || ""}
+          onChange={(e) => setSelectedPeriodById(Number(e.target.value))}
           className="block w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         >
           {periods.map((period) => (

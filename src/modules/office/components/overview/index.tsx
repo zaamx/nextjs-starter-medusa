@@ -81,7 +81,7 @@ interface NetworkOrder {
 }
 
 const Overview = ({customer}: OverviewProps) => {
-  const { currentPeriod } = useOffice()
+  const { selectedPeriod } = useOffice()
   const [showTargetModal, setShowTargetModal] = useState(false);
   const [showFAB, setShowFAB] = useState(false);
   
@@ -99,7 +99,7 @@ const Overview = ({customer}: OverviewProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!netmeProfileId || !currentPeriod) {
+      if (!netmeProfileId || !selectedPeriod) {
         setLoading(false)
         return
       }
@@ -110,12 +110,12 @@ const Overview = ({customer}: OverviewProps) => {
 
         // Fetch all reports in parallel
         const [binaryResult, unilevelResult, rankResult, spilloverResult, networkActivityResult, networkOrdersResult] = await Promise.all([
-          fetchBinaryLegVolume(Number(netmeProfileId), currentPeriod.id),
-          fetchUnilevelLevelVolume(Number(netmeProfileId), currentPeriod.id, 5),
-          fetchRankProgress(Number(netmeProfileId), currentPeriod.id),
-          fetchSpilloverVsBuild(Number(netmeProfileId), currentPeriod.id),
+          fetchBinaryLegVolume(Number(netmeProfileId), selectedPeriod.id),
+          fetchUnilevelLevelVolume(Number(netmeProfileId), selectedPeriod.id, 5),
+          fetchRankProgress(Number(netmeProfileId), selectedPeriod.id),
+          fetchSpilloverVsBuild(Number(netmeProfileId), selectedPeriod.id),
           fetchNetworkActivityMember(Number(netmeProfileId)),
-          fetchNetworkActivityMemberOrders(Number(netmeProfileId), currentPeriod.id)
+          fetchNetworkActivityMemberOrders(Number(netmeProfileId), selectedPeriod.id)
         ])
 
         setBinaryData(binaryResult[0] || null)
@@ -134,7 +134,7 @@ const Overview = ({customer}: OverviewProps) => {
     }
 
     fetchData()
-  }, [netmeProfileId, currentPeriod])
+  }, [netmeProfileId, selectedPeriod])
 
   // Calculate KPIs from real data
   const getKPIs = () => {
@@ -201,7 +201,7 @@ const Overview = ({customer}: OverviewProps) => {
   const alerts = getAlerts()
 
   // Get current period network activity
-  const currentPeriodActivity = networkActivityData.find(activity => activity.period_id === currentPeriod?.id)
+  const currentPeriodActivity = networkActivityData.find(activity => activity.period_id === selectedPeriod?.id)
 
   if (loading) {
     return (

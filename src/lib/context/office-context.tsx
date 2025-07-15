@@ -17,9 +17,12 @@ export interface NetmePeriod {
 export interface OfficeContextType {
   periods: NetmePeriod[]
   currentPeriod: NetmePeriod | null
+  selectedPeriod: NetmePeriod | null
   loading: boolean
   error: string | null
   refreshPeriods: () => Promise<void>
+  setSelectedPeriod: (period: NetmePeriod | null) => void
+  setSelectedPeriodById: (periodId: number) => void
 }
 
 // Create context
@@ -29,6 +32,7 @@ const OfficeContext = createContext<OfficeContextType | undefined>(undefined)
 export const OfficeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [periods, setPeriods] = useState<NetmePeriod[]>([])
   const [currentPeriod, setCurrentPeriod] = useState<NetmePeriod | null>(null)
+  const [selectedPeriod, setSelectedPeriod] = useState<NetmePeriod | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -54,6 +58,11 @@ export const OfficeProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       const current = data?.find(period => period.current === true)
       setCurrentPeriod(current || null)
       
+      // Set selected period to current period if not already set
+      if (!selectedPeriod && current) {
+        setSelectedPeriod(current)
+      }
+      
     } catch (err) {
       console.error('Error in fetchPeriods:', err)
       setError('Error fetching periods')
@@ -66,6 +75,11 @@ export const OfficeProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     await fetchPeriods()
   }
 
+  const setSelectedPeriodById = (periodId: number) => {
+    const period = periods.find(p => p.id === periodId)
+    setSelectedPeriod(period || null)
+  }
+
   useEffect(() => {
     fetchPeriods()
   }, [])
@@ -73,9 +87,12 @@ export const OfficeProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const value: OfficeContextType = {
     periods,
     currentPeriod,
+    selectedPeriod,
     loading,
     error,
-    refreshPeriods
+    refreshPeriods,
+    setSelectedPeriod,
+    setSelectedPeriodById
   }
 
   return (
