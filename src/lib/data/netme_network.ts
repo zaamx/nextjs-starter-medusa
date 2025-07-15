@@ -100,6 +100,22 @@ export const fetchCommissionDetails = async (profileId: number, periodId: number
   }
 }
 
+// 4.1. Resumen de comisiones por bono
+export const fetchCommissionSummary = async (profileId: number, periods: number = 12) => {
+  try {
+    const { data, error } = await supabase
+      .rpc('report_commission_summary', { p_profile: profileId, p_periods: periods })
+    if (error) {
+      console.error('Error fetching commission summary:', error)
+      return []
+    }
+    return data || []
+  } catch (error) {
+    console.error('Error in fetchCommissionSummary:', error)
+    return []
+  }
+}
+
 // 5. Reporte “Actividad de la red – por afiliado”
 export const fetchNetworkActivityMember = async (profileId: number, periodStartId?: number, periodEndId?: number) => {
   try {
@@ -155,4 +171,38 @@ export const fetchSpilloverVsBuild = async (profileId: number, periodId: number)
     console.error('Error in fetchSpilloverVsBuild:', error)
     return []
   }
+}
+
+export async function fetchNetworkActivity(profileId: number, fromPeriodId?: number, toPeriodId?: number) {
+  let query = supabase
+    .rpc('report_network_activity_member', {
+      p_profile: profileId,
+      ...(fromPeriodId && { p_from_period: fromPeriodId }),
+      ...(toPeriodId && { p_to_period: toPeriodId })
+    })
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching network activity:', error)
+    return []
+  }
+
+  return data || []
+}
+
+export async function fetchNetworkActivityOrders(profileId: number, periodId: number) {
+  const { data, error } = await supabase
+    .from('vw_network_activity_member_orders')
+    .select('*')
+    .eq('profiles_id', profileId)
+    .eq('periods_id', periodId)
+    .order('transaction_date', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching network activity orders:', error)
+    return []
+  }
+
+  return data || []
 }

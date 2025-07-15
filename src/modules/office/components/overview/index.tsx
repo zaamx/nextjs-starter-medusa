@@ -7,8 +7,11 @@ import {
   fetchBinaryLegVolume, 
   fetchUnilevelLevelVolume, 
   fetchRankProgress,
-  fetchSpilloverVsBuild
+  fetchSpilloverVsBuild,
+  fetchNetworkActivityMember,
+  fetchNetworkActivityMemberOrders
 } from "@lib/data/netme_network"
+import { Table, Heading } from "@medusajs/ui"
 
 type OverviewProps = {
   customer: HttpTypes.StoreCustomer | null
@@ -56,6 +59,27 @@ interface SpilloverVsBuild {
   cv_total: number
 }
 
+interface NetworkActivity {
+  period_id: number
+  period_name: string
+  new_orders: number
+  reorders: number
+  autoship_orders: number
+  autoship_pct: string
+  avg_ticket_cv: string
+}
+
+interface NetworkOrder {
+  profiles_id: number
+  periods_id: number
+  order_display: number
+  buyer_profile: number
+  is_first_sale: boolean
+  is_subscription: boolean | null
+  cv: number
+  transaction_date: string
+}
+
 const Overview = ({customer}: OverviewProps) => {
   const { currentPeriod } = useOffice()
   const [showTargetModal, setShowTargetModal] = useState(false);
@@ -66,6 +90,8 @@ const Overview = ({customer}: OverviewProps) => {
   const [unilevelData, setUnilevelData] = useState<UnilevelLevelVolume[]>([])
   const [rankData, setRankData] = useState<RankProgress | null>(null)
   const [spilloverData, setSpilloverData] = useState<SpilloverVsBuild[]>([])
+  const [networkActivityData, setNetworkActivityData] = useState<NetworkActivity[]>([])
+  const [networkOrdersData, setNetworkOrdersData] = useState<NetworkOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -83,17 +109,21 @@ const Overview = ({customer}: OverviewProps) => {
         setError(null)
 
         // Fetch all reports in parallel
-        const [binaryResult, unilevelResult, rankResult, spilloverResult] = await Promise.all([
+        const [binaryResult, unilevelResult, rankResult, spilloverResult, networkActivityResult, networkOrdersResult] = await Promise.all([
           fetchBinaryLegVolume(Number(netmeProfileId), currentPeriod.id),
           fetchUnilevelLevelVolume(Number(netmeProfileId), currentPeriod.id, 5),
           fetchRankProgress(Number(netmeProfileId), currentPeriod.id),
-          fetchSpilloverVsBuild(Number(netmeProfileId), currentPeriod.id)
+          fetchSpilloverVsBuild(Number(netmeProfileId), currentPeriod.id),
+          fetchNetworkActivityMember(Number(netmeProfileId)),
+          fetchNetworkActivityMemberOrders(Number(netmeProfileId), currentPeriod.id)
         ])
 
         setBinaryData(binaryResult[0] || null)
         setUnilevelData(unilevelResult || [])
         setRankData(rankResult[0] || null)
         setSpilloverData(spilloverResult || [])
+        setNetworkActivityData(networkActivityResult || [])
+        setNetworkOrdersData(networkOrdersResult || [])
 
       } catch (err) {
         console.error('Error fetching overview data:', err)
@@ -169,6 +199,9 @@ const Overview = ({customer}: OverviewProps) => {
   const kpis = getKPIs()
   const rankProgress = getRankProgress()
   const alerts = getAlerts()
+
+  // Get current period network activity
+  const currentPeriodActivity = networkActivityData.find(activity => activity.period_id === currentPeriod?.id)
 
   if (loading) {
     return (
@@ -280,35 +313,59 @@ const Overview = ({customer}: OverviewProps) => {
         <div className="col-span-6">
           {binaryData && (
             <div className="bg-white rounded-2xl shadow p-4 h-full">
-              <div className="font-bold text-gray-900 mb-3">Volumen de Pierna</div>
+              <div className="font-bold text-gray-900 mb-3">Volumen Binario de Pierna</div>
               <div className="grid grid-cols-2 gap-4">
+                {/*  ▸ Pierna Izquierda ▸ */}
                 <div className="text-center">
                   <div className="text-sm text-gray-500">Pierna Izquierda</div>
-                  <div className="text-lg font-bold text-blue-600">{binaryData.cv_week_left.toLocaleString()} CV</div>
-                  <div className="text-xs text-gray-400">Lo que produjo tu equipo desde el lunes</div>
-                  <div className="text-lg font-bold text-blue-600">{binaryData.cv_period_left.toLocaleString()} CV</div>
-                  <div className="text-xs text-gray-400">Lo que se acumula para pagar el binario esta semana</div>
-                  <div className="text-lg font-bold text-blue-600">{binaryData.carry_left.toLocaleString()} CV</div>
-                  <div className="text-xs text-gray-400">Lo que se guardará si tu pierna fuerte sigue desbalanceada</div>
+
+                  {/* Generado semana */}
+                  <div className="text-lg font-bold text-blue-600">
+                    {binaryData.cv_week_left.toLocaleString()} CV
+                  </div>
+                  <div className="text-xs text-gray-400">Generado esta semana</div>
+
+                  {/* Volumen pareable */}
+                  <div className="text-lg font-bold text-blue-600">
+                    {binaryData.cv_period_left.toLocaleString()} CV
+                  </div>
+                  <div className="text-xs text-gray-400">Volumen para pares</div>
+
+                  {/* Carry-over */}
+                  <div className="text-lg font-bold text-purple-600">
+                    {binaryData.carry_left.toLocaleString()} CV
+                  </div>
+                  <div className="text-xs text-purple-600">Volumen que se arrastrará al próximo periodo mientras no emparejes tu pierna corta.</div>
                 </div>
+
+                {/*  ▸ Pierna Izquierda ▸ */}
                 <div className="text-center">
                   <div className="text-sm text-gray-500">Pierna Derecha</div>
-                  <div className="text-lg font-bold text-blue-600">{binaryData.cv_week_right.toLocaleString()} CV</div>
-                  <div className="text-xs text-gray-400">Lo que produjo tu equipo desde el lunes</div>
-                  <div className="text-lg font-bold text-blue-600">{binaryData.cv_period_right.toLocaleString()} CV</div>
-                  <div className="text-xs text-gray-400">Lo que se acumula para pagar el binario esta semana</div>
-                  <div className="text-lg font-bold text-blue-600">{binaryData.carry_right.toLocaleString()} CV</div>
-                  <div className="text-xs text-gray-400">Lo que se guardará si tu pierna fuerte sigue desbalanceada</div>
+
+                  {/* Generado semana */}
+                  <div className="text-lg font-bold text-blue-600">
+                    {binaryData.cv_week_right.toLocaleString()} CV
+                  </div>
+                  <div className="text-xs text-gray-400">Generado esta semana</div>
+
+                  {/* Volumen pareable */}
+                  <div className="text-lg font-bold text-blue-600">
+                    {binaryData.cv_period_right.toLocaleString()} CV
+                  </div>
+                  <div className="text-xs text-gray-400">Volumen para pares</div>
+
+                  {/* Carry-over */}
+                  <div className="text-lg font-bold text-purple-600">
+                    {binaryData.carry_right.toLocaleString()} CV
+                  </div>
+                  <div className="text-xs text-purple-600">Volumen que se arrastrará al próximo periodo mientras no emparejes tu pierna corta.</div>
                 </div>
+
               </div>
               <div className="mt-3 pt-3 border-t border-gray-100">
-                <div className="flex justify-between text-sm">
-                  <div>Pares pagados: <span className="font-bold">{binaryData.pairs_paid.toLocaleString()}</span>
-                  <div className="text-xs text-gray-400">Cerrados efectivamente liquidados</div>
-                  </div>
-                  <div>Pendientes: <span className="font-bold">{binaryData.pairs_pending.toLocaleString()}</span>
-                  <div className="text-xs text-gray-400">Se arrastran cuando la pierna corta alcance</div>
-                  </div>
+                <div className="flex justify-between text-xs text-gray-600">
+                  <span><strong>Pares pagados:</strong> {binaryData.pairs_paid.toLocaleString()}</span>
+                  <span><strong>Pares pendientes:</strong> {binaryData.pairs_pending.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -347,8 +404,10 @@ const Overview = ({customer}: OverviewProps) => {
                     <div className="text-lg font-bold text-blue-600">{leg.cv_personal.toLocaleString()} CV</div>
                     <div className="text-xs text-blue-600">Construcción propia</div>
                     <div className="text-lg font-bold text-green-600">{leg.cv_spillover.toLocaleString()} CV</div>
-                    <div className="text-xs text-green-600">Derrame recibido</div>
-                    <div className="text-lg font-bold text-purple-600">{leg.cv_total.toLocaleString()} CV</div>
+                    <div className="text-xs text-green-600">Derrame recibido de tus uplines</div>
+                    <div className="text-lg font-bold text-purple-600">
+                      {leg.cv_total.toLocaleString()} CV
+                    </div>
                     <div className="text-xs text-purple-600">Total</div>
                   </div>
                 ))}
@@ -357,20 +416,91 @@ const Overview = ({customer}: OverviewProps) => {
           )}
         </div>
 
-        {/* Actividad Reciente - 6 columns */}
+        {/* Actividad de la Red - 6 columns */}
         <div className="col-span-6">
           <div className="bg-white rounded-2xl shadow p-4 h-full">
-            <div className="flex items-center justify-between mb-2">
-              <div className="font-bold text-gray-900">Actividad Reciente</div>
-              <button className="text-blue-600 text-xs font-semibold flex items-center gap-1 hover:underline">
-                Ver todo <FaChevronRight />
-              </button>
-            </div>
-            <div className="text-sm text-gray-500 text-center py-4">
-              Próximamente: Actividad en tiempo real
-            </div>
+            <div className="font-bold text-gray-900 mb-3">Actividad de la Red</div>
+            {currentPeriodActivity ? (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-600">{currentPeriodActivity.new_orders}</div>
+                  <div className="text-xs text-gray-500">Nuevas Inscripciones</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-green-600">{currentPeriodActivity.reorders}</div>
+                  <div className="text-xs text-gray-500">Re-órdenes</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-purple-600">{currentPeriodActivity.autoship_orders}</div>
+                  <div className="text-xs text-purple-600">Autoship ({currentPeriodActivity.autoship_pct}%)</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-orange-600">{currentPeriodActivity.avg_ticket_cv} CV</div>
+                  <div className="text-xs text-gray-500">Ticket Promedio</div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-4 text-gray-500">
+                No hay datos de actividad para este periodo
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Tabla de Órdenes - 6 columns */}
+        <div className="col-span-6">
+          <div className="bg-white rounded-2xl shadow p-4 h-full">
+            <div className="flex items-center justify-between mb-3">
+              <div className="font-bold text-gray-900">Órdenes del Periodo</div>
+              <span className="text-xs text-gray-500">{networkOrdersData.length} órdenes</span>
+            </div>
+            {networkOrdersData.length > 0 ? (
+              <div className="overflow-x-auto">
+                <Table>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell className="text-xs">Orden</Table.HeaderCell>
+                      <Table.HeaderCell className="text-xs">Primera Venta</Table.HeaderCell>
+                      <Table.HeaderCell className="text-xs">Autoship</Table.HeaderCell>
+                      <Table.HeaderCell className="text-xs">CV</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {networkOrdersData.slice(0, 5).map((order, idx) => (
+                      <Table.Row key={idx} className="hover:bg-gray-50">
+                        <Table.Cell className="text-xs font-medium">#{order.order_display}</Table.Cell>
+                        <Table.Cell className="text-xs">
+                          <span className={`px-2 py-1 rounded-full text-xs ${order.is_first_sale ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                            {order.is_first_sale ? 'Sí' : 'No'}
+                          </span>
+                        </Table.Cell>
+                        <Table.Cell className="text-xs">
+                          <span className={`px-2 py-1 rounded-full text-xs ${order.is_subscription ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
+                            {order.is_subscription ? 'Sí' : 'No'}
+                          </span>
+                        </Table.Cell>
+                        <Table.Cell className="text-xs font-bold">{order.cv.toLocaleString()}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table>
+                {networkOrdersData.length > 5 && (
+                  <div className="text-center mt-2">
+                    <span className="text-xs text-gray-500">
+                      Mostrando 5 de {networkOrdersData.length} órdenes
+                    </span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-4 text-gray-500">
+                No hay órdenes en este periodo
+              </div>
+            )}
+          </div>
+        </div>
+
+
 
       </div>
 
@@ -422,7 +552,6 @@ const Overview = ({customer}: OverviewProps) => {
               <li>Volumen total: {rankData.cv_needed.toLocaleString()} CV</li>
               <li>Directos izquierda: {rankData.act_left_needed} activos</li>
               <li>Directos derecha: {rankData.act_right_needed} activos</li>
-              <li>Autoship vigente</li>
             </ul>
             <div className="text-xs text-gray-400">
               {rankProgress.percent === 100 ? "¡Completaste todos los requisitos!" : "Cumple todos los requisitos para avanzar de rango."}
@@ -433,5 +562,5 @@ const Overview = ({customer}: OverviewProps) => {
     </div>
   );
 };
-
 export default Overview;
+
