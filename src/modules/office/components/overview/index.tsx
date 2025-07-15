@@ -55,9 +55,9 @@ const Overview = ({customer}: OverviewProps) => {
   return (
     <div className="relative min-h-screen bg-gray-50">
        {/* Overlay */}
-       <div className="absolute inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center pointer-events-auto">
+       {/* <div className="absolute inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center pointer-events-auto">
         <span className="text-3xl font-bold text-gray-700">Próximamente</span>
-      </div>
+      </div> */}
       {/* Ultra-compact Header */}
       <header className="flex items-center justify-between px-4 py-3 bg-white shadow-sm sticky top-0 z-20">
         <div className="flex items-center gap-3">

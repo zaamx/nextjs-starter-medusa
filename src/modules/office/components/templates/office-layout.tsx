@@ -1,7 +1,7 @@
+"use client"
 import React from "react"
 
 import UnderlineLink from "@modules/common/components/interactive-link"
-import OfficeNav from "../office-nav"
 import { HttpTypes } from "@medusajs/types"
 
 // Placeholder for the right panel (profile/activity)
@@ -26,10 +26,7 @@ const OfficeLayout: React.FC<OfficeLayoutProps> = ({
   return (
     <div className="w-full min-h-screen bg-gray-50 flex flex-col">
       <div className="flex flex-1 min-h-0">
-        {/* Sidebar */}
-        <aside className="w-[260px] bg-white border-r border-gray-200 flex flex-col p-6">
-          {customer && <OfficeNav customer={customer} />}
-        </aside>
+        {/* {customer && <OfficeNav customer={customer} isCollapsed={isCollapsed} />} */}
         {/* Main Content */}
         <main className="flex-1 flex flex-col overflow-y-auto">
           {children}

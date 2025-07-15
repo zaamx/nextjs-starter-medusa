@@ -6,18 +6,22 @@ import { Text, clx, useToggleState } from "@medusajs/ui"
 import { Fragment } from "react"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import CountrySelect from "../country-select"
+import CountrySelect from "@modules/layout/components/country-select/"
 import { HttpTypes } from "@medusajs/types"
 
-const SideMenuItems = {
-  Inicio: "/",
-  Tienda: "/store",
-  "Cuenta ": "/account",
-  "Oficina Virtual": "/office",
-  Contacto: "/contact",
+const OfficeSideMenuItems = {
+  "< Volver a la tienda": "/",
+  Dashboard: "/office",
+  "Genealogía Binaria": "/office/binary-genealogy",
+  "Genealogía Unilevel": "/office/unilevel-genealogy",
+  "Estado de Comisiones": "/office/commissions",
+  "Órdenes & Autoship": "/office/orders-autoship",
+  "Materiales de Marketing": "/office/marketing-materials",
+  "Centro de Formación": "/office/training-center",
+  "Soporte & Cumplimiento": "/office/support-compliance",
 }
 
-const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
+const OfficeSideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
   const toggleState = useToggleState()
 
   return (
@@ -48,20 +52,20 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
                 <PopoverPanel className="flex flex-col absolute w-full pr-4 sm:pr-0 sm:w-1/3 2xl:w-1/4 sm:min-w-min h-[calc(100vh-1rem)] z-30 inset-x-0 text-sm text-ui-fg-on-color m-2 backdrop-blur-2xl">
                   <div
                     data-testid="nav-menu-popup"
-                    className="flex flex-col h-full bg-[rgba(3,7,18,0.5)] rounded-rounded justify-between p-6"
+                    className="flex flex-col h-full bg-[rgba(39,38,90,0.5)] rounded-rounded justify-between p-6"
                   >
                     <div className="flex justify-end" id="xmark">
                       <button data-testid="close-menu-button" onClick={close}>
                         <XMark />
                       </button>
                     </div>
-                    <ul className="flex flex-col gap-6 items-start justify-start">
-                      {Object.entries(SideMenuItems).map(([name, href]) => {
+                    <ul className="flex flex-col gap-4 items-start justify-start">
+                      {Object.entries(OfficeSideMenuItems).map(([name, href]) => {
                         return (
                           <li key={name}>
                             <LocalizedClientLink
                               href={href}
-                              className="text-3xl leading-10 hover:text-ui-fg-disabled"
+                              className="text-1xl hover:text-ui-fg-disabled"
                               onClick={close}
                               data-testid={`${name.toLowerCase()}-link`}
                             >
@@ -106,4 +110,4 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
   )
 }
 
-export default SideMenu
+export default OfficeSideMenu
