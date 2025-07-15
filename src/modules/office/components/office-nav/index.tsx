@@ -18,33 +18,34 @@ export default function OfficeNav() {
 
   return (
     <div className="sticky top-0 inset-x-0 z-50 group">
-      <header className="relative h-16 mx-auto border-b duration-200 bg-white border-ui-border-base">
-        <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular">
+      <header className="relative h-14 sm:h-16 mx-auto border-b duration-200 bg-white border-ui-border-base">
+        <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular px-3 sm:px-6">
           <div className="flex-1 basis-0 h-full flex items-center">
             <div className="h-full">
               <OfficeSideMenu regions={[]} />
             </div>
           </div>
 
-          <div className="flex items-center h-full gap-4">
+          <div className="flex items-center h-full gap-2 sm:gap-4">
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
+              className="txt-compact-large-plus sm:txt-compact-xlarge-plus hover:text-ui-fg-base uppercase font-bold"
               data-testid="nav-store-link"
             >
-              WeNow Office
+              <span className="hidden sm:inline">WeNow Office</span>
+              <span className="sm:hidden">WENOW</span>
             </LocalizedClientLink>
             
-            {/* Period Selector */}
-            <div className="flex items-center gap-2">
-              <label htmlFor="period-selector" className="text-xs font-medium text-gray-600">
+            {/* Responsive Period Selector */}
+            <div className="flex items-center gap-1 sm:gap-2">
+              <label htmlFor="period-selector" className="text-xs font-medium text-gray-600 hidden sm:block">
                 Período:
               </label>
               <select
                 id="period-selector"
                 value={selectedPeriod?.id || ""}
                 onChange={handlePeriodChange}
-                className="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                className="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white min-w-[80px] sm:min-w-[120px]"
               >
                 {periods.map((period) => (
                   <option key={period.id} value={period.id}>

@@ -36,18 +36,18 @@ const OfficeLayout: React.FC<OfficeLayoutProps> = ({
           <OfficeRightPanel />
         </div> */}
       </div>
-      {/* Footer/help section (optional, can be removed if not needed) */}
-      <footer className="flex flex-col small:flex-row items-end justify-between border-t border-gray-200 py-8 px-8 gap-8 bg-white">
-        <div>
-          <h3 className="text-xl-semi mb-4">Got questions?</h3>
-          <span className="txt-medium">
-            You can find frequently asked questions and answers on our
-            customer service page.
+      {/* Responsive Footer/help section */}
+      <footer className="flex flex-col sm:flex-row items-start sm:items-end justify-between border-t border-gray-200 py-6 sm:py-8 px-4 sm:px-8 gap-4 sm:gap-8 bg-white">
+        <div className="w-full sm:w-auto">
+          <h3 className="text-lg sm:text-xl-semi mb-2 sm:mb-4">¿Tienes preguntas?</h3>
+          <span className="txt-medium text-sm sm:text-base">
+            Puedes encontrar preguntas frecuentes y respuestas en nuestra
+            página de servicio al cliente.
           </span>
         </div>
-        <div>
+        <div className="w-full sm:w-auto">
           <UnderlineLink href="/customer-service">
-            Customer Service
+            Servicio al Cliente
           </UnderlineLink>
         </div>
       </footer>
