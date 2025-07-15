@@ -6,7 +6,8 @@ import { useOffice } from "@lib/context/office-context"
 import { 
   fetchBinaryLegVolume, 
   fetchUnilevelLevelVolume, 
-  fetchRankProgress 
+  fetchRankProgress,
+  fetchSpilloverVsBuild
 } from "@lib/data/netme_network"
 
 type OverviewProps = {
@@ -48,6 +49,13 @@ interface RankProgress {
   cutoff: string
 }
 
+interface SpilloverVsBuild {
+  side: string
+  cv_personal: number
+  cv_spillover: number
+  cv_total: number
+}
+
 const Overview = ({customer}: OverviewProps) => {
   const { currentPeriod } = useOffice()
   const [showTargetModal, setShowTargetModal] = useState(false);
@@ -57,6 +65,7 @@ const Overview = ({customer}: OverviewProps) => {
   const [binaryData, setBinaryData] = useState<BinaryLegVolume | null>(null)
   const [unilevelData, setUnilevelData] = useState<UnilevelLevelVolume[]>([])
   const [rankData, setRankData] = useState<RankProgress | null>(null)
+  const [spilloverData, setSpilloverData] = useState<SpilloverVsBuild[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -74,15 +83,17 @@ const Overview = ({customer}: OverviewProps) => {
         setError(null)
 
         // Fetch all reports in parallel
-        const [binaryResult, unilevelResult, rankResult] = await Promise.all([
+        const [binaryResult, unilevelResult, rankResult, spilloverResult] = await Promise.all([
           fetchBinaryLegVolume(Number(netmeProfileId), currentPeriod.id),
           fetchUnilevelLevelVolume(Number(netmeProfileId), currentPeriod.id, 5),
-          fetchRankProgress(Number(netmeProfileId), currentPeriod.id)
+          fetchRankProgress(Number(netmeProfileId), currentPeriod.id),
+          fetchSpilloverVsBuild(Number(netmeProfileId), currentPeriod.id)
         ])
 
         setBinaryData(binaryResult[0] || null)
         setUnilevelData(unilevelResult || [])
         setRankData(rankResult[0] || null)
+        setSpilloverData(spilloverResult || [])
 
       } catch (err) {
         console.error('Error fetching overview data:', err)
@@ -97,20 +108,19 @@ const Overview = ({customer}: OverviewProps) => {
 
   // Calculate KPIs from real data
   const getKPIs = () => {
-    if (!binaryData || !unilevelData) return []
+    if (!binaryData || !unilevelData || spilloverData.length === 0) return []
 
     const totalCV = binaryData.cv_period_left + binaryData.cv_period_right
     const weekCV = binaryData.cv_week_left + binaryData.cv_week_right
     const totalActives = unilevelData.reduce((sum, level) => sum + level.actives, 0)
-    const spillover = Math.max(binaryData.cv_period_left, binaryData.cv_period_right) - 
-                     Math.min(binaryData.cv_period_left, binaryData.cv_period_right)
+    const totalSpillover = spilloverData.reduce((sum, item) => sum + item.cv_spillover, 0)
 
     return [
       { label: "Vol. Semana", value: `${weekCV.toLocaleString()} CV`, countdown: false },
       { label: "Vol. Periodo", value: `${totalCV.toLocaleString()} CV`, countdown: false },
       { label: "Pares Pagados", value: `${binaryData.pairs_paid.toLocaleString()}`, countdown: false },
-      { label: "Activos", value: `${totalActives} activos`, countdown: false },
-      { label: "Derrame", value: `${spillover.toLocaleString()} CV`, countdown: false },
+      { label: "Activos Unilevel", value: `${totalActives} activos`, countdown: false },
+      { label: "Derrame Recibido", value: `${totalSpillover.toLocaleString()} CV`, countdown: false },
     ]
   }
 
@@ -207,221 +217,164 @@ const Overview = ({customer}: OverviewProps) => {
               {rankData?.cv_total ? `${rankData.cv_total.toLocaleString()} CV` : "0 CV"}
             </span>
           </div>
-          <button className="ml-2 p-2 rounded hover:bg-gray-100">
-            <FaBars className="w-6 h-6 text-gray-700" />
-          </button>
         </div>
       </header>
 
-      {/* KPI Bar with Explanations */}
-      <div className="mx-4 mb-4">
-        <div className="bg-blue-50 border-l-4 border-blue-400 p-3 mb-3 rounded-r">
-          <div className="text-xs text-blue-800 font-medium mb-1">📊 KPIs Principales - ¿Qué significan?</div>
-          <div className="text-xs text-blue-700">
-            <strong>Vol. Semana:</strong> Producción desde lunes • <strong>Vol. Periodo:</strong> Acumulado para bonos • <strong>Derrame:</strong> Diferencia entre piernas
-          </div>
-        </div>
+      {/* Grid Layout */}
+      <div className="p-4 grid grid-cols-12 gap-4">
         
-        <div className="overflow-x-auto flex gap-2 scrollbar-hide">
-          {kpis.map((kpi, idx) => (
-            <div key={idx} className="flex-shrink-0 bg-white rounded-xl shadow-sm px-3 py-2 flex flex-col items-center min-w-[90px] border border-gray-100">
-              <span className="text-xs text-gray-500 font-medium text-center leading-tight">{kpi.label}</span>
-              <span className={`font-bold text-sm ${kpi.countdown ? "text-blue-600 font-mono" : "text-gray-900"}`}>{kpi.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Target Card (Advancement Calculator) */}
-      {rankData && (
-        <div className="mx-4 my-6 rounded-2xl p-6 shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white relative overflow-hidden">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <div className="text-lg font-bold">🎯 Calculadora de Avance</div>
-              <div className="text-xs font-medium">
-                Rango actual: <span className="font-bold">{rankData.current_rank}</span> &rarr; Meta: <span className="font-bold">{rankData.next_rank}</span>
+        {/* KPI Bar - 12 columns */}
+        <div className="col-span-12">
+          <div className="flex gap-3 scrollbar-hide">
+            {kpis.map((kpi, idx) => (
+              <div key={idx} className="flex-shrink-0 bg-white rounded-full shadow px-5 py-2 flex flex-col items-center min-w-[120px] border border-gray-100">
+                <span className="text-xs text-gray-500 font-medium">{kpi.label}</span>
+                <span className={`font-bold text-2xl ${kpi.countdown ? "text-blue-600 font-mono" : "text-gray-900"}`}>{kpi.value}</span>
               </div>
-            </div>
-            <button onClick={() => setShowTargetModal(true)} className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow">
-              Ver requisitos
-            </button>
-          </div>
-          
-          {/* Progress Bar */}
-          <div className="w-full bg-white/30 rounded-full h-3 mb-2">
-            <div className="bg-white h-3 rounded-full transition-all duration-500" style={{ width: `${rankProgress.percent}%` }} />
-          </div>
-          <div className="text-xs font-semibold mb-2">{rankProgress.percent}% hacia el siguiente rango</div>
-          
-          {/* Status Message */}
-          <div className="text-sm font-medium bg-white/10 rounded-lg p-2">
-            {rankProgress.missing}
-          </div>
-          
-          {/* Quick Stats */}
-          <div className="mt-3 pt-3 border-t border-white/20">
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              <div className="text-center">
-                <div className="font-semibold">{rankData.cv_total.toLocaleString()}</div>
-                <div className="opacity-80">CV Total</div>
-              </div>
-              <div className="text-center">
-                <div className="font-semibold">{rankData.active_left + rankData.active_right}</div>
-                <div className="opacity-80">Directos</div>
-              </div>
-              <div className="text-center">
-                <div className="font-semibold">{rankData.cutoff}</div>
-                <div className="opacity-80">Corte</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      )}
 
-      {/* Alerts Section */}
-      {alerts.length > 0 && (
-        <div className="mx-4 mb-6">
-          <div className="bg-white rounded-2xl shadow p-4 flex flex-col gap-2 border-l-4 border-red-400">
-            <div className="font-bold text-red-600 mb-1 flex items-center gap-2">
-              <FaBell /> Alertas de calificación
-            </div>
-            <ul className="list-disc pl-5 text-sm text-red-700 space-y-1">
-              {alerts.map((alert, idx) => (
-                <li key={idx}>
-                  <span className="font-semibold">{alert.type}:</span> {alert.message}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-
-      {/* Binary Leg Volume Details - Improved */}
-      {binaryData && (
-        <div className="mx-4 mb-6">
-          <div className="bg-white rounded-2xl shadow p-4">
-            <div className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-              📊 Volumen de Pierna
-              <span className="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                ¿Cómo leerlo?
-              </span>
-            </div>
-            
-            {/* Explanation */}
-            <div className="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4 rounded-r">
-              <div className="text-xs text-blue-800 font-medium mb-1">📖 Interpretación rápida:</div>
-              <ul className="text-xs text-blue-700 space-y-1">
-                <li>• <strong>CV semana:</strong> Lo que produjo tu equipo desde el lunes</li>
-                <li>• <strong>CV periodo:</strong> Lo que se acumula para pagar el binario esta semana</li>
-                <li>• <strong>Pares pagados:</strong> Ciclos efectivamente liquidados</li>
-                <li>• <strong>Pendientes:</strong> Se arrastran cuando la pierna corta alcance</li>
-              </ul>
-            </div>
-
-            {/* Compact Leg Display */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-3 text-center">
-                <div className="text-xs text-blue-600 font-medium mb-1">Pierna Izquierda</div>
-                <div className="text-lg font-bold text-blue-700">{binaryData.cv_period_left.toLocaleString()} CV</div>
-                <div className="text-xs text-blue-500">Semana: {binaryData.cv_week_left.toLocaleString()}</div>
-                {binaryData.carry_left > 0 && (
-                  <div className="text-xs text-blue-600 mt-1">Carry: {binaryData.carry_left.toLocaleString()}</div>
-                )}
-              </div>
-              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-3 text-center">
-                <div className="text-xs text-green-600 font-medium mb-1">Pierna Derecha</div>
-                <div className="text-lg font-bold text-green-700">{binaryData.cv_period_right.toLocaleString()} CV</div>
-                <div className="text-xs text-green-500">Semana: {binaryData.cv_week_right.toLocaleString()}</div>
-                {binaryData.carry_right > 0 && (
-                  <div className="text-xs text-green-600 mt-1">Carry: {binaryData.carry_right.toLocaleString()}</div>
-                )}
-              </div>
-            </div>
-
-            {/* Pairs Summary */}
-            <div className="mt-4 pt-3 border-t border-gray-100">
-              <div className="flex justify-between items-center">
-                <div className="text-center flex-1">
-                  <div className="text-xs text-gray-500">Pares Pagados</div>
-                  <div className="text-lg font-bold text-green-600">{binaryData.pairs_paid.toLocaleString()}</div>
-                </div>
-                <div className="w-px h-8 bg-gray-200"></div>
-                <div className="text-center flex-1">
-                  <div className="text-xs text-gray-500">Pendientes</div>
-                  <div className="text-lg font-bold text-orange-600">{binaryData.pairs_pending.toLocaleString()}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Unilevel Network Summary - New Widget */}
-      {unilevelData.length > 0 && (
-        <div className="mx-4 mb-6">
-          <div className="bg-white rounded-2xl shadow p-4">
-            <div className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-              🌐 Red Unilevel
-              <span className="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                Resumen por nivel
-              </span>
-            </div>
-            
-            {/* Explanation */}
-            <div className="bg-purple-50 border-l-4 border-purple-400 p-3 mb-4 rounded-r">
-              <div className="text-xs text-purple-800 font-medium mb-1">📖 Cómo leerlo:</div>
-              <ul className="text-xs text-purple-700 space-y-1">
-                <li>• <strong>Nivel 1:</strong> Directos, <strong>Nivel 2:</strong> Nietos, etc.</li>
-                <li>• <strong>CV Total:</strong> Volumen que cuenta para bonos del periodo</li>
-                <li>• <strong>Activos:</strong> Distribuidores con ≥60 QV (qualified)</li>
-                <li>• <strong>Inactivos:</strong> Contactos a reactivar</li>
-              </ul>
-            </div>
-
-            {/* Compact Level Display */}
-            <div className="grid grid-cols-5 gap-2">
-              {unilevelData.slice(0, 5).map((level, idx) => (
-                <div key={idx} className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-2 text-center">
-                  <div className="text-xs text-purple-600 font-bold">N{level.level}</div>
-                  <div className="text-sm font-bold text-purple-700">{level.cv_total.toLocaleString()}</div>
-                  <div className="text-xs text-purple-500">
-                    {level.actives}✓ {level.inactives}✗
+        {/* Calculadora de Avance y Alertas - 6 columns */}
+        <div className="col-span-6 space-y-4">
+          {/* Target Card (Advancement Calculator) */}
+          {rankData && (
+            <div className="rounded-2xl p-6 shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white relative overflow-hidden">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <div className="text-lg font-bold">Calculadora de Avance</div>
+                  <div className="text-xs font-medium">
+                    Rango actual: <span className="font-bold">{rankData.current_rank}</span> &rarr; Meta: <span className="font-bold">{rankData.next_rank}</span>
                   </div>
                 </div>
-              ))}
+                <button onClick={() => setShowTargetModal(true)} className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow">
+                  Ver requisitos
+                </button>
+              </div>
+              <div className="w-full bg-white/30 rounded-full h-3 mt-2 mb-1">
+                <div className="bg-white h-3 rounded-full transition-all duration-500" style={{ width: `${rankProgress.percent}%` }} />
+              </div>
+              <div className="text-xs font-semibold mt-1">{rankProgress.percent}% hacia el siguiente rango</div>
+              <div className="text-sm mt-2 font-medium">{rankProgress.missing}</div>
             </div>
+          )}
 
-            {/* Summary Stats */}
-            <div className="mt-3 pt-3 border-t border-gray-100">
-              <div className="flex justify-between text-sm">
-                <span>Total CV: <span className="font-bold text-purple-600">
-                  {unilevelData.reduce((sum, level) => sum + level.cv_total, 0).toLocaleString()}
-                </span></span>
-                <span>Total Activos: <span className="font-bold text-green-600">
-                  {unilevelData.reduce((sum, level) => sum + level.actives, 0)}
-                </span></span>
+          {/* Alerts Section */}
+          {alerts.length > 0 && (
+            <div className="bg-white rounded-2xl shadow p-4 flex flex-col gap-2 border-l-4 border-red-400">
+              <div className="font-bold text-red-600 mb-1 flex items-center gap-2">
+                <FaBell /> Alertas de calificación
+              </div>
+              <ul className="list-disc pl-5 text-sm text-red-700 space-y-1">
+                {alerts.map((alert, idx) => (
+                  <li key={idx}>
+                    <span className="font-semibold">{alert.type}:</span> {alert.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Volumen de Pierna - 6 columns */}
+        <div className="col-span-6">
+          {binaryData && (
+            <div className="bg-white rounded-2xl shadow p-4 h-full">
+              <div className="font-bold text-gray-900 mb-3">Volumen de Pierna</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <div className="text-sm text-gray-500">Pierna Izquierda</div>
+                  <div className="text-lg font-bold text-blue-600">{binaryData.cv_week_left.toLocaleString()} CV</div>
+                  <div className="text-xs text-gray-400">Lo que produjo tu equipo desde el lunes</div>
+                  <div className="text-lg font-bold text-blue-600">{binaryData.cv_period_left.toLocaleString()} CV</div>
+                  <div className="text-xs text-gray-400">Lo que se acumula para pagar el binario esta semana</div>
+                  <div className="text-lg font-bold text-blue-600">{binaryData.carry_left.toLocaleString()} CV</div>
+                  <div className="text-xs text-gray-400">Lo que se guardará si tu pierna fuerte sigue desbalanceada</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm text-gray-500">Pierna Derecha</div>
+                  <div className="text-lg font-bold text-blue-600">{binaryData.cv_week_right.toLocaleString()} CV</div>
+                  <div className="text-xs text-gray-400">Lo que produjo tu equipo desde el lunes</div>
+                  <div className="text-lg font-bold text-blue-600">{binaryData.cv_period_right.toLocaleString()} CV</div>
+                  <div className="text-xs text-gray-400">Lo que se acumula para pagar el binario esta semana</div>
+                  <div className="text-lg font-bold text-blue-600">{binaryData.carry_right.toLocaleString()} CV</div>
+                  <div className="text-xs text-gray-400">Lo que se guardará si tu pierna fuerte sigue desbalanceada</div>
+                </div>
+              </div>
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <div className="flex justify-between text-sm">
+                  <div>Pares pagados: <span className="font-bold">{binaryData.pairs_paid.toLocaleString()}</span>
+                  <div className="text-xs text-gray-400">Cerrados efectivamente liquidados</div>
+                  </div>
+                  <div>Pendientes: <span className="font-bold">{binaryData.pairs_pending.toLocaleString()}</span>
+                  <div className="text-xs text-gray-400">Se arrastran cuando la pierna corta alcance</div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
 
-      {/* Timeline (Recent Events) */}
-      <div className="mx-4 mb-6">
-        <div className="bg-white rounded-2xl shadow p-4">
-          <div className="flex items-center justify-between mb-2">
-            <div className="font-bold text-gray-900">Actividad Reciente</div>
-            <button className="text-blue-600 text-xs font-semibold flex items-center gap-1 hover:underline">
-              Ver todo <FaChevronRight />
-            </button>
-          </div>
-          <div className="text-sm text-gray-500 text-center py-4">
-            Próximamente: Actividad en tiempo real
+        {/* Volumen por Nivel (Unilevel) - 6 columns */}
+        <div className="col-span-6">
+          {unilevelData.length > 0 && (
+            <div className="bg-white rounded-2xl shadow p-4 h-full">
+              <div className="font-bold text-gray-900 mb-3">Volumen por Nivel (Unilevel)</div>
+              <div className="grid grid-cols-5 gap-2">
+                {unilevelData.slice(0, 5).map((level, idx) => (
+                  <div key={idx} className="text-center">
+                    <div className="text-xs text-gray-500">Nivel {level.level}</div>
+                    <div className="text-sm font-bold text-gray-900">{level.cv_total.toLocaleString()}</div>
+                    <div className="text-xs text-gray-400">
+                      {level.actives} activos, {level.inactives} inactivos
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Spillover vs Construcción Propia - 6 columns */}
+        <div className="col-span-6">
+          {spilloverData.length > 0 && (
+            <div className="bg-white rounded-2xl shadow p-4 h-full">
+              <div className="font-bold text-gray-900 mb-3">Derrame vs. Construcción Propia</div>
+              <div className="grid grid-cols-2 gap-4">
+                {spilloverData.map((leg, idx) => (
+                  <div key={idx} className="text-center">
+                    <div className="text-sm text-gray-500">Pierna {leg.side === 'left' ? 'Izquierda' : 'Derecha'}</div>
+                    <div className="text-lg font-bold text-blue-600">{leg.cv_personal.toLocaleString()} CV</div>
+                    <div className="text-xs text-blue-600">Construcción propia</div>
+                    <div className="text-lg font-bold text-green-600">{leg.cv_spillover.toLocaleString()} CV</div>
+                    <div className="text-xs text-green-600">Derrame recibido</div>
+                    <div className="text-lg font-bold text-purple-600">{leg.cv_total.toLocaleString()} CV</div>
+                    <div className="text-xs text-purple-600">Total</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Actividad Reciente - 6 columns */}
+        <div className="col-span-6">
+          <div className="bg-white rounded-2xl shadow p-4 h-full">
+            <div className="flex items-center justify-between mb-2">
+              <div className="font-bold text-gray-900">Actividad Reciente</div>
+              <button className="text-blue-600 text-xs font-semibold flex items-center gap-1 hover:underline">
+                Ver todo <FaChevronRight />
+              </button>
+            </div>
+            <div className="text-sm text-gray-500 text-center py-4">
+              Próximamente: Actividad en tiempo real
+            </div>
           </div>
         </div>
+
       </div>
 
-      {/* Office Navigation */}
+      {/* Office Navigation - Mantiene su diseño actual */}
       <div className="mx-4 mb-24 grid grid-cols-2 sm:grid-cols-4 gap-4">
         <a href="/us/office/commissions" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-4 hover:bg-blue-50 transition border border-gray-100">
           <div className="text-2xl mb-1"><FaWallet /></div>
