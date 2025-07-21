@@ -94,6 +94,15 @@ export default function ProductActions({
     return false
   }, [selectedVariant])
 
+  // check if the selected variant has a valid price
+  const hasValidPrice = useMemo(() => {
+    if (!selectedVariant?.calculated_price?.calculated_amount) {
+      return false
+    }
+    
+    return selectedVariant.calculated_price.calculated_amount > 0
+  }, [selectedVariant])
+
   const actionsRef = useRef<HTMLDivElement>(null)
 
   const inView = useIntersection(actionsRef, "0px")
@@ -139,7 +148,6 @@ export default function ProductActions({
         </div>
 
         <ProductPrice product={product} variant={selectedVariant} />
-
         <Button
           onClick={handleAddToCart}
           disabled={
@@ -147,7 +155,8 @@ export default function ProductActions({
             !selectedVariant ||
             !!disabled ||
             isAdding ||
-            !isValidVariant
+            !isValidVariant ||
+            !hasValidPrice
           }
           variant="primary"
           className="w-full h-10"
@@ -156,6 +165,8 @@ export default function ProductActions({
         >
           {!selectedVariant && !options
             ? "Select variant"
+            : !hasValidPrice
+            ? "No price available"
             : !inStock || !isValidVariant
             ? "Out of stock"
             : "Add to cart"}
@@ -166,6 +177,7 @@ export default function ProductActions({
           options={options}
           updateOptions={setOptionValue}
           inStock={inStock}
+          hasValidPrice={hasValidPrice}
           handleAddToCart={handleAddToCart}
           isAdding={isAdding}
           show={!inView}
