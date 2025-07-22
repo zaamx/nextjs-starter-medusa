@@ -84,6 +84,22 @@ export const fetchRankProgress = async (profileId: number, periodId: number) => 
   }
 }
 
+// 3.1. Detalles de avance/rango
+export const fetchRankProgressDetails = async (profileId: number, periodId: number) => {
+  try {
+    const { data, error } = await supabase
+      .rpc('report_rank_progress_details', { p_profile: profileId, p_period: periodId })
+    if (error) {
+      console.error('Error fetching rank progress details:', error)
+      return []
+    }
+    return data || []
+  } catch (error) {
+    console.error('Error in fetchRankProgressDetails:', error)
+    return []
+  }
+}
+
 // 4. Histórico de comisiones por bono
 export const fetchCommissionDetails = async (profileId: number, periodId: number) => {
   try {

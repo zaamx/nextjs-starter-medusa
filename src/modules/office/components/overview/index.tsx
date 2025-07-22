@@ -7,6 +7,7 @@ import {
   fetchBinaryLegVolume, 
   fetchUnilevelLevelVolume, 
   fetchRankProgress,
+  fetchRankProgressDetails,
   fetchSpilloverVsBuild,
   fetchNetworkActivityMember,
   fetchNetworkActivityMemberOrders
@@ -40,9 +41,30 @@ interface UnilevelLevelVolume {
 interface RankProgress {
   current_rank: string
   next_rank: string
-  cv_total: number
-  cv_needed: number
-  cv_missing: number
+  qv_total: number
+  qv_needed: number
+  qv_missing: number
+  active_left: number
+  act_left_needed: number
+  act_left_missing: number
+  active_right: number
+  act_right_needed: number
+  act_right_missing: number
+  cutoff: string
+}
+
+interface RankProgressDetails {
+  current_rank: string
+  next_rank: string
+  qv_total: number
+  qv_needed: number
+  qv_missing: number
+  qv_const_needed: number
+  qv_const_current: number
+  qv_const_missing: number
+  qv_spill_needed: number
+  qv_spill_current: number
+  qv_spill_missing: number
   active_left: number
   act_left_needed: number
   act_left_missing: number
@@ -88,7 +110,8 @@ const Overview = ({customer}: OverviewProps) => {
   // State for real data
   const [binaryData, setBinaryData] = useState<BinaryLegVolume | null>(null)
   const [unilevelData, setUnilevelData] = useState<UnilevelLevelVolume[]>([])
-  const [rankData, setRankData] = useState<RankProgress | null>(null)
+  const [rankData, setRankData] = useState<RankProgress[]>([])
+  const [rankDetailsData, setRankDetailsData] = useState<RankProgressDetails[]>([])
   const [spilloverData, setSpilloverData] = useState<SpilloverVsBuild[]>([])
   const [networkActivityData, setNetworkActivityData] = useState<NetworkActivity[]>([])
   const [networkOrdersData, setNetworkOrdersData] = useState<NetworkOrder[]>([])
@@ -96,6 +119,18 @@ const Overview = ({customer}: OverviewProps) => {
   const [error, setError] = useState<string | null>(null)
 
   const netmeProfileId = customer?.metadata?.netme_profile_id
+
+  // Function to fetch detailed rank progress data
+  const fetchRankDetails = async () => {
+    if (!netmeProfileId || !selectedPeriod) return
+
+    try {
+      const detailsResult = await fetchRankProgressDetails(Number(netmeProfileId), selectedPeriod.id)
+      setRankDetailsData(detailsResult || [])
+    } catch (err) {
+      console.error('Error fetching rank details:', err)
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,7 +155,7 @@ const Overview = ({customer}: OverviewProps) => {
 
         setBinaryData(binaryResult[0] || null)
         setUnilevelData(unilevelResult || [])
-        setRankData(rankResult[0] || null)
+        setRankData(rankResult || [])
         setSpilloverData(spilloverResult || [])
         setNetworkActivityData(networkActivityResult || [])
         setNetworkOrdersData(networkOrdersResult || [])
@@ -156,22 +191,23 @@ const Overview = ({customer}: OverviewProps) => {
 
   // Calculate rank progress percentage
   const getRankProgress = () => {
-    if (!rankData) return { percent: 0, missing: "Cargando datos..." }
+    if (!rankData || rankData.length === 0) return { percent: 0, missing: "Cargando datos..." }
 
-    const totalNeeded = rankData.cv_needed + rankData.act_left_needed + rankData.act_right_needed
-    const totalMissing = rankData.cv_missing + rankData.act_left_missing + rankData.act_right_missing
+    const currentRank = rankData[0]
+    const totalNeeded = currentRank.qv_needed + currentRank.act_left_needed + currentRank.act_right_needed
+    const totalMissing = currentRank.qv_missing + currentRank.act_left_missing + currentRank.act_right_missing
     const completed = totalNeeded - totalMissing
     const percent = totalNeeded > 0 ? Math.round((completed / totalNeeded) * 100) : 0
 
     let missingText = ""
-    if (rankData.cv_missing > 0) {
-      missingText += `Te faltan ${rankData.cv_missing.toLocaleString()} CV`
+    if (currentRank.qv_missing > 0) {
+      missingText += `Te faltan ${currentRank.qv_missing.toLocaleString()} QV`
     }
-    if (rankData.act_left_missing > 0) {
-      missingText += missingText ? ` y ${rankData.act_left_missing} directo izquierdo` : `Te faltan ${rankData.act_left_missing} directo izquierdo`
+    if (currentRank.act_left_missing > 0) {
+      missingText += missingText ? ` y ${currentRank.act_left_missing} directo izquierdo` : `Te faltan ${currentRank.act_left_missing} directo izquierdo`
     }
-    if (rankData.act_right_missing > 0) {
-      missingText += missingText ? ` y ${rankData.act_right_missing} directo derecho` : `Te faltan ${rankData.act_right_missing} directo derecho`
+    if (currentRank.act_right_missing > 0) {
+      missingText += missingText ? ` y ${currentRank.act_right_missing} directo derecho` : `Te faltan ${currentRank.act_right_missing} directo derecho`
     }
 
     return { percent, missing: missingText || "¡Completaste todos los requisitos!" }
@@ -181,16 +217,17 @@ const Overview = ({customer}: OverviewProps) => {
   const getAlerts = () => {
     const alerts: Array<{ type: string; message: string }> = []
     
-    if (!rankData) return alerts
+    if (!rankData || rankData.length === 0) return alerts
 
-    if (rankData.cv_missing > 0) {
-      alerts.push({ type: "Volumen", message: `Faltan ${rankData.cv_missing.toLocaleString()} CV para calificar.` })
+    const currentRank = rankData[0]
+    if (currentRank.qv_missing > 0) {
+      alerts.push({ type: "Volumen", message: `Faltan ${currentRank.qv_missing.toLocaleString()} QV para calificar.` })
     }
-    if (rankData.act_left_missing > 0) {
-      alerts.push({ type: "Directos Izquierda", message: `Falta ${rankData.act_left_missing} directo activo.` })
+    if (currentRank.act_left_missing > 0) {
+      alerts.push({ type: "Directos Izquierda", message: `Falta ${currentRank.act_left_missing} directo activo.` })
     }
-    if (rankData.act_right_missing > 0) {
-      alerts.push({ type: "Directos Derecha", message: `Falta ${rankData.act_right_missing} directo activo.` })
+    if (currentRank.act_right_missing > 0) {
+      alerts.push({ type: "Directos Derecha", message: `Falta ${currentRank.act_right_missing} directo activo.` })
     }
 
     return alerts
@@ -239,7 +276,7 @@ const Overview = ({customer}: OverviewProps) => {
               {customer?.first_name} {customer?.last_name}
             </div>
             <div className="text-xs text-blue-600 font-semibold">
-              {rankData?.current_rank || "Cargando..."}
+              {rankData.length > 0 ? rankData[0].current_rank : "Cargando..."}
             </div>
           </div>
         </div>
@@ -247,7 +284,7 @@ const Overview = ({customer}: OverviewProps) => {
           <div className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 sm:px-3 py-1 rounded-lg shadow">
             <FaWallet className="mr-1 text-xs sm:text-sm" />
             <span className="font-bold text-xs sm:text-sm">
-              {rankData?.cv_total ? `${rankData.cv_total.toLocaleString()} CV` : "0 CV"}
+                              {rankData.length > 0 ? `${rankData[0].qv_total.toLocaleString()} QV` : "0 QV"}
             </span>
           </div>
         </div>
@@ -274,16 +311,19 @@ const Overview = ({customer}: OverviewProps) => {
           {/* Left Column */}
           <div className="space-y-4">
             {/* Calculadora de Avance */}
-            {rankData && (
+            {rankData.length > 0 && (
               <div className="rounded-2xl p-4 sm:p-6 shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white relative overflow-hidden">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
                   <div>
                     <div className="text-base sm:text-lg font-bold">Calculadora de Avance</div>
                     <div className="text-xs font-medium">
-                      Rango actual: <span className="font-bold">{rankData.current_rank}</span> &rarr; Meta: <span className="font-bold">{rankData.next_rank}</span>
+                      Rango actual: <span className="font-bold">{rankData.length > 0 ? rankData[0].current_rank : "Cargando..."}</span> &rarr; Meta: <span className="font-bold">{rankData.length > 0 ? rankData[0].next_rank : "Cargando..."}</span>
                     </div>
                   </div>
-                  <button onClick={() => setShowTargetModal(true)} className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow self-start sm:self-auto">
+                  <button onClick={async () => {
+                    await fetchRankDetails()
+                    setShowTargetModal(true)
+                  }} className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow self-start sm:self-auto">
                     Ver requisitos
                   </button>
                 </div>
@@ -292,6 +332,7 @@ const Overview = ({customer}: OverviewProps) => {
                 </div>
                 <div className="text-xs font-semibold mt-1">{rankProgress.percent}% hacia el siguiente rango</div>
                 <div className="text-sm mt-2 font-medium">{rankProgress.missing}</div>
+                <div className="text-xs text-white">Al menos 70% del volumen debe provenir del lado de construcción, y 30% del lado del derrame.</div>
               </div>
             )}
 
@@ -556,18 +597,131 @@ const Overview = ({customer}: OverviewProps) => {
       </div> */}
 
       {/* Responsive Target Modal */}
-      {showTargetModal && rankData && (
+      {showTargetModal && rankData.length > 0 && (
         <div className="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-sm w-full relative">
+          <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-md w-full relative max-h-[90vh] overflow-y-auto">
             <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-xl" onClick={() => setShowTargetModal(false)}>&times;</button>
-            <div className="font-bold text-lg mb-2 text-blue-700">Requisitos para rango {rankData.next_rank}</div>
-            <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1 mb-2">
-              <li>Volumen total: {rankData.cv_needed.toLocaleString()} CV</li>
-              <li>Directos izquierda: {rankData.act_left_needed} activos</li>
-              <li>Directos derecha: {rankData.act_right_needed} activos</li>
-            </ul>
-            <div className="text-xs text-gray-400">
+            <div className="font-bold text-lg mb-4 text-blue-700">Requisitos para rango {rankData[0].next_rank}</div>
+            
+            {/* Basic Requirements */}
+            <div className="mb-4">
+              <h3 className="font-semibold text-gray-900 mb-2">Requisitos Básicos</h3>
+              <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li>Volumen total: {rankData[0].qv_needed.toLocaleString()} QV</li>
+                <li>Directos izquierda: {rankData[0].act_left_needed} activos</li>
+                <li>Directos derecha: {rankData[0].act_right_needed} activos</li>
+              </ul>
+            </div>
+
+            {/* Detailed Volume Breakdown */}
+            {rankDetailsData.length > 0 && (
+              <div className="mb-4">
+                <h3 className="font-semibold text-gray-900 mb-2">Desglose de Volumen</h3>
+                
+                {/* Construction Volume */}
+                <div className="bg-blue-50 rounded-lg p-3 mb-3">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-blue-900">Construcción Propia</span>
+                    <span className="text-sm text-blue-700">
+                      {rankDetailsData[0].qv_const_current.toLocaleString()} / {rankDetailsData[0].qv_const_needed.toLocaleString()} QV
+                    </span>
+                  </div>
+                  <div className="w-full bg-blue-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min(100, (rankDetailsData[0].qv_const_current / rankDetailsData[0].qv_const_needed) * 100)}%` }} 
+                    />
+                  </div>
+                  <div className="text-xs text-blue-600 mt-1">
+                    {rankDetailsData[0].qv_const_missing > 0 
+                      ? `Faltan ${rankDetailsData[0].qv_const_missing.toLocaleString()} QV` 
+                      : "¡Completado!"}
+                  </div>
+                </div>
+
+                {/* Spillover Volume */}
+                <div className="bg-green-50 rounded-lg p-3 mb-3">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-green-900">Derrame (Spillover)</span>
+                    <span className="text-sm text-green-700">
+                      {rankDetailsData[0].qv_spill_current.toLocaleString()} / {rankDetailsData[0].qv_spill_needed.toLocaleString()} QV
+                    </span>
+                  </div>
+                  <div className="w-full bg-green-200 rounded-full h-2">
+                    <div 
+                      className="bg-green-600 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min(100, (rankDetailsData[0].qv_spill_current / rankDetailsData[0].qv_spill_needed) * 100)}%` }} 
+                    />
+                  </div>
+                  <div className="text-xs text-green-600 mt-1">
+                    {rankDetailsData[0].qv_spill_missing > 0 
+                      ? `Faltan ${rankDetailsData[0].qv_spill_missing.toLocaleString()} QV` 
+                      : "¡Completado!"}
+                  </div>
+                </div>
+
+                {/* Total Progress */}
+                <div className="bg-purple-50 rounded-lg p-3">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-purple-900">Total</span>
+                    <span className="text-sm text-purple-700">
+                      {rankDetailsData[0].qv_total.toLocaleString()} / {rankDetailsData[0].qv_needed.toLocaleString()} QV
+                    </span>
+                  </div>
+                  <div className="w-full bg-purple-200 rounded-full h-2">
+                    <div 
+                      className="bg-purple-600 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min(100, (rankDetailsData[0].qv_total / rankDetailsData[0].qv_needed) * 100)}%` }} 
+                    />
+                  </div>
+                  <div className="text-xs text-purple-600 mt-1">
+                    {rankDetailsData[0].qv_missing > 0 
+                      ? `Faltan ${rankDetailsData[0].qv_missing.toLocaleString()} QV` 
+                      : "¡Completado!"}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Direct Requirements */}
+            <div className="mb-4">
+              <h3 className="font-semibold text-gray-900 mb-2">Directos Requeridos</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-orange-50 rounded-lg p-3">
+                  <div className="text-center">
+                    <div className="font-medium text-orange-900">Izquierda</div>
+                    <div className="text-lg font-bold text-orange-700">
+                      {rankData[0].active_left} / {rankData[0].act_left_needed}
+                    </div>
+                    <div className="text-xs text-orange-600">
+                      {rankData[0].act_left_missing > 0 
+                        ? `Falta ${rankData[0].act_left_missing}` 
+                        : "¡Completado!"}
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-3">
+                  <div className="text-center">
+                    <div className="font-medium text-orange-900">Derecha</div>
+                    <div className="text-lg font-bold text-orange-700">
+                      {rankData[0].active_right} / {rankData[0].act_right_needed}
+                    </div>
+                    <div className="text-xs text-orange-600">
+                      {rankData[0].act_right_missing > 0 
+                        ? `Falta ${rankData[0].act_right_missing}` 
+                        : "¡Completado!"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="text-xs text-gray-400 border-t pt-3">
               {rankProgress.percent === 100 ? "¡Completaste todos los requisitos!" : "Cumple todos los requisitos para avanzar de rango."}
+              <div className="mt-2 text-blue-600">
+                <strong>Nota:</strong> Al menos 70% del volumen debe provenir del lado de construcción, y 30% del lado del derrame.
+              </div>
             </div>
           </div>
         </div>
