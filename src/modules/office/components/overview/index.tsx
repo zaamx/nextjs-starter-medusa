@@ -8,6 +8,8 @@ import {
   fetchUnilevelLevelVolume, 
   fetchRankProgress,
   fetchRankProgressDetails,
+  fetchNetmeRanks,
+  fetchNetmeRankRequirements,
   fetchSpilloverVsBuild,
   fetchNetworkActivityMember,
   fetchNetworkActivityMemberOrders
@@ -74,6 +76,20 @@ interface RankProgressDetails {
   cutoff: string
 }
 
+interface NetmeRank {
+  id: number
+  name: string
+  level: number
+  cap_usd: number
+}
+
+interface NetmeRankRequirement {
+  id: number
+  ranks_id: number
+  type: number
+  value: number
+}
+
 interface SpilloverVsBuild {
   side: string
   cv_personal: number
@@ -105,6 +121,7 @@ interface NetworkOrder {
 const Overview = ({customer}: OverviewProps) => {
   const { selectedPeriod } = useOffice()
   const [showTargetModal, setShowTargetModal] = useState(false);
+  const [showRanksModal, setShowRanksModal] = useState(false);
   const [showFAB, setShowFAB] = useState(false);
   
   // State for real data
@@ -112,6 +129,8 @@ const Overview = ({customer}: OverviewProps) => {
   const [unilevelData, setUnilevelData] = useState<UnilevelLevelVolume[]>([])
   const [rankData, setRankData] = useState<RankProgress[]>([])
   const [rankDetailsData, setRankDetailsData] = useState<RankProgressDetails[]>([])
+  const [ranksData, setRanksData] = useState<NetmeRank[]>([])
+  const [rankRequirementsData, setRankRequirementsData] = useState<NetmeRankRequirement[]>([])
   const [spilloverData, setSpilloverData] = useState<SpilloverVsBuild[]>([])
   const [networkActivityData, setNetworkActivityData] = useState<NetworkActivity[]>([])
   const [networkOrdersData, setNetworkOrdersData] = useState<NetworkOrder[]>([])
@@ -129,6 +148,35 @@ const Overview = ({customer}: OverviewProps) => {
       setRankDetailsData(detailsResult || [])
     } catch (err) {
       console.error('Error fetching rank details:', err)
+    }
+  }
+
+  // Function to fetch rank catalog and requirements
+  const fetchRanksData = async () => {
+    try {
+      const [ranksResult, requirementsResult] = await Promise.all([
+        fetchNetmeRanks(),
+        fetchNetmeRankRequirements()
+      ])
+      setRanksData(ranksResult || [])
+      setRankRequirementsData(requirementsResult || [])
+    } catch (err) {
+      console.error('Error fetching ranks data:', err)
+    }
+  }
+
+  // Function to get requirements for a specific rank
+  const getRankRequirements = (rankId: number) => {
+    return rankRequirementsData.filter(req => req.ranks_id === rankId)
+  }
+
+  // Function to get requirement type name
+  const getRequirementTypeName = (type: number) => {
+    switch (type) {
+      case 1: return "QV Personal"
+      case 2: return "Construcción"
+      case 3: return "Spread"
+      default: return "Otro"
     }
   }
 
@@ -183,7 +231,7 @@ const Overview = ({customer}: OverviewProps) => {
     return [
       { label: "Vol. Semana", value: `${weekCV.toLocaleString()} CV`, countdown: false },
       { label: "Vol. Periodo", value: `${totalCV.toLocaleString()} CV`, countdown: false },
-      { label: "Pares Pagados", value: `${binaryData.pairs_paid.toLocaleString()}`, countdown: false },
+      { label: "Puntos Pagados", value: `${binaryData.pairs_paid.toLocaleString()}`, countdown: false },
       { label: "Activos Unilevel", value: `${totalActives} activos`, countdown: false },
       { label: "Derrame Recibido", value: `${totalSpillover.toLocaleString()} CV`, countdown: false },
     ]
@@ -273,7 +321,7 @@ const Overview = ({customer}: OverviewProps) => {
           )}
           <div className="min-w-0 flex-1">
             <div className="font-bold text-gray-900 text-sm sm:text-base leading-tight truncate">
-              {customer?.first_name} {customer?.last_name}
+              {customer?.first_name} {customer?.last_name} &nbsp;| ID: {customer?.metadata?.netme_profile_id}
             </div>
             <div className="text-xs text-blue-600 font-semibold">
               {rankData.length > 0 ? rankData[0].current_rank : "Cargando..."}
@@ -281,6 +329,16 @@ const Overview = ({customer}: OverviewProps) => {
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
+          <button 
+            onClick={async () => {
+              await fetchRanksData()
+              setShowRanksModal(true)
+            }}
+            className="flex items-center gap-1 bg-gradient-to-r from-green-500 to-blue-500 text-white px-2 sm:px-3 py-1 rounded-lg shadow hover:from-green-600 hover:to-blue-600 transition"
+          >
+            <FaTrophy className="mr-1 text-xs sm:text-sm" />
+            <span className="font-bold text-xs sm:text-sm">Ver Rangos</span>
+          </button>
           <div className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 sm:px-3 py-1 rounded-lg shadow">
             <FaWallet className="mr-1 text-xs sm:text-sm" />
             <span className="font-bold text-xs sm:text-sm">
@@ -367,7 +425,7 @@ const Overview = ({customer}: OverviewProps) => {
                     <div className="text-lg font-bold text-blue-600">
                       {binaryData.cv_period_left.toLocaleString()} CV
                     </div>
-                    <div className="text-xs text-gray-400">Volumen para pares</div>
+                    <div className="text-xs text-gray-400">Volumen para Puntos</div>
                     <div className="text-lg font-bold text-purple-600">
                       {binaryData.carry_left.toLocaleString()} CV
                     </div>
@@ -384,7 +442,7 @@ const Overview = ({customer}: OverviewProps) => {
                     <div className="text-lg font-bold text-blue-600">
                       {binaryData.cv_period_right.toLocaleString()} CV
                     </div>
-                    <div className="text-xs text-gray-400">Volumen para pares</div>
+                    <div className="text-xs text-gray-400">Volumen para Puntos</div>
                     <div className="text-lg font-bold text-purple-600">
                       {binaryData.carry_right.toLocaleString()} CV
                     </div>
@@ -393,8 +451,8 @@ const Overview = ({customer}: OverviewProps) => {
                 </div>
                 <div className="mt-3 pt-3 border-t border-gray-100">
                   <div className="flex flex-col sm:flex-row sm:justify-between text-xs text-gray-600 gap-1">
-                    <span><strong>Pares pagados:</strong> {binaryData.pairs_paid.toLocaleString()}</span>
-                    <span><strong>Pares pendientes:</strong> {binaryData.pairs_pending.toLocaleString()}</span>
+                    <span><strong>Puntos pagados:</strong> {binaryData.pairs_paid.toLocaleString()}</span>
+                    <span><strong>Puntos pendientes:</strong> {binaryData.pairs_pending.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -723,6 +781,56 @@ const Overview = ({customer}: OverviewProps) => {
                 <strong>Nota:</strong> Al menos 70% del volumen debe provenir del lado de construcción, y 30% del lado del derrame.
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Ranks Catalog Modal */}
+      {showRanksModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-4xl w-full relative max-h-[90vh] overflow-y-auto">
+            <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-xl" onClick={() => setShowRanksModal(false)}>&times;</button>
+            <div className="font-bold text-xl mb-6 text-blue-700">Catálogo de Rangos</div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {ranksData.map((rank) => {
+                const requirements = getRankRequirements(rank.id)
+                return (
+                  <div key={rank.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 className="font-bold text-lg text-gray-900">{rank.name}</h3>
+                        <p className="text-sm text-gray-600">Nivel {rank.level}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-gray-500">Cap USD</div>
+                        <div className="font-bold text-green-600">${rank.cap_usd?.toLocaleString() || '0'}</div>
+                      </div>
+                    </div>
+                    
+                    {requirements.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-sm text-gray-700 mb-2">Requerimientos:</h4>
+                        <ul className="space-y-1">
+                          {requirements.map((req) => (
+                            <li key={req.id} className="text-xs text-gray-600 flex justify-between">
+                              <span>{getRequirementTypeName(req.type)}:</span>
+                              <span className="font-medium">{req.value.toLocaleString()}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            {ranksData.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                Cargando catálogo de rangos...
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -100,6 +100,42 @@ export const fetchRankProgressDetails = async (profileId: number, periodId: numb
   }
 }
 
+// 3.2. Catálogo de rangos
+export const fetchNetmeRanks = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('netme_ranks')
+      .select('*')
+      .order('level', { ascending: true })
+    if (error) {
+      console.error('Error fetching netme ranks:', error)
+      return []
+    }
+    return data || []
+  } catch (error) {
+    console.error('Error in fetchNetmeRanks:', error)
+    return []
+  }
+}
+
+// 3.3. Requerimientos de rangos
+export const fetchNetmeRankRequirements = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('netme_rank_requirements')
+      .select('*')
+      .order('ranks_id', { ascending: true })
+    if (error) {
+      console.error('Error fetching netme rank requirements:', error)
+      return []
+    }
+    return data || []
+  } catch (error) {
+    console.error('Error in fetchNetmeRankRequirements:', error)
+    return []
+  }
+}
+
 // 4. Histórico de comisiones por bono
 export const fetchCommissionDetails = async (profileId: number, periodId: number) => {
   try {
