@@ -116,6 +116,8 @@ interface NetworkOrder {
   is_subscription: boolean | null
   cv: number
   transaction_date: string
+  depth: number
+  position: number
 }
 
 const Overview = ({customer}: OverviewProps) => {
@@ -463,15 +465,23 @@ const Overview = ({customer}: OverviewProps) => {
               <div className="bg-white rounded-2xl shadow p-4">
                 <div className="font-bold text-gray-900 mb-3">Volumen por Nivel (Unilevel)</div>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                  {unilevelData.slice(0, 5).map((level, idx) => (
-                    <div key={idx} className="text-center">
-                      <div className="text-xs text-gray-500">Nivel {level.level}</div>
-                      <div className="text-sm font-bold text-gray-900">{level.cv_total.toLocaleString()}</div>
-                      <div className="text-xs text-gray-400">
-                        {level.actives} activos, {level.inactives} inactivos
+                  {unilevelData.slice(0, 5).map((level, idx) => {
+                    // Unilevel commission percentages
+                    const commissionPercentages = [5, 25, 10, 5, 5]
+                    const percentage = commissionPercentages[level.level - 1] || 0
+                    const commission = (level.cv_total * percentage) / 100
+                    
+                    return (
+                      <div key={idx} className="text-center">
+                        <div className="text-xs text-gray-500">Nivel {level.level}</div>
+                        <div className="text-sm font-bold text-gray-900">{level.cv_total.toLocaleString()}</div>
+                        <div className="text-xs text-blue-600 font-semibold">{percentage}%</div>
+                        {/* <div className="text-xs text-green-600 font-medium">
+                          ${commission.toLocaleString()}
+                        </div> */}
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -546,6 +556,9 @@ const Overview = ({customer}: OverviewProps) => {
                           <span className="font-medium text-sm">#{order.order_display}</span>
                           <span className="text-xs font-bold">{order.cv.toLocaleString()} CV</span>
                         </div>
+                        <div className="text-xs text-gray-600 mb-2">
+                          Profundidad: {order.depth} | Posición: {order.position === 0 ? 'Izquierda' : 'Derecha'}
+                        </div>
                         <div className="flex gap-2">
                           <span className={`px-2 py-1 rounded-full text-xs ${order.is_first_sale ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                             {order.is_first_sale ? 'Primera Venta' : 'Re-orden'}
@@ -564,6 +577,8 @@ const Overview = ({customer}: OverviewProps) => {
                       <Table.Header>
                         <Table.Row>
                           <Table.HeaderCell className="text-xs">Orden</Table.HeaderCell>
+                          <Table.HeaderCell className="text-xs">Profundidad</Table.HeaderCell>
+                          <Table.HeaderCell className="text-xs">Posición</Table.HeaderCell>
                           <Table.HeaderCell className="text-xs">Primera Venta</Table.HeaderCell>
                           <Table.HeaderCell className="text-xs">Autoship</Table.HeaderCell>
                           <Table.HeaderCell className="text-xs">CV</Table.HeaderCell>
@@ -573,6 +588,12 @@ const Overview = ({customer}: OverviewProps) => {
                         {networkOrdersData.slice(0, 5).map((order, idx) => (
                           <Table.Row key={idx} className="hover:bg-gray-50">
                             <Table.Cell className="text-xs font-medium">#{order.order_display}</Table.Cell>
+                            <Table.Cell className="text-xs">{order.depth}</Table.Cell>
+                            <Table.Cell className="text-xs">
+                              <span className={`px-2 py-1 rounded-full text-xs ${order.position === 0 ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
+                                {order.position === 0 ? 'Izquierda' : 'Derecha'}
+                              </span>
+                            </Table.Cell>
                             <Table.Cell className="text-xs">
                               <span className={`px-2 py-1 rounded-full text-xs ${order.is_first_sale ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                                 {order.is_first_sale ? 'Sí' : 'No'}

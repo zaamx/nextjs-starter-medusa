@@ -177,7 +177,7 @@ export const fetchNetworkActivityMember = async (profileId: number, periodStartI
       params.p_to_period = periodEndId
     }
     const { data, error } = await supabase
-      .rpc('report_network_activity_member', params)
+      .rpc('report_binary_activity_member', params)
     if (error) {
       console.error('Error fetching network activity member:', error)
       return []
@@ -193,7 +193,7 @@ export const fetchNetworkActivityMember = async (profileId: number, periodStartI
 export const fetchNetworkActivityMemberOrders = async (profileId: number, periodId: number) => {
   try {
     const { data, error } = await supabase
-      .from('vw_network_activity_member_orders')
+      .from('vw_binary_activity_member_orders')
       .select('*')
       .eq('profiles_id', profileId)
       .eq('periods_id', periodId)
@@ -227,7 +227,7 @@ export const fetchSpilloverVsBuild = async (profileId: number, periodId: number)
 
 export async function fetchNetworkActivity(profileId: number, fromPeriodId?: number, toPeriodId?: number) {
   let query = supabase
-    .rpc('report_network_activity_member', {
+    .rpc('report_binary_activity_member', {
       p_profile: profileId,
       ...(fromPeriodId && { p_from_period: fromPeriodId }),
       ...(toPeriodId && { p_to_period: toPeriodId })
@@ -237,22 +237,6 @@ export async function fetchNetworkActivity(profileId: number, fromPeriodId?: num
 
   if (error) {
     console.error('Error fetching network activity:', error)
-    return []
-  }
-
-  return data || []
-}
-
-export async function fetchNetworkActivityOrders(profileId: number, periodId: number) {
-  const { data, error } = await supabase
-    .from('vw_network_activity_member_orders')
-    .select('*')
-    .eq('profiles_id', profileId)
-    .eq('periods_id', periodId)
-    .order('transaction_date', { ascending: false })
-
-  if (error) {
-    console.error('Error fetching network activity orders:', error)
     return []
   }
 
