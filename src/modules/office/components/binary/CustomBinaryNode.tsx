@@ -5,25 +5,30 @@ const renderCustomNode: RenderCustomNodeElementFn = ({ nodeDatum, toggleNode }) 
   const attributes = nodeDatum.attributes as any | undefined;
   const isVacant = !!attributes?.vacante || (attributes?.isDemo && attributes?.first_name === 'Vacante');
   const isCollapsed = (nodeDatum as any)?.__rd3t?.collapsed === true;
+  const isActive = attributes?.active !== false; // Default to true if active property doesn't exist
 
   return (
     <foreignObject width={180} height={70} x={-90} y={-35}>
-      <div
-        style={{
-          width: 180,
-          height: 70,
-          background: isVacant ? '#e7f0fd' : '#fff',
-          borderRadius: 12,
-          boxShadow: isVacant ? 'none' : '0 2px 8px #0001',
-          border: isVacant ? '1px solid #b6d4fe' : '1px solid #e5e7eb',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-          padding: 12,
-          position: 'relative',
-        }}
-      >
+              <div
+          style={{
+            width: 180,
+            height: 70,
+            background: isVacant ? '#e7f0fd' : '#fff',
+            borderRadius: 12,
+            boxShadow: isVacant ? 'none' : '0 2px 8px #0001',
+            border: isVacant 
+              ? '2px solid #ef4444' 
+              : !isActive 
+                ? '2px solid #ef4444' 
+                : '2px solid #22c55e',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            padding: 12,
+            position: 'relative',
+          }}
+        >
         <div
           style={{
             fontWeight: 600,

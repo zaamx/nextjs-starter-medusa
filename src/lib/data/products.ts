@@ -162,7 +162,7 @@ export const fetchProduct = async (productId: string, countryCode: string, regio
     )
     return response.product
   } catch (error) {
-    console.error('Failed to fetch bundle product:', error)
+    console.error('Failed to fetch  product:', error)
     throw error
   }
 }

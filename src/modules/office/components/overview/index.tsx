@@ -27,6 +27,8 @@ interface BinaryLegVolume {
   cv_week_right: number
   cv_period_left: number
   cv_period_right: number
+  bank_prev_left: number
+  bank_prev_right: number
   carry_left: number
   carry_right: number
   pairs_paid: number
@@ -46,10 +48,10 @@ interface RankProgress {
   qv_total: number
   qv_needed: number
   qv_missing: number
-  active_left: number
+  active_left: number | null
   act_left_needed: number
   act_left_missing: number
-  active_right: number
+  active_right: number | null
   act_right_needed: number
   act_right_missing: number
   cutoff: string
@@ -67,10 +69,10 @@ interface RankProgressDetails {
   qv_spill_needed: number
   qv_spill_current: number
   qv_spill_missing: number
-  active_left: number
+  active_left: number | null
   act_left_needed: number
   act_left_missing: number
-  active_right: number
+  active_right: number | null
   act_right_needed: number
   act_right_missing: number
   cutoff: string
@@ -341,12 +343,12 @@ const Overview = ({customer}: OverviewProps) => {
             <FaTrophy className="mr-1 text-xs sm:text-sm" />
             <span className="font-bold text-xs sm:text-sm">Ver Rangos</span>
           </button>
-          <div className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 sm:px-3 py-1 rounded-lg shadow">
+          {/* <div className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 sm:px-3 py-1 rounded-lg shadow">
             <FaWallet className="mr-1 text-xs sm:text-sm" />
             <span className="font-bold text-xs sm:text-sm">
                               {rankData.length > 0 ? `${rankData[0].qv_total.toLocaleString()} QV` : "0 QV"}
             </span>
-          </div>
+          </div> */}
         </div>
       </header>
 
@@ -424,6 +426,10 @@ const Overview = ({customer}: OverviewProps) => {
                       {binaryData.cv_week_left.toLocaleString()} CV
                     </div>
                     <div className="text-xs text-gray-400">Generado esta semana</div>
+                    <div className="text-lg font-bold text-orange-600">
+                      {binaryData.bank_prev_left.toLocaleString()} CV
+                    </div>
+                    <div className="text-xs text-orange-600">Banco Binario</div>
                     <div className="text-lg font-bold text-blue-600">
                       {binaryData.cv_period_left.toLocaleString()} CV
                     </div>
@@ -441,6 +447,10 @@ const Overview = ({customer}: OverviewProps) => {
                       {binaryData.cv_week_right.toLocaleString()} CV
                     </div>
                     <div className="text-xs text-gray-400">Generado esta semana</div>
+                    <div className="text-lg font-bold text-orange-600">
+                      {binaryData.bank_prev_right.toLocaleString()} CV
+                    </div>
+                    <div className="text-xs text-orange-600">Banco Binario</div>
                     <div className="text-lg font-bold text-blue-600">
                       {binaryData.cv_period_right.toLocaleString()} CV
                     </div>
@@ -770,7 +780,7 @@ const Overview = ({customer}: OverviewProps) => {
                   <div className="text-center">
                     <div className="font-medium text-orange-900">Izquierda</div>
                     <div className="text-lg font-bold text-orange-700">
-                      {rankData[0].active_left} / {rankData[0].act_left_needed}
+                      {(rankData[0].active_left ?? 0)} / {rankData[0].act_left_needed}
                     </div>
                     <div className="text-xs text-orange-600">
                       {rankData[0].act_left_missing > 0 
@@ -783,7 +793,7 @@ const Overview = ({customer}: OverviewProps) => {
                   <div className="text-center">
                     <div className="font-medium text-orange-900">Derecha</div>
                     <div className="text-lg font-bold text-orange-700">
-                      {rankData[0].active_right} / {rankData[0].act_right_needed}
+                      {(rankData[0].active_right ?? 0)} / {rankData[0].act_right_needed}
                     </div>
                     <div className="text-xs text-orange-600">
                       {rankData[0].act_right_missing > 0 

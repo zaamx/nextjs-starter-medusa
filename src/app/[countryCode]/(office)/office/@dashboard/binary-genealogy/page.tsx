@@ -16,7 +16,7 @@ export default async function BinaryGenealogyPage() {
   const netmeProfileId = customer?.metadata?.netme_profile_id
 
   return (
-    <div>
+    <div id="binary-genealogy-page">
       {netmeProfileId ? (
         <BinaryNetworkWidget netmeProfileId={Number(netmeProfileId)} />
       ) : (

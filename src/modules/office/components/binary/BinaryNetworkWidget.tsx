@@ -38,6 +38,7 @@ export default function UnilevelNetworkWidget({ netmeProfileId }: { netmeProfile
           customer_id: '',
           depth: null,
           direct: null,
+          active: true, // Default active for demo nodes
         });
       }
       if (right) {
@@ -54,6 +55,7 @@ export default function UnilevelNetworkWidget({ netmeProfileId }: { netmeProfile
           customer_id: '',
           depth: null,
           direct: null,
+          active: true, // Default active for demo nodes
         });
       }
       profileIdToChildren[parentId] = newChildren;

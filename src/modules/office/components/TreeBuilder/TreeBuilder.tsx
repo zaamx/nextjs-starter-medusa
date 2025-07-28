@@ -6,8 +6,9 @@ const Tree = dynamic(() => import('react-d3-tree').then(mod => mod.default), { s
 
 export default function TreeBuilder({ treeData }: { treeData: any }) {
   const [zoom, setZoom] = useState(1)
-  const [translate, setTranslate] = useState({ x: 400, y: 50 })
+  const [translate, setTranslate] = useState({ x: 0, y: 0 })
   const [localTreeData, setLocalTreeData] = useState<any>(treeData)
+  const containerRef = React.useRef<HTMLDivElement>(null)
 
   // Collapse/expand helpers
   function setAllCollapsed(node: any, collapsed: boolean) {
@@ -34,10 +35,31 @@ export default function TreeBuilder({ treeData }: { treeData: any }) {
       setLocalTreeData(newTree)
     }
   }
+  // Center the tree when data changes
+  React.useEffect(() => {
+    if (localTreeData && containerRef.current) {
+      const container = containerRef.current
+      const containerWidth = container.offsetWidth
+      
+      // Center horizontally, 20px from top vertically
+      const centerX = containerWidth / 2
+      const topY = 40
+      
+      setTranslate({ x: centerX, y: topY })
+    }
+  }, [localTreeData])
+
   // Zoom controls
   const handleZoomIn = () => setZoom(z => Math.min(z + 0.2, 2))
   const handleZoomOut = () => setZoom(z => Math.max(z - 0.2, 0.2))
-  const handleCenter = () => setTranslate({ x: 400, y: 50 })
+  const handleCenter = () => {
+    if (containerRef.current) {
+      const container = containerRef.current
+      const centerX = container.offsetWidth / 2
+      const topY = 40
+      setTranslate({ x: centerX, y: topY })
+    }
+  }
 
   // Sync localTreeData with prop changes
   React.useEffect(() => {
@@ -47,9 +69,13 @@ export default function TreeBuilder({ treeData }: { treeData: any }) {
   if (!localTreeData) return <div>No hay datos de red.</div>
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '600px' }}>
+    <div 
+      ref={containerRef}
+      id="tree-container" 
+      style={{ position: 'relative', width: '100%', height: 'calc(100vh - 63px)', minHeight: '600px' }}
+    >
       {/* Controls: right side vertical stack */}
-      <div style={{
+      {/* <div style={{
         position: 'fixed',
         top: '50%',
         right: 24,
@@ -64,7 +90,7 @@ export default function TreeBuilder({ treeData }: { treeData: any }) {
         <button onClick={handleZoomIn} title="Zoom In" style={iconButtonStyle}>🔍+</button>
         <button onClick={handleZoomOut} title="Zoom Out" style={iconButtonStyle}>🔍−</button>
         <button onClick={handleCenter} title="Center" style={iconButtonStyle}>🎯</button>
-      </div>
+      </div> */}
       {/* Main Tree */}
       <div style={{ width: '100%', height: '100%', background: 'linear-gradient(120deg, #e7eafc 0%, #dbeafe 100%)' }}>
         <Tree
