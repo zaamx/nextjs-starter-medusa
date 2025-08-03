@@ -1,12 +1,75 @@
 "use client"
 
-import { Suspense } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { listRegions } from "@lib/data/regions"
 import { StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { useOffice } from "@lib/context/office-context"
 import CartButton from "@modules/layout/components/cart-button"
 import OfficeSideMenu from "../office-side-menu"
+
+// Componente para el contador de tiempo restante
+const PeriodCountdown = ({ selectedPeriod }: { selectedPeriod: any }) => {
+  const [timeLeft, setTimeLeft] = useState<string>("")
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      if (!selectedPeriod?.end_date) return ""
+
+      const now = new Date()
+      // Crear la fecha de vencimiento asegurándonos de que sea al final del día
+      const endDate = new Date(selectedPeriod.end_date + 'T23:59:59.999')
+      
+      const difference = endDate.getTime() - now.getTime()
+
+      if (difference <= 0) {
+        return "Vencido"
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24))
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
+
+      if (days > 0) {
+        return `${days}d ${hours}h`
+      } else if (hours > 0) {
+        return `${hours}h ${minutes}m`
+      } else {
+        return `${minutes}m`
+      }
+    }
+
+    setTimeLeft(calculateTimeLeft())
+    
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft())
+    }, 60000) // Actualizar cada minuto
+
+    return () => clearInterval(timer)
+  }, [selectedPeriod])
+
+  if (!selectedPeriod) return null
+
+  const isExpired = timeLeft === "Vencido"
+  const isNearExpiry = selectedPeriod?.end_date && (() => {
+    const now = new Date()
+    const endDate = new Date(selectedPeriod.end_date + 'T23:59:59.999')
+    return endDate.getTime() - now.getTime() < 24 * 60 * 60 * 1000 // Menos de 24 horas
+  })()
+
+  return (
+    <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
+      isExpired 
+        ? 'bg-red-100 text-red-800 border border-red-200' 
+        : isNearExpiry 
+          ? 'bg-orange-100 text-orange-800 border border-orange-200'
+          : 'bg-green-100 text-green-800 border border-green-200'
+    }`}>
+      <span className="text-xs">⏰</span>
+      <span>{timeLeft}</span>
+    </div>
+  )
+}
 
 export default function OfficeNav() {
   const { periods, selectedPeriod, setSelectedPeriodById } = useOffice()
@@ -53,6 +116,9 @@ export default function OfficeNav() {
                   </option>
                 ))}
               </select>
+              
+              {/* Contador de tiempo restante */}
+              <PeriodCountdown selectedPeriod={selectedPeriod} />
             </div>
           </div>
 

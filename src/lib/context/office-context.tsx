@@ -41,9 +41,30 @@ export const OfficeProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setLoading(true)
       setError(null)
       
+      // First, get the current period
+      const { data: currentPeriodData, error: currentError } = await supabase
+        .from('netme_periods')
+        .select('*')
+        .eq('current', true)
+        .single()
+
+      if (currentError) {
+        console.error('Error fetching current period:', currentError)
+        setError('Error fetching current period')
+        return
+      }
+
+      if (!currentPeriodData) {
+        setError('No current period found')
+        return
+      }
+
+      // Then get the current period and 10 previous periods
       const { data, error } = await supabase
         .from('netme_periods')
         .select('*')
+        .lte('id', currentPeriodData.id)
+        .gte('id', currentPeriodData.id - 10)
         .order('id', { ascending: false })
 
       if (error) {
@@ -54,13 +75,12 @@ export const OfficeProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
       setPeriods(data || [])
       
-      // Find current period
-      const current = data?.find(period => period.current === true)
-      setCurrentPeriod(current || null)
+      // Set current period
+      setCurrentPeriod(currentPeriodData)
       
       // Set selected period to current period if not already set
-      if (!selectedPeriod && current) {
-        setSelectedPeriod(current)
+      if (!selectedPeriod) {
+        setSelectedPeriod(currentPeriodData)
       }
       
     } catch (err) {

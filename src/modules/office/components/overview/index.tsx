@@ -12,7 +12,8 @@ import {
   fetchNetmeRankRequirements,
   fetchSpilloverVsBuild,
   fetchNetworkActivityMember,
-  fetchNetworkActivityMemberOrders
+  fetchNetworkActivityMemberOrders,
+  fetchRenewalStatus
 } from "@lib/data/netme_network"
 import { Table, Heading } from "@medusajs/ui"
 
@@ -122,8 +123,15 @@ interface NetworkOrder {
   position: number
 }
 
+interface RenewalStatus {
+  renewal_period_id: number
+  renewal_period_name: string
+  renewal_date: string
+  days_left: number
+}
+
 const Overview = ({customer}: OverviewProps) => {
-  const { selectedPeriod } = useOffice()
+  const { selectedPeriod, currentPeriod } = useOffice()
   const [showTargetModal, setShowTargetModal] = useState(false);
   const [showRanksModal, setShowRanksModal] = useState(false);
   const [showFAB, setShowFAB] = useState(false);
@@ -138,10 +146,11 @@ const Overview = ({customer}: OverviewProps) => {
   const [spilloverData, setSpilloverData] = useState<SpilloverVsBuild[]>([])
   const [networkActivityData, setNetworkActivityData] = useState<NetworkActivity[]>([])
   const [networkOrdersData, setNetworkOrdersData] = useState<NetworkOrder[]>([])
+  const [renewalData, setRenewalData] = useState<RenewalStatus | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const netmeProfileId = customer?.metadata?.netme_profile_id
+  const netmeProfileId = (customer?.metadata as any)?.netme_profile_id
 
   // Function to fetch detailed rank progress data
   const fetchRankDetails = async () => {
@@ -196,13 +205,14 @@ const Overview = ({customer}: OverviewProps) => {
         setError(null)
 
         // Fetch all reports in parallel
-        const [binaryResult, unilevelResult, rankResult, spilloverResult, networkActivityResult, networkOrdersResult] = await Promise.all([
+        const [binaryResult, unilevelResult, rankResult, spilloverResult, networkActivityResult, networkOrdersResult, renewalResult] = await Promise.all([
           fetchBinaryLegVolume(Number(netmeProfileId), selectedPeriod.id),
           fetchUnilevelLevelVolume(Number(netmeProfileId), selectedPeriod.id, 5),
           fetchRankProgress(Number(netmeProfileId), selectedPeriod.id),
           fetchSpilloverVsBuild(Number(netmeProfileId), selectedPeriod.id),
           fetchNetworkActivityMember(Number(netmeProfileId)),
-          fetchNetworkActivityMemberOrders(Number(netmeProfileId), selectedPeriod.id)
+          fetchNetworkActivityMemberOrders(Number(netmeProfileId), selectedPeriod.id),
+          currentPeriod ? fetchRenewalStatus(Number(netmeProfileId), currentPeriod.id) : Promise.resolve(null)
         ])
 
         setBinaryData(binaryResult[0] || null)
@@ -211,6 +221,7 @@ const Overview = ({customer}: OverviewProps) => {
         setSpilloverData(spilloverResult || [])
         setNetworkActivityData(networkActivityResult || [])
         setNetworkOrdersData(networkOrdersResult || [])
+        setRenewalData(renewalResult)
 
       } catch (err) {
         console.error('Error fetching overview data:', err)
@@ -221,7 +232,7 @@ const Overview = ({customer}: OverviewProps) => {
     }
 
     fetchData()
-  }, [netmeProfileId, selectedPeriod])
+  }, [netmeProfileId, selectedPeriod, currentPeriod])
 
   // Calculate KPIs from real data
   const getKPIs = () => {
@@ -318,14 +329,14 @@ const Overview = ({customer}: OverviewProps) => {
       {/* Responsive Header */}
       <header className="flex items-center justify-between px-3 sm:px-4 py-3 bg-white shadow-sm sticky top-0 z-20">
         <div className="flex items-center gap-2 sm:gap-3">
-          {(customer?.metadata?.mlm_data as any)?.profile_picture ? (
-            <img src={(customer?.metadata?.mlm_data as any)?.profile_picture} alt="avatar" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
+          {((customer?.metadata as any)?.mlm_data as any)?.profile_picture ? (
+            <img src={((customer?.metadata as any)?.mlm_data as any)?.profile_picture} alt="avatar" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
           ) : (
             <FaUserCircle className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
           )}
           <div className="min-w-0 flex-1">
             <div className="font-bold text-gray-900 text-sm sm:text-base leading-tight truncate">
-              {customer?.first_name} {customer?.last_name} &nbsp;| ID: {customer?.metadata?.netme_profile_id}
+              {customer?.first_name} {customer?.last_name} &nbsp;| ID: {(customer?.metadata as any)?.netme_profile_id}
             </div>
             <div className="text-xs text-blue-600 font-semibold">
               {rankData.length > 0 ? rankData[0].current_rank : "Cargando..."}
@@ -333,6 +344,29 @@ const Overview = ({customer}: OverviewProps) => {
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
+          {/* Compact Renewal Status */}
+          {renewalData && (
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium ${
+              renewalData.days_left > 0 
+                ? 'bg-green-100 text-green-800 border border-green-200' 
+                : 'bg-red-100 text-red-800 border border-red-200'
+            }`}>
+              <div className={`w-2 h-2 rounded-full ${renewalData.days_left > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <div className="flex flex-col">
+                <span className="font-semibold">{renewalData.days_left > 0 ? 'Activo' : 'Inactivo'} Hasta {renewalData.renewal_period_name.replace(/\d+$/, (match) => String(parseInt(match) - 1))} </span>
+                <span className="text-xs opacity-75">
+                  {renewalData.days_left > 0 
+                    ? `Renovar ${renewalData.renewal_period_name}`
+                    : 'Renovación vencida'
+                  }
+                </span>
+              </div>
+              {renewalData.days_left <= 7 && renewalData.days_left > 0 && (
+                <span className="text-orange-600 font-bold">⚠</span>
+              )}
+            </div>
+          )}
+          
           <button 
             onClick={async () => {
               await fetchRanksData()
@@ -366,6 +400,8 @@ const Overview = ({customer}: OverviewProps) => {
             ))}
           </div>
         </div>
+
+
 
         {/* Main Content Grid - Responsive */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

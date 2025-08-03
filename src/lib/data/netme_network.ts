@@ -242,3 +242,19 @@ export async function fetchNetworkActivity(profileId: number, fromPeriodId?: num
 
   return data || []
 }
+
+// 8. Renewal status - Check if user is active (returns period names)
+export const fetchRenewalStatus = async (profileId: number, periodId: number) => {
+  try {
+    const { data, error } = await supabase
+      .rpc('netme_next_renewal', { p_profile: profileId, p_period: periodId })
+    if (error) {
+      console.error('Error fetching renewal status:', error)
+      return null
+    }
+    return data?.[0] || null
+  } catch (error) {
+    console.error('Error in fetchRenewalStatus:', error)
+    return null
+  }
+}
