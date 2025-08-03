@@ -232,7 +232,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             data-testid="payment-repeat-account-input"
           />
           <Input
-            label="CLABE or Routing Number"
+            label="CLABE o Número de Ruta"
             name="clabe"
             type="password"
             value={form.clabe}
@@ -241,7 +241,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             data-testid="payment-clabe-input"
           />
           <Input
-            label="Repite la CLABE or Routing Number"
+            label="Repite la CLABE o Número de Ruta"
             name="repeat_clabe"
             value={form.repeat_clabe}
             onChange={handleChange}

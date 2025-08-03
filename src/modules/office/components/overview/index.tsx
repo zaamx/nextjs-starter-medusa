@@ -718,7 +718,7 @@ const Overview = ({customer}: OverviewProps) => {
         <button
           className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full shadow-lg w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center text-2xl sm:text-3xl hover:scale-105 transition"
           onClick={() => setShowFAB((v) => !v)}
-          aria-label="Quick Actions"
+                          aria-label="Acciones Rápidas"
         >
           +
         </button>

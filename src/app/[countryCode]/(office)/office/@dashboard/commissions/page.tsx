@@ -159,11 +159,11 @@ export default function CommissionsPage() {
 
   const formatBonusType = (type: string) => {
     const labels = {
-      binary: "Binary Bonus",
-      unilevel: "Unilevel Bonus", 
-      fast_start: "Fast Start Bonus",
-      leadership: "Leadership Bonus",
-      matching: "Matching Bonus"
+          binary: "Bono Binario",
+    unilevel: "Bono Unilevel",
+    fast_start: "Bono de Inicio Rápido",
+    leadership: "Bono de Liderazgo",
+    matching: "Bono de Igualación"
     };
     return labels[type as keyof typeof labels] || type;
   };

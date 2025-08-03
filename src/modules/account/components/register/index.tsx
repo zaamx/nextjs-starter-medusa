@@ -83,12 +83,12 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
           </div>
         </div>
         <span className="text-center text-ui-fg-base text-small-regular mt-6">
-          Already a member?{" "}
+          ¿Ya eres miembro?{" "}
           <button
             onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
             className="underline"
           >
-            Sign in
+            Iniciar sesión
           </button>
           .
         </span>
@@ -102,11 +102,10 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
       data-testid="register-page"
     >
       <h1 className="text-large-semi uppercase mb-6">
-        Become a We Now Member
+        Conviértete en Miembro de We Now
       </h1>
       <p className="text-center text-base-regular text-ui-fg-base mb-4">
-        Create your We Now Member profile, and get access to an enhanced
-        shopping experience.
+        Crea tu perfil de Miembro de We Now y accede a una experiencia de compra mejorada.
       </p>
       <form 
         ref={formRef} 
@@ -120,13 +119,13 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
           // Client-side validation for sponsor ID
           if (!sponsorId || sponsorId.trim() === "") {
             e.preventDefault()
-            alert("Please select a sponsor before submitting the form.")
+            alert("Por favor selecciona un patrocinador antes de enviar el formulario.")
             return
           }
           
           if (!/^\d+$/.test(sponsorId.trim())) {
             e.preventDefault()
-            alert("Invalid sponsor ID format. Please select a sponsor using the search function.")
+            alert("Formato de ID de patrocinador inválido. Por favor selecciona un patrocinador usando la función de búsqueda.")
             return
           }
           
@@ -140,21 +139,21 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
         <div className="flex flex-col w-full gap-y-2">
           {/* Standard Fields */}
           <Input
-            label="First name"
+            label="Nombre"
             name="first_name"
             required
             autoComplete="given-name"
             data-testid="first-name-input"
           />
           <Input
-            label="Last name"
+            label="Apellido"
             name="last_name"
             required
             autoComplete="family-name"
             data-testid="last-name-input"
           />
           <Input
-            label="Email"
+            label="Correo electrónico"
             name="email"
             required
             type="email"
@@ -162,7 +161,7 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
             data-testid="email-input"
           />
           <Input
-            label="Phone"
+            label="Teléfono"
             name="phone"
             type="tel"
             autoComplete="tel"
@@ -170,7 +169,7 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
             data-testid="phone-input"
           />
           <Input
-            label="Password"
+            label="Contraseña"
             name="password"
             required
             type="password"
@@ -272,13 +271,13 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
 
           {/* Binary Position Preference */}
           <div className="flex flex-col gap-y-1">
-            <label className="text-sm font-medium">Preferred Binary Side<span className="text-rose-500">*</span></label>
+            <label className="text-sm font-medium">Lado Binario Preferido<span className="text-rose-500">*</span></label>
             <div className="flex gap-x-4">
               <label className="flex items-center gap-x-1">
-                <input type="radio" name="preferred_side" value="0" required data-testid="preferred-side-left" /> Left (0)
+                <input type="radio" name="preferred_side" value="0" required data-testid="preferred-side-left" /> Izquierda (0)
               </label>
               <label className="flex items-center gap-x-1">
-                <input type="radio" name="preferred_side" value="1" required data-testid="preferred-side-right" /> Right (1)
+                <input type="radio" name="preferred_side" value="1" required data-testid="preferred-side-right" /> Derecha (1)
               </label>
               {/* <label className="flex items-center gap-x-1">
                 <input type="radio" name="preferred_side" value="" data-testid="preferred-side-auto" /> Auto-assign
@@ -288,33 +287,33 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
         </div>
         <ErrorMessage error={message} data-testid="register-error" />
         <span className="text-center text-ui-fg-base text-small-regular mt-6">
-          By creating an account, you agree to We Now&apos;s{" "}
+          Al crear una cuenta, aceptas las{" "}
           <LocalizedClientLink
             href="/content/privacy-policy"
             className="underline"
           >
-            Privacy Policy
+            Políticas de Privacidad
           </LocalizedClientLink>{" "}
-          and{" "}
+          y los{" "}
           <LocalizedClientLink
             href="/content/terms-of-use"
             className="underline"
           >
-            Terms of Use
-          </LocalizedClientLink>
-          .
+            Términos de Uso
+          </LocalizedClientLink>{" "}
+          de We Now.
         </span>
         <SubmitButton className="w-full mt-6" data-testid="register-button">
-          Join
+          Unirse
         </SubmitButton>
       </form>
       <span className="text-center text-ui-fg-base text-small-regular mt-6">
-        Already a member?{" "}
+        ¿Ya eres miembro?{" "}
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
           className="underline"
         >
-          Sign in
+          Iniciar sesión
         </button>
         .
       </span>
