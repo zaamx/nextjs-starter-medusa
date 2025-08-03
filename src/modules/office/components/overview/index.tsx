@@ -13,7 +13,8 @@ import {
   fetchSpilloverVsBuild,
   fetchNetworkActivityMember,
   fetchNetworkActivityMemberOrders,
-  fetchRenewalStatus
+  fetchRenewalStatus,
+  fetchProfileRankSummary
 } from "@lib/data/netme_network"
 import { Table, Heading } from "@medusajs/ui"
 
@@ -129,6 +130,13 @@ interface RenewalStatus {
   renewal_date: string
   days_left: number
 }
+interface ProfileRankSummary {
+  lifetime_rank_name: string
+  lifetime_period_name: string
+  month_rank_name: string
+  month_period_name: string
+}
+
 
 const Overview = ({customer}: OverviewProps) => {
   const { selectedPeriod, currentPeriod } = useOffice()
@@ -147,6 +155,7 @@ const Overview = ({customer}: OverviewProps) => {
   const [networkActivityData, setNetworkActivityData] = useState<NetworkActivity[]>([])
   const [networkOrdersData, setNetworkOrdersData] = useState<NetworkOrder[]>([])
   const [renewalData, setRenewalData] = useState<RenewalStatus | null>(null)
+  const [rankSummaryData, setRankSummaryData] = useState<ProfileRankSummary | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -205,14 +214,15 @@ const Overview = ({customer}: OverviewProps) => {
         setError(null)
 
         // Fetch all reports in parallel
-        const [binaryResult, unilevelResult, rankResult, spilloverResult, networkActivityResult, networkOrdersResult, renewalResult] = await Promise.all([
+        const [binaryResult, unilevelResult, rankResult, spilloverResult, networkActivityResult, networkOrdersResult, renewalResult, rankSummaryResult] = await Promise.all([
           fetchBinaryLegVolume(Number(netmeProfileId), selectedPeriod.id),
           fetchUnilevelLevelVolume(Number(netmeProfileId), selectedPeriod.id, 5),
           fetchRankProgress(Number(netmeProfileId), selectedPeriod.id),
           fetchSpilloverVsBuild(Number(netmeProfileId), selectedPeriod.id),
           fetchNetworkActivityMember(Number(netmeProfileId)),
           fetchNetworkActivityMemberOrders(Number(netmeProfileId), selectedPeriod.id),
-          currentPeriod ? fetchRenewalStatus(Number(netmeProfileId), currentPeriod.id) : Promise.resolve(null)
+          currentPeriod ? fetchRenewalStatus(Number(netmeProfileId), currentPeriod.id) : Promise.resolve(null),
+          fetchProfileRankSummary(Number(netmeProfileId), selectedPeriod.id)
         ])
 
         setBinaryData(binaryResult[0] || null)
@@ -222,7 +232,7 @@ const Overview = ({customer}: OverviewProps) => {
         setNetworkActivityData(networkActivityResult || [])
         setNetworkOrdersData(networkOrdersResult || [])
         setRenewalData(renewalResult)
-
+        setRankSummaryData(rankSummaryResult)
       } catch (err) {
         console.error('Error fetching overview data:', err)
         setError('Error loading data')
@@ -340,6 +350,12 @@ const Overview = ({customer}: OverviewProps) => {
             </div>
             <div className="text-xs text-blue-600 font-semibold">
               {rankData.length > 0 ? rankData[0].current_rank : "Cargando..."}
+              {rankSummaryData && (
+              <span className="text-xs text-gray-500">
+                &nbsp; -- <span className="mr-2">Vitálicio: {rankSummaryData.lifetime_rank_name}</span>
+                <span>Anterior: {rankSummaryData.month_rank_name}</span>
+              </span>
+            )}
             </div>
           </div>
         </div>

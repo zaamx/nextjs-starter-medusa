@@ -258,3 +258,19 @@ export const fetchRenewalStatus = async (profileId: number, periodId: number) =>
     return null
   }
 }
+
+// 9. Profile rank summary - Get lifetime and current period ranks
+export const fetchProfileRankSummary = async (profileId: number, periodId: number) => {
+  try {
+    const { data, error } = await supabase
+      .rpc('netme_profile_rank_summary', { p_profile: profileId, p_period: periodId })
+    if (error) {
+      console.error('Error fetching profile rank summary:', error)
+      return null
+    }
+    return data?.[0] || null
+  } catch (error) {
+    console.error('Error in fetchProfileRankSummary:', error)
+    return null
+  }
+}
