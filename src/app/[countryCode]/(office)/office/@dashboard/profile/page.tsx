@@ -12,7 +12,7 @@ import { listRegions } from "@lib/data/regions"
 import { retrieveCustomer } from "@lib/data/customer"
 
 export const metadata: Metadata = {
-  title: "Profile",
+  title: "Perfil",
   description: "View and edit your We Now profile.",
 }
 

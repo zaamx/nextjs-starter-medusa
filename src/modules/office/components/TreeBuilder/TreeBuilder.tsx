@@ -85,11 +85,11 @@ export default function TreeBuilder({ treeData }: { treeData: any }) {
         gap: 12,
         zIndex: 10,
       }}>
-        <button onClick={handleCollapseAll} title="Collapse All" style={iconButtonStyle}>−</button>
-        <button onClick={handleExpandAll} title="Expand All" style={iconButtonStyle}>+</button>
-        <button onClick={handleZoomIn} title="Zoom In" style={iconButtonStyle}>🔍+</button>
-        <button onClick={handleZoomOut} title="Zoom Out" style={iconButtonStyle}>🔍−</button>
-        <button onClick={handleCenter} title="Center" style={iconButtonStyle}>🎯</button>
+                    <button onClick={handleCollapseAll} title="Contraer Todo" style={iconButtonStyle}>−</button>
+            <button onClick={handleExpandAll} title="Expandir Todo" style={iconButtonStyle}>+</button>
+            <button onClick={handleZoomIn} title="Acercar" style={iconButtonStyle}>🔍+</button>
+            <button onClick={handleZoomOut} title="Alejar" style={iconButtonStyle}>🔍−</button>
+            <button onClick={handleCenter} title="Centrar" style={iconButtonStyle}>🎯</button>
       </div> */}
       {/* Main Tree */}
       <div style={{ width: '100%', height: '100%', background: 'linear-gradient(120deg, #e7eafc 0%, #dbeafe 100%)' }}>

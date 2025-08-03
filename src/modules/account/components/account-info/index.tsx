@@ -23,7 +23,7 @@ const AccountInfo = ({
   isSuccess,
   isError,
   clearState,
-  errorMessage = "An error occurred, please try again",
+  errorMessage = "Ocurrió un error, por favor inténtalo de nuevo",
   children,
   'data-testid': dataTestid,
   disableEdit = false
@@ -66,7 +66,7 @@ const AccountInfo = ({
             data-active={state}
             disabled={disableEdit}
           >
-            {state ? "Cancel" : "Edit"}
+            {state ? "Cancelar" : "Editar"}
           </Button>
         </div>
       </div>
@@ -85,7 +85,7 @@ const AccountInfo = ({
           data-testid="success-message"
         >
           <Badge className="p-2 my-4" color="green">
-            <span>{label} updated succesfully</span>
+            <span>{label} actualizado exitosamente</span>
           </Badge>
         </Disclosure.Panel>
       </Disclosure>
@@ -129,7 +129,7 @@ const AccountInfo = ({
                 type="submit"
                 data-testid="save-button"
               >
-                Save changes
+                Guardar cambios
               </Button>
             </div>
           </div>
