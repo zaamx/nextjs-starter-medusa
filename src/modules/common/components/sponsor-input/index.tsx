@@ -46,12 +46,12 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
 
   const validateSponsorId = (sponsorId: string) => {
     if (required && (!sponsorId || sponsorId.trim() === "")) {
-      setValidationError("Sponsor selection is required")
+      setValidationError("La selección de patrocinador es requerida")
       return false
     }
     
     if (sponsorId && sponsorId.trim() !== "" && !/^\d+$/.test(sponsorId.trim())) {
-      setValidationError("Invalid sponsor ID format")
+              setValidationError("Formato de ID de patrocinador inválido")
       return false
     }
     
@@ -122,12 +122,12 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
           data-testid={`${dataTestId}-search-button`}
           style={{ zIndex: 2 }}
         >
-          Search
+          Buscar
         </button>
       </div>
       {!selectedSponsorId && required && !validationError && (
         <div className="text-gray-400 text-sm mt-1">
-          Click "Search" to select a sponsor (required)
+          Haz clic en "Buscar" para seleccionar un patrocinador (requerido)
         </div>
       )}
       {selectedSponsorInfo && (

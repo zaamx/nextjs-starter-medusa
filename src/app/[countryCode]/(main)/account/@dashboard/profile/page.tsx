@@ -13,7 +13,7 @@ import { retrieveCustomer } from "@lib/data/customer"
 
 export const metadata: Metadata = {
   title: "Perfil",
-  description: "View and edit your We Now profile.",
+  description: "Ver y editar tu perfil de We Now.",
 }
 
 export default async function Profile() {

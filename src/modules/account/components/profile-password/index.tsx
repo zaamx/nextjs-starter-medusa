@@ -31,7 +31,7 @@ const ProfilePassword: React.FC<MyInformationProps> = ({ customer }) => {
       <AccountInfo
         label="Contraseña"
         currentInfo={
-          <span>The password is not shown for security reasons</span>
+          <span>La contraseña no se muestra por razones de seguridad</span>
         }
         isSuccess={successState}
         isError={false}

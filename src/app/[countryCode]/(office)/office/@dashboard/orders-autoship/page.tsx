@@ -8,7 +8,7 @@ import TransferRequestForm from "@modules/account/components/transfer-request-fo
 
 export const metadata: Metadata = {
   title: "Órdenes",
-  description: "Overview of your previous orders.",
+  description: "Resumen de tus órdenes anteriores.",
 }
 
 export default async function Orders() {
