@@ -93,7 +93,7 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
     <form action={formAction} onReset={() => clearState()} className="w-full">
       <input type="hidden" name="addressId" value={billingAddress?.id} />
       <AccountInfo
-        label="Billing address"
+        label="Dirección de facturación"
         currentInfo={currentInfo}
         isSuccess={successState}
         isError={!!state.error}
@@ -103,14 +103,14 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
         <div className="grid grid-cols-1 gap-y-2">
           <div className="grid grid-cols-2 gap-x-2">
             <Input
-              label="First name"
+              label="Nombre"
               name="first_name"
               defaultValue={billingAddress?.first_name || undefined}
               required
               data-testid="billing-first-name-input"
             />
             <Input
-              label="Last name"
+              label="Apellido"
               name="last_name"
               defaultValue={billingAddress?.last_name || undefined}
               required
@@ -118,34 +118,34 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
             />
           </div>
           <Input
-            label="Company"
+            label="Empresa"
             name="company"
             defaultValue={billingAddress?.company || undefined}
             data-testid="billing-company-input"
           />
           <Input
-            label="Address"
+            label="Dirección"
             name="address_1"
             defaultValue={billingAddress?.address_1 || undefined}
             required
             data-testid="billing-address-1-input"
           />
           <Input
-            label="Apartment, suite, etc."
+            label="Apartamento, suite, etc."
             name="address_2"
             defaultValue={billingAddress?.address_2 || undefined}
             data-testid="billing-address-2-input"
           />
           <div className="grid grid-cols-[144px_1fr] gap-x-2">
             <Input
-              label="Postal code"
+              label="Código postal"
               name="postal_code"
               defaultValue={billingAddress?.postal_code || undefined}
               required
               data-testid="billing-postcal-code-input"
             />
             <Input
-              label="City"
+              label="Ciudad"
               name="city"
               defaultValue={billingAddress?.city || undefined}
               required
@@ -153,7 +153,7 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
             />
           </div>
           <Input
-            label="Province"
+            label="Provincia"
             name="province"
             defaultValue={billingAddress?.province || undefined}
             data-testid="billing-province-input"

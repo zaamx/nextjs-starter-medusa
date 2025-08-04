@@ -179,7 +179,7 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
 
           {/* MLM-Specific Fields */}
           <SponsorInput
-            label="Sponsor Profile ID"
+            label="ID de Perfil del Patrocinador"
             name="sponsor_profile_id"
             value={sponsorId}
             onChange={handleSponsorSelect}
