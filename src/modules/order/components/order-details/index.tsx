@@ -15,7 +15,7 @@ const OrderDetails = ({ order, showStatus, customer }: OrderDetailsProps) => {
   }
 
   const getBinaryPositionText = (position: number) => {
-    return position === 1 ? "Right" : "Left"
+    return position === 1 ? "Derecha" : "Izquierda"
   }
 
   // Check if customer has the required metadata
@@ -32,7 +32,7 @@ const OrderDetails = ({ order, showStatus, customer }: OrderDetailsProps) => {
   return (
     <div>
       <Text>
-        We have sent the order confirmation details to{" "}
+        Hemos enviado los detalles de confirmación del pedido a{" "}
         <span
           className="text-ui-fg-medium-plus font-semibold"
           data-testid="order-email"
@@ -44,7 +44,7 @@ const OrderDetails = ({ order, showStatus, customer }: OrderDetailsProps) => {
       
       {customer && (
         <Text className="mt-2">
-          Customer:{" "}
+          Cliente:{" "}
           <span className="text-ui-fg-medium-plus font-semibold" data-testid="customer-name">
             {customer.first_name} {customer.last_name}
           </span>         
@@ -54,26 +54,26 @@ const OrderDetails = ({ order, showStatus, customer }: OrderDetailsProps) => {
       {hasWeNowMetadata && (
         <div className="mt-4 p-4 bg-ui-bg-base-hover rounded-lg border border-ui-border-base">
           <Text className="text-lg font-semibold text-ui-fg-base mb-2">
-            Welcome to WeNow Network!
+            ¡Bienvenido a la Red WeNow!
           </Text>
           <Text className="text-sm text-ui-fg-subtle mb-2">
-            You are now part of our network with the following details:
+            Ahora eres parte de nuestra red con los siguientes detalles:
           </Text>
           <div className="space-y-1 text-sm">
             <Text>
-              <span className="font-medium">Network Position:</span>{" "}
+              <span className="font-medium">Posición en la Red:</span>{" "}
               <span className="text-ui-fg-interactive">
                 {getBinaryPositionText(binaryPosition)}
               </span>
             </Text>
             <Text>
-              <span className="font-medium">Your Profile ID:</span>{" "}
+              <span className="font-medium">Tu ID de Perfil:</span>{" "}
               <span className="text-ui-fg-interactive">
                 {netmeProfileId}
               </span>
             </Text>
             <Text>
-              <span className="font-medium">Sponsor Profile ID:</span>{" "}
+              <span className="font-medium">ID de Perfil del Patrocinador:</span>{" "}
               <span className="text-ui-fg-interactive">
                 {sponsorProfileId}
               </span>
@@ -83,7 +83,7 @@ const OrderDetails = ({ order, showStatus, customer }: OrderDetailsProps) => {
       )}
       
       <Text className="mt-2">
-        Order date:{" "}
+        Fecha del pedido:{" "}
         <span data-testid="order-date">
           {new Date(order.created_at).toDateString()}
         </span>

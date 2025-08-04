@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useMemo } from "react"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import { v4 as uuidv4 } from "uuid"
-import { addBundleToCart } from "@lib/data/cart"
+import { addBundleToCart, retrieveCart } from "@lib/data/cart"
 import { useParams } from "next/navigation"
 import BundleProductItem from "@modules/products/components/bundle-aware-actions/bundle-product-item"
 import ProductActions from "@modules/products/components/product-actions"
@@ -152,28 +152,118 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
         countryCode
       })
 
-      // Add child products with bundle reference
-      for (const productData of Object.values(productSelections)) {
-        for (const selection of productData.selections) {
-          if (selection.quantity > 0) {
-            await addBundleToCart({
-              items: [{
-                variant_id: selection.variantId,
-                quantity: selection.quantity * quantity,
-                metadata: {
-                  bundled_by: bundleId,
-                  bundle_type: 'child'
-                }
-              }],
-              countryCode
-            })
-          }
-        }
-      }
+      // Create promises for all child products
+      const cartPromises = Object.values(productSelections)
+        // 1. Flatten all 'selections' arrays into one
+        .flatMap(productData => productData.selections)
+        
+        // 2. Filter to keep only selections with quantity > 0
+        .filter(selection => selection.quantity > 0)
+        
+        // 3. Create a promise for each valid selection
+        .map(selection => addBundleToCart({
+          items: [{
+            variant_id: selection.variantId,
+            quantity: selection.quantity * quantity,
+            metadata: {
+              bundled_by: bundleId,
+              bundle_type: 'child'
+            }
+          }],
+          countryCode
+        }))
+
+      // 4. Wait for all promises to resolve
+      await Promise.all(cartPromises)
+
+      // 5. Check if all items were added successfully
+      await checkAndFixMissingItems(bundleId)
+      
     } catch (error) {
       console.error('Failed to add bundle to cart:', error)
     } finally {
       setIsAdding(false)
+    }
+  }
+
+  // Check for missing items and add them
+  const checkAndFixMissingItems = async (bundleId: string) => {
+    try {
+      // Wait a moment for cart to update
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      // Get current cart
+      const cart = await retrieveCart()
+      if (!cart?.items) return
+
+      // Find bundle parent
+      const bundleParent = cart.items.find((item: HttpTypes.StoreCartLineItem) => 
+        item.metadata?.bundle_id === bundleId
+      )
+      
+      if (!bundleParent) return
+
+      // Get bundle children
+      const bundleChildren = cart.items.filter((item: HttpTypes.StoreCartLineItem) => 
+        item.metadata?.bundled_by === bundleId
+      )
+
+      // Create expected items map from productSelections
+      const expectedItems = new Map<string, number>()
+      Object.values(productSelections).forEach(productData => {
+        productData.selections.forEach(selection => {
+          if (selection.quantity > 0) {
+            const key = selection.variantId
+            const expectedQty = selection.quantity * quantity
+            expectedItems.set(key, expectedQty)
+          }
+        })
+      })
+
+      // Create actual items map from cart
+      const actualItems = new Map<string, number>()
+      bundleChildren.forEach((child: HttpTypes.StoreCartLineItem) => {
+        const variantId = child.variant_id
+        if (variantId) {
+          const currentQty = actualItems.get(variantId) || 0
+          actualItems.set(variantId, currentQty + child.quantity)
+        }
+      })
+
+      // Find missing items
+      const missingItems: Array<{ variant_id: string, quantity: number }> = []
+      expectedItems.forEach((expectedQty, variantId) => {
+        const actualQty = actualItems.get(variantId) || 0
+        const missingQty = expectedQty - actualQty
+        
+        if (missingQty > 0) {
+          missingItems.push({
+            variant_id: variantId,
+            quantity: missingQty
+          })
+        }
+      })
+
+      // Add missing items if any
+      if (missingItems.length > 0) {
+        console.log('Adding missing bundle items:', missingItems)
+        
+        for (const item of missingItems) {
+          await addBundleToCart({
+            items: [{
+              variant_id: item.variant_id,
+              quantity: item.quantity,
+              metadata: {
+                bundled_by: bundleId,
+                bundle_type: 'child'
+              }
+            }],
+            countryCode
+          })
+        }
+      }
+    } catch (error) {
+      console.error('Failed to check and fix missing items:', error)
     }
   }
 
