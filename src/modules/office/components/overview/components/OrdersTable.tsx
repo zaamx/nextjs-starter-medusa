@@ -40,7 +40,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
               <div key={idx} className="bg-gray-50 rounded-lg p-3 border">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium text-sm">#{order.order_display}</span>
-                  <span className="text-xs font-bold">{order.cv.toLocaleString()} CV</span>
+                  <span className="text-xs font-bold">{(order.cv || 0).toLocaleString()} CV</span>
                 </div>
                 <div className="text-xs text-gray-600 mb-2">
                   Profundidad: {order.depth} | Posición: {order.position === 0 ? 'Izquierda' : 'Derecha'}
@@ -90,7 +90,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
                         {order.is_subscription ? 'Sí' : 'No'}
                       </span>
                     </Table.Cell>
-                    <Table.Cell className="text-xs font-bold">{order.cv.toLocaleString()}</Table.Cell>
+                    <Table.Cell className="text-xs font-bold">{(order.cv || 0).toLocaleString()}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>

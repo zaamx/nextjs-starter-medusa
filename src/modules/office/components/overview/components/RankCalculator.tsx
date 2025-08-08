@@ -42,7 +42,7 @@ const RankCalculator: React.FC<RankCalculatorProps> = ({ rankData, error, onShow
 
     let missingText = ""
     if (currentRank.qv_missing > 0) {
-      missingText += `Te faltan ${currentRank.qv_missing.toLocaleString()} QV`
+      missingText += `Te faltan ${(currentRank.qv_missing || 0).toLocaleString()} QV`
     }
     if (currentRank.act_left_missing > 0) {
       missingText += missingText ? ` y ${currentRank.act_left_missing} directo izquierdo` : `Te faltan ${currentRank.act_left_missing} directo izquierdo`

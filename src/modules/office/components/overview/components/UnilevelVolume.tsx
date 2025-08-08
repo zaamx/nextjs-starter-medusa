@@ -44,7 +44,7 @@ const UnilevelVolume: React.FC<UnilevelVolumeProps> = ({ unilevelData, error }) 
           return (
             <div key={idx} className="text-center">
               <div className="text-xs text-gray-500">Nivel {level.level}</div>
-              <div className="text-sm font-bold text-gray-900">{level.cv_total.toLocaleString()}</div>
+              <div className="text-sm font-bold text-gray-900">{(level.cv_total || 0).toLocaleString()}</div>
               <div className="text-xs text-blue-600 font-semibold">{percentage}%</div>
             </div>
           )

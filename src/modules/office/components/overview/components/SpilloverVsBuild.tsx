@@ -39,12 +39,12 @@ const SpilloverVsBuildComponent: React.FC<SpilloverVsBuildProps> = ({ spilloverD
         {spilloverData.map((leg, idx) => (
           <div key={idx} className="text-center">
             <div className="text-sm text-gray-500">Pierna {leg.side === 'left' ? 'Izquierda' : 'Derecha'}</div>
-            <div className="text-lg font-bold text-blue-600">{leg.cv_personal.toLocaleString()} CV</div>
+            <div className="text-lg font-bold text-blue-600">{(leg.cv_personal || 0).toLocaleString()} CV</div>
             <div className="text-xs text-blue-600">Construcción propia</div>
-            <div className="text-lg font-bold text-green-600">{leg.cv_spillover.toLocaleString()} CV</div>
+            <div className="text-lg font-bold text-green-600">{(leg.cv_spillover || 0).toLocaleString()} CV</div>
             <div className="text-xs text-green-600">Derrame recibido de tus uplines</div>
             <div className="text-lg font-bold text-purple-600">
-              {leg.cv_total.toLocaleString()} CV
+              {(leg.cv_total || 0).toLocaleString()} CV
             </div>
             <div className="text-xs text-purple-600">Total</div>
           </div>

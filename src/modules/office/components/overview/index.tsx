@@ -353,12 +353,12 @@ const Overview = ({customer}: OverviewProps) => {
 
     // Week and Period Volume from binary data
     if (binaryData && !componentErrors.binary) {
-    const totalCV = binaryData.cv_period_left + binaryData.cv_period_right
-    const weekCV = binaryData.cv_week_left + binaryData.cv_week_right
+    const totalCV = (binaryData.cv_period_left || 0) + (binaryData.cv_period_right || 0)
+    const weekCV = (binaryData.cv_week_left || 0) + (binaryData.cv_week_right || 0)
       kpis.push(
       { label: "Vol. Semana", value: `${weekCV.toLocaleString()} CV`, countdown: false },
       { label: "Vol. Periodo", value: `${totalCV.toLocaleString()} CV`, countdown: false },
-        { label: "Puntos Pagados", value: `${binaryData.pairs_paid.toLocaleString()}`, countdown: false }
+        { label: "Puntos Pagados", value: `${(binaryData.pairs_paid || 0).toLocaleString()}`, countdown: false }
       )
     } else if (componentErrors.binary) {
       kpis.push(
@@ -386,7 +386,7 @@ const Overview = ({customer}: OverviewProps) => {
     
     // Spillover from spillover data
     if (spilloverData.length > 0 && !componentErrors.spillover) {
-      const totalSpillover = spilloverData.reduce((sum, item) => sum + item.cv_spillover, 0)
+      const totalSpillover = spilloverData.reduce((sum, item) => sum + (item.cv_spillover || 0), 0)
       kpis.push({ label: "Derrame Recibido", value: `${totalSpillover.toLocaleString()} CV`, countdown: false })
     } else if (componentErrors.spillover) {
       kpis.push({ label: "Derrame Recibido", value: "Error", countdown: false })
@@ -410,7 +410,7 @@ const Overview = ({customer}: OverviewProps) => {
 
     const currentRank = rankData[0]
     if (currentRank.qv_missing > 0) {
-      alerts.push({ type: "Volumen", message: `Faltan ${currentRank.qv_missing.toLocaleString()} QV para calificar.` })
+      alerts.push({ type: "Volumen", message: `Faltan ${(currentRank.qv_missing || 0).toLocaleString()} QV para calificar.` })
     }
     if (currentRank.act_left_missing > 0) {
       alerts.push({ type: "Directos Izquierda", message: `Falta ${currentRank.act_left_missing} directo activo.` })
@@ -609,7 +609,7 @@ const Overview = ({customer}: OverviewProps) => {
             <div className="mb-4">
               <h3 className="font-semibold text-gray-900 mb-2">Requisitos Básicos</h3>
               <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                <li>Volumen total: {rankData[0].qv_needed.toLocaleString()} QV</li>
+                <li>Volumen total: {(rankData[0].qv_needed || 0).toLocaleString()} QV</li>
                 <li>Directos izquierda: {rankData[0].act_left_needed} activos</li>
                 <li>Directos derecha: {rankData[0].act_right_needed} activos</li>
               </ul>
@@ -625,7 +625,7 @@ const Overview = ({customer}: OverviewProps) => {
                   <div className="flex justify-between items-center mb-2">
                     <span className="font-medium text-blue-900">Construcción Propia</span>
                     <span className="text-sm text-blue-700">
-                      {rankDetailsData[0].qv_const_current.toLocaleString()} / {rankDetailsData[0].qv_const_needed.toLocaleString()} QV
+                      {(rankDetailsData[0].qv_const_current || 0).toLocaleString()} / {(rankDetailsData[0].qv_const_needed || 0).toLocaleString()} QV
                     </span>
                   </div>
                   <div className="w-full bg-blue-200 rounded-full h-2">
@@ -636,7 +636,7 @@ const Overview = ({customer}: OverviewProps) => {
                   </div>
                   <div className="text-xs text-blue-600 mt-1">
                     {rankDetailsData[0].qv_const_missing > 0 
-                      ? `Faltan ${rankDetailsData[0].qv_const_missing.toLocaleString()} QV` 
+                      ? `Faltan ${(rankDetailsData[0].qv_const_missing || 0).toLocaleString()} QV` 
                       : "¡Completado!"}
                   </div>
                 </div>
@@ -646,7 +646,7 @@ const Overview = ({customer}: OverviewProps) => {
                   <div className="flex justify-between items-center mb-2">
                     <span className="font-medium text-green-900">Derrame (Spillover)</span>
                     <span className="text-sm text-green-700">
-                      {rankDetailsData[0].qv_spill_current.toLocaleString()} / {rankDetailsData[0].qv_spill_needed.toLocaleString()} QV
+                      {(rankDetailsData[0].qv_spill_current || 0).toLocaleString()} / {(rankDetailsData[0].qv_spill_needed || 0).toLocaleString()} QV
                     </span>
                   </div>
                   <div className="w-full bg-green-200 rounded-full h-2">
@@ -657,7 +657,7 @@ const Overview = ({customer}: OverviewProps) => {
                   </div>
                   <div className="text-xs text-green-600 mt-1">
                     {rankDetailsData[0].qv_spill_missing > 0 
-                      ? `Faltan ${rankDetailsData[0].qv_spill_missing.toLocaleString()} QV` 
+                      ? `Faltan ${(rankDetailsData[0].qv_spill_missing || 0).toLocaleString()} QV` 
                       : "¡Completado!"}
                   </div>
                 </div>
@@ -667,7 +667,7 @@ const Overview = ({customer}: OverviewProps) => {
                   <div className="flex justify-between items-center mb-2">
                     <span className="font-medium text-purple-900">Total</span>
                     <span className="text-sm text-purple-700">
-                      {rankDetailsData[0].qv_total.toLocaleString()} / {rankDetailsData[0].qv_needed.toLocaleString()} QV
+                      {(rankDetailsData[0].qv_total || 0).toLocaleString()} / {(rankDetailsData[0].qv_needed || 0).toLocaleString()} QV
                     </span>
                   </div>
                   <div className="w-full bg-purple-200 rounded-full h-2">
@@ -678,7 +678,7 @@ const Overview = ({customer}: OverviewProps) => {
                   </div>
                   <div className="text-xs text-purple-600 mt-1">
                     {rankDetailsData[0].qv_missing > 0 
-                      ? `Faltan ${rankDetailsData[0].qv_missing.toLocaleString()} QV` 
+                      ? `Faltan ${(rankDetailsData[0].qv_missing || 0).toLocaleString()} QV` 
                       : "¡Completado!"}
                   </div>
                 </div>
@@ -759,7 +759,7 @@ const Overview = ({customer}: OverviewProps) => {
                           {requirements.map((req) => (
                             <li key={req.id} className="text-xs text-gray-600 flex justify-between">
                               <span>{getRequirementTypeName(req.type)}:</span>
-                              <span className="font-medium">{req.value.toLocaleString()}</span>
+                              <span className="font-medium">{(req.value || 0).toLocaleString()}</span>
                             </li>
                           ))}
                         </ul>

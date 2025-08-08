@@ -46,48 +46,48 @@ const BinaryVolume: React.FC<BinaryVolumeProps> = ({ binaryData, error }) => {
         <div className="text-center">
           <div className="text-sm text-gray-500">Pierna Izquierda</div>
           <div className="text-lg font-bold text-blue-600">
-            {binaryData.cv_week_left.toLocaleString()} CV
+            {(binaryData.cv_week_left || 0).toLocaleString()} CV
           </div>
           <div className="text-xs text-gray-400">Generado esta semana</div>
           <div className="text-lg font-bold text-orange-600">
-            {binaryData.bank_prev_left.toLocaleString()} CV
+            {(binaryData.bank_prev_left || 0).toLocaleString()} CV
           </div>
           <div className="text-xs text-orange-600">Banco Binario</div>
           <div className="text-lg font-bold text-blue-600">
-            {binaryData.cv_period_left.toLocaleString()} CV
+            {(binaryData.cv_period_left || 0).toLocaleString()} CV
           </div>
           <div className="text-xs text-gray-400">Volumen para Puntos</div>
           <div className="text-lg font-bold text-purple-600">
-            {binaryData.carry_left.toLocaleString()} CV
+            {(binaryData.carry_left || 0).toLocaleString()} CV
           </div>
-          <div className="text-xs text-purple-600">Volumen que se arrastrará al próximo periodo</div>
+          <div className="text-xs text-purple-600">Volumen que se arrastrará al próximo period</div>
         </div>
 
         {/* Pierna Derecha */}
         <div className="text-center">
           <div className="text-sm text-gray-500">Pierna Derecha</div>
           <div className="text-lg font-bold text-blue-600">
-            {binaryData.cv_week_right.toLocaleString()} CV
+            {(binaryData.cv_week_right || 0).toLocaleString()} CV
           </div>
           <div className="text-xs text-gray-400">Generado esta semana</div>
           <div className="text-lg font-bold text-orange-600">
-            {binaryData.bank_prev_right.toLocaleString()} CV
+            {(binaryData.bank_prev_right || 0).toLocaleString()} CV
           </div>
           <div className="text-xs text-orange-600">Banco Binario</div>
           <div className="text-lg font-bold text-blue-600">
-            {binaryData.cv_period_right.toLocaleString()} CV
+            {(binaryData.cv_period_right || 0).toLocaleString()} CV
           </div>
           <div className="text-xs text-gray-400">Volumen para Puntos</div>
           <div className="text-lg font-bold text-purple-600">
-            {binaryData.carry_right.toLocaleString()} CV
+            {(binaryData.carry_right || 0).toLocaleString()} CV
           </div>
-          <div className="text-xs text-purple-600">Volumen que se arrastrará al próximo periodo</div>
+          <div className="text-xs text-purple-600">Volumen que se arrastrará al próximo period</div>
         </div>
       </div>
       <div className="mt-3 pt-3 border-t border-gray-100">
         <div className="flex flex-col sm:flex-row sm:justify-between text-xs text-gray-600 gap-1">
-          <span><strong>Puntos pagados:</strong> {binaryData.pairs_paid.toLocaleString()}</span>
-          <span><strong>Puntos pendientes:</strong> {binaryData.pairs_pending.toLocaleString()}</span>
+          <span><strong>Puntos pagados:</strong> {(binaryData.pairs_paid || 0).toLocaleString()}</span>
+          <span><strong>Puntos pendientes:</strong> {(binaryData.pairs_pending || 0).toLocaleString()}</span>
         </div>
       </div>
     </div>
