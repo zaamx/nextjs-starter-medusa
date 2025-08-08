@@ -3,36 +3,43 @@
 
 import { supabase } from "@lib/supabaseClient"
 
-export const fetchBinaryNetwork = async (mlmId: number) => {
+// API Response types
+export interface ApiResponse<T> {
+  success: boolean
+  data: T
+  error: string | null
+}
+
+export const fetchBinaryNetwork = async (mlmId: number): Promise<ApiResponse<any[]>> => {
   try {
     const { data, error } = await supabase
       .rpc('get_binary_tree', { _root_profile_id: mlmId })
 
     if (error) {
       console.error('Error fetching binary network:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchBinaryNetwork:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 } 
 
 
-export const fetchUnilevelNetwork = async (mlmId: number) => {
+export const fetchUnilevelNetwork = async (mlmId: number): Promise<ApiResponse<any[]>> => {
   try {
     const { data, error } = await supabase
       .rpc('get_unilevel_tree', { _root_profile_id: mlmId })
 
     if (error) {
       console.error('Error fetching unilevel network:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchUnilevelNetwork:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -43,12 +50,12 @@ export const fetchBinaryLegVolume = async (profileId: number, periodId: number) 
       .rpc('report_binary_leg_volume', { p_profile: profileId, p_period: periodId })
     if (error) {
       console.error('Error fetching binary leg volume:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchBinaryLegVolume:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -59,12 +66,12 @@ export const fetchUnilevelLevelVolume = async (profileId: number, periodId: numb
       .rpc('report_unilevel_level_volume', { p_profile: profileId, p_period: periodId, p_max_depth: levels })
     if (error) {
       console.error('Error fetching unilevel level volume:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchUnilevelLevelVolume:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -75,12 +82,12 @@ export const fetchRankProgress = async (profileId: number, periodId: number) => 
       .rpc('report_rank_progress', { p_profile: profileId, p_period: periodId })
     if (error) {
       console.error('Error fetching rank progress:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchRankProgress:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -91,17 +98,17 @@ export const fetchRankProgressDetails = async (profileId: number, periodId: numb
       .rpc('report_rank_progress_details', { p_profile: profileId, p_period: periodId })
     if (error) {
       console.error('Error fetching rank progress details:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchRankProgressDetails:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
 // 3.2. Catálogo de rangos
-export const fetchNetmeRanks = async () => {
+export const fetchNetmeRanks = async (): Promise<ApiResponse<any[]>> => {
   try {
     const { data, error } = await supabase
       .from('netme_ranks')
@@ -109,17 +116,17 @@ export const fetchNetmeRanks = async () => {
       .order('level', { ascending: true })
     if (error) {
       console.error('Error fetching netme ranks:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchNetmeRanks:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
 // 3.3. Requerimientos de rangos
-export const fetchNetmeRankRequirements = async () => {
+export const fetchNetmeRankRequirements = async (): Promise<ApiResponse<any[]>> => {
   try {
     const { data, error } = await supabase
       .from('netme_rank_requirements')
@@ -127,44 +134,44 @@ export const fetchNetmeRankRequirements = async () => {
       .order('ranks_id', { ascending: true })
     if (error) {
       console.error('Error fetching netme rank requirements:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchNetmeRankRequirements:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
 // 4. Histórico de comisiones por bono
-export const fetchCommissionDetails = async (profileId: number, periodId: number) => {
+export const fetchCommissionDetails = async (profileId: number, periodId: number): Promise<ApiResponse<any[]>> => {
   try {
     const { data, error } = await supabase
       .rpc('report_commission_details', { p_profile: profileId, p_period: periodId })
     if (error) {
       console.error('Error fetching commission details:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchCommissionDetails:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
 // 4.1. Resumen de comisiones por bono
-export const fetchCommissionSummary = async (profileId: number, periods: number = 12) => {
+export const fetchCommissionSummary = async (profileId: number, periods: number = 12): Promise<ApiResponse<any[]>> => {
   try {
     const { data, error } = await supabase
       .rpc('report_commission_summary', { p_profile: profileId, p_periods: periods })
     if (error) {
       console.error('Error fetching commission summary:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchCommissionSummary:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -180,12 +187,12 @@ export const fetchNetworkActivityMember = async (profileId: number, periodStartI
       .rpc('report_binary_activity_member', params)
     if (error) {
       console.error('Error fetching network activity member:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchNetworkActivityMember:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -200,12 +207,12 @@ export const fetchNetworkActivityMemberOrders = async (profileId: number, period
       .order('transaction_date', { ascending: true })
     if (error) {
       console.error('Error fetching network activity member orders:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchNetworkActivityMemberOrders:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -216,31 +223,36 @@ export const fetchSpilloverVsBuild = async (profileId: number, periodId: number)
       .rpc('report_spillover_vs_build', { p_profile: profileId, p_period: periodId })
     if (error) {
       console.error('Error fetching spillover vs build:', error)
-      return []
+      return { success: false, data: [], error: error.message }
     }
-    return data || []
+    return { success: true, data: data || [], error: null }
   } catch (error) {
     console.error('Error in fetchSpilloverVsBuild:', error)
-    return []
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
-export async function fetchNetworkActivity(profileId: number, fromPeriodId?: number, toPeriodId?: number) {
-  let query = supabase
-    .rpc('report_binary_activity_member', {
-      p_profile: profileId,
-      ...(fromPeriodId && { p_from_period: fromPeriodId }),
-      ...(toPeriodId && { p_to_period: toPeriodId })
-    })
+export async function fetchNetworkActivity(profileId: number, fromPeriodId?: number, toPeriodId?: number): Promise<ApiResponse<any[]>> {
+  try {
+    let query = supabase
+      .rpc('report_binary_activity_member', {
+        p_profile: profileId,
+        ...(fromPeriodId && { p_from_period: fromPeriodId }),
+        ...(toPeriodId && { p_to_period: toPeriodId })
+      })
 
-  const { data, error } = await query
+    const { data, error } = await query
 
-  if (error) {
-    console.error('Error fetching network activity:', error)
-    return []
+    if (error) {
+      console.error('Error fetching network activity:', error)
+      return { success: false, data: [], error: error.message }
+    }
+
+    return { success: true, data: data || [], error: null }
+  } catch (error) {
+    console.error('Error in fetchNetworkActivity:', error)
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
-
-  return data || []
 }
 
 // 8. Renewal status - Check if user is active (returns period names)
@@ -250,12 +262,12 @@ export const fetchRenewalStatus = async (profileId: number, periodId: number) =>
       .rpc('netme_next_renewal', { p_profile: profileId, p_period: periodId })
     if (error) {
       console.error('Error fetching renewal status:', error)
-      return null
+      return { success: false, data: null, error: error.message }
     }
-    return data?.[0] || null
+    return { success: true, data: data?.[0] || null, error: null }
   } catch (error) {
     console.error('Error in fetchRenewalStatus:', error)
-    return null
+    return { success: false, data: null, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -266,11 +278,11 @@ export const fetchProfileRankSummary = async (profileId: number, periodId: numbe
       .rpc('netme_profile_rank_summary', { p_profile: profileId, p_period: periodId })
     if (error) {
       console.error('Error fetching profile rank summary:', error)
-      return null
+      return { success: false, data: null, error: error.message }
     }
-    return data?.[0] || null
+    return { success: true, data: data?.[0] || null, error: null }
   } catch (error) {
     console.error('Error in fetchProfileRankSummary:', error)
-    return null
+    return { success: false, data: null, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }

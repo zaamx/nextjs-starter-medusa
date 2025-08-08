@@ -14,7 +14,8 @@ import {
   fetchNetworkActivityMember,
   fetchNetworkActivityMemberOrders,
   fetchRenewalStatus,
-  fetchProfileRankSummary
+  fetchProfileRankSummary,
+  ApiResponse
 } from "@lib/data/netme_network"
 import { Table, Heading } from "@medusajs/ui"
 
@@ -158,6 +159,7 @@ const Overview = ({customer}: OverviewProps) => {
   const [rankSummaryData, setRankSummaryData] = useState<ProfileRankSummary | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [componentErrors, setComponentErrors] = useState<Record<string, string>>({})
 
   const netmeProfileId = (customer?.metadata as any)?.netme_profile_id
 
@@ -167,9 +169,16 @@ const Overview = ({customer}: OverviewProps) => {
 
     try {
       const detailsResult = await fetchRankProgressDetails(Number(netmeProfileId), selectedPeriod.id)
-      setRankDetailsData(detailsResult || [])
+      if (detailsResult.success) {
+        setRankDetailsData(detailsResult.data || [])
+        setComponentErrors(prev => ({ ...prev, rankDetails: '' }))
+      } else {
+        console.error('Error fetching rank details:', detailsResult.error)
+        setComponentErrors(prev => ({ ...prev, rankDetails: detailsResult.error || 'Error loading rank details' }))
+      }
     } catch (err) {
       console.error('Error fetching rank details:', err)
+      setComponentErrors(prev => ({ ...prev, rankDetails: 'Error loading rank details' }))
     }
   }
 
@@ -180,10 +189,25 @@ const Overview = ({customer}: OverviewProps) => {
         fetchNetmeRanks(),
         fetchNetmeRankRequirements()
       ])
-      setRanksData(ranksResult || [])
-      setRankRequirementsData(requirementsResult || [])
+      
+      if (ranksResult.success) {
+        setRanksData(ranksResult.data || [])
+        setComponentErrors(prev => ({ ...prev, ranks: '' }))
+      } else {
+        console.error('Error fetching ranks:', ranksResult.error)
+        setComponentErrors(prev => ({ ...prev, ranks: ranksResult.error || 'Error loading ranks' }))
+      }
+      
+      if (requirementsResult.success) {
+        setRankRequirementsData(requirementsResult.data || [])
+        setComponentErrors(prev => ({ ...prev, rankRequirements: '' }))
+      } else {
+        console.error('Error fetching rank requirements:', requirementsResult.error)
+        setComponentErrors(prev => ({ ...prev, rankRequirements: requirementsResult.error || 'Error loading rank requirements' }))
+      }
     } catch (err) {
       console.error('Error fetching ranks data:', err)
+      setComponentErrors(prev => ({ ...prev, ranks: 'Error loading ranks data' }))
     }
   }
 
@@ -213,7 +237,7 @@ const Overview = ({customer}: OverviewProps) => {
         setLoading(true)
         setError(null)
 
-        // Fetch all reports in parallel
+        // Fetch all reports in parallel with proper error handling
         const [binaryResult, unilevelResult, rankResult, spilloverResult, networkActivityResult, networkOrdersResult, renewalResult, rankSummaryResult] = await Promise.all([
           fetchBinaryLegVolume(Number(netmeProfileId), selectedPeriod.id),
           fetchUnilevelLevelVolume(Number(netmeProfileId), selectedPeriod.id, 5),
@@ -221,18 +245,89 @@ const Overview = ({customer}: OverviewProps) => {
           fetchSpilloverVsBuild(Number(netmeProfileId), selectedPeriod.id),
           fetchNetworkActivityMember(Number(netmeProfileId)),
           fetchNetworkActivityMemberOrders(Number(netmeProfileId), selectedPeriod.id),
-          currentPeriod ? fetchRenewalStatus(Number(netmeProfileId), currentPeriod.id) : Promise.resolve(null),
+          currentPeriod ? fetchRenewalStatus(Number(netmeProfileId), currentPeriod.id) : Promise.resolve({ success: true, data: null, error: null }),
           fetchProfileRankSummary(Number(netmeProfileId), selectedPeriod.id)
         ])
 
-        setBinaryData(binaryResult[0] || null)
-        setUnilevelData(unilevelResult || [])
-        setRankData(rankResult || [])
-        setSpilloverData(spilloverResult || [])
-        setNetworkActivityData(networkActivityResult || [])
-        setNetworkOrdersData(networkOrdersResult || [])
-        setRenewalData(renewalResult)
-        setRankSummaryData(rankSummaryResult)
+        // Handle binary data
+        if (binaryResult.success) {
+          setBinaryData(binaryResult.data[0] || null)
+          setComponentErrors(prev => ({ ...prev, binary: '' }))
+        } else {
+          console.error('Error loading binary data:', binaryResult.error)
+          setComponentErrors(prev => ({ ...prev, binary: binaryResult.error || 'Error loading binary data' }))
+          setBinaryData(null)
+        }
+
+        // Handle unilevel data
+        if (unilevelResult.success) {
+          setUnilevelData(unilevelResult.data || [])
+          setComponentErrors(prev => ({ ...prev, unilevel: '' }))
+        } else {
+          console.error('Error loading unilevel data:', unilevelResult.error)
+          setComponentErrors(prev => ({ ...prev, unilevel: unilevelResult.error || 'Error loading unilevel data' }))
+          setUnilevelData([])
+        }
+
+        // Handle rank data
+        if (rankResult.success) {
+          setRankData(rankResult.data || [])
+          setComponentErrors(prev => ({ ...prev, rank: '' }))
+        } else {
+          console.error('Error loading rank data:', rankResult.error)
+          setComponentErrors(prev => ({ ...prev, rank: rankResult.error || 'Error loading rank data' }))
+          setRankData([])
+        }
+
+        // Handle spillover data
+        if (spilloverResult.success) {
+          setSpilloverData(spilloverResult.data || [])
+          setComponentErrors(prev => ({ ...prev, spillover: '' }))
+        } else {
+          console.error('Error loading spillover data:', spilloverResult.error)
+          setComponentErrors(prev => ({ ...prev, spillover: spilloverResult.error || 'Error loading spillover data' }))
+          setSpilloverData([])
+        }
+
+        // Handle network activity data
+        if (networkActivityResult.success) {
+          setNetworkActivityData(networkActivityResult.data || [])
+          setComponentErrors(prev => ({ ...prev, networkActivity: '' }))
+        } else {
+          console.error('Error loading network activity data:', networkActivityResult.error)
+          setComponentErrors(prev => ({ ...prev, networkActivity: networkActivityResult.error || 'Error loading network activity data' }))
+          setNetworkActivityData([])
+        }
+
+        // Handle network orders data
+        if (networkOrdersResult.success) {
+          setNetworkOrdersData(networkOrdersResult.data || [])
+          setComponentErrors(prev => ({ ...prev, networkOrders: '' }))
+        } else {
+          console.error('Error loading network orders data:', networkOrdersResult.error)
+          setComponentErrors(prev => ({ ...prev, networkOrders: networkOrdersResult.error || 'Error loading network orders data' }))
+          setNetworkOrdersData([])
+        }
+
+        // Handle renewal data
+        if (renewalResult.success) {
+          setRenewalData(renewalResult.data)
+          setComponentErrors(prev => ({ ...prev, renewal: '' }))
+        } else {
+          console.error('Error loading renewal data:', renewalResult.error)
+          setComponentErrors(prev => ({ ...prev, renewal: renewalResult.error || 'Error loading renewal data' }))
+          setRenewalData(null)
+        }
+
+        // Handle rank summary data
+        if (rankSummaryResult.success) {
+          setRankSummaryData(rankSummaryResult.data)
+          setComponentErrors(prev => ({ ...prev, rankSummary: '' }))
+        } else {
+          console.error('Error loading rank summary data:', rankSummaryResult.error)
+          setComponentErrors(prev => ({ ...prev, rankSummary: rankSummaryResult.error || 'Error loading rank summary data' }))
+          setRankSummaryData(null)
+        }
       } catch (err) {
         console.error('Error fetching overview data:', err)
         setError('Error loading data')
@@ -244,27 +339,65 @@ const Overview = ({customer}: OverviewProps) => {
     fetchData()
   }, [netmeProfileId, selectedPeriod, currentPeriod])
 
-  // Calculate KPIs from real data
+  // Calculate KPIs from real data with error handling
   const getKPIs = () => {
-    if (!binaryData || !unilevelData || spilloverData.length === 0) return []
+    const kpis = []
+    
+    // Week and Period Volume from binary data
+    if (binaryData && !componentErrors.binary) {
+      const totalCV = binaryData.cv_period_left + binaryData.cv_period_right
+      const weekCV = binaryData.cv_week_left + binaryData.cv_week_right
+      kpis.push(
+        { label: "Vol. Semana", value: `${weekCV.toLocaleString()} CV`, countdown: false },
+        { label: "Vol. Periodo", value: `${totalCV.toLocaleString()} CV`, countdown: false },
+        { label: "Puntos Pagados", value: `${binaryData.pairs_paid.toLocaleString()}`, countdown: false }
+      )
+    } else if (componentErrors.binary) {
+      kpis.push(
+        { label: "Vol. Semana", value: "Error", countdown: false },
+        { label: "Vol. Periodo", value: "Error", countdown: false },
+        { label: "Puntos Pagados", value: "Error", countdown: false }
+      )
+    } else {
+      kpis.push(
+        { label: "Vol. Semana", value: "0 CV", countdown: false },
+        { label: "Vol. Periodo", value: "0 CV", countdown: false },
+        { label: "Puntos Pagados", value: "0", countdown: false }
+      )
+    }
+    
+    // Actives from unilevel data
+    if (unilevelData.length > 0 && !componentErrors.unilevel) {
+      const totalActives = unilevelData.reduce((sum, level) => sum + level.actives, 0)
+      kpis.push({ label: "Activos Unilevel", value: `${totalActives} activos`, countdown: false })
+    } else if (componentErrors.unilevel) {
+      kpis.push({ label: "Activos Unilevel", value: "Error", countdown: false })
+    } else {
+      kpis.push({ label: "Activos Unilevel", value: "0 activos", countdown: false })
+    }
+    
+    // Spillover from spillover data
+    if (spilloverData.length > 0 && !componentErrors.spillover) {
+      const totalSpillover = spilloverData.reduce((sum, item) => sum + item.cv_spillover, 0)
+      kpis.push({ label: "Derrame Recibido", value: `${totalSpillover.toLocaleString()} CV`, countdown: false })
+    } else if (componentErrors.spillover) {
+      kpis.push({ label: "Derrame Recibido", value: "Error", countdown: false })
+    } else {
+      kpis.push({ label: "Derrame Recibido", value: "0 CV", countdown: false })
+    }
 
-    const totalCV = binaryData.cv_period_left + binaryData.cv_period_right
-    const weekCV = binaryData.cv_week_left + binaryData.cv_week_right
-    const totalActives = unilevelData.reduce((sum, level) => sum + level.actives, 0)
-    const totalSpillover = spilloverData.reduce((sum, item) => sum + item.cv_spillover, 0)
-
-    return [
-      { label: "Vol. Semana", value: `${weekCV.toLocaleString()} CV`, countdown: false },
-      { label: "Vol. Periodo", value: `${totalCV.toLocaleString()} CV`, countdown: false },
-      { label: "Puntos Pagados", value: `${binaryData.pairs_paid.toLocaleString()}`, countdown: false },
-      { label: "Activos Unilevel", value: `${totalActives} activos`, countdown: false },
-      { label: "Derrame Recibido", value: `${totalSpillover.toLocaleString()} CV`, countdown: false },
-    ]
+    return kpis
   }
 
-  // Calculate rank progress percentage
+  // Calculate rank progress percentage with error handling
   const getRankProgress = () => {
-    if (!rankData || rankData.length === 0) return { percent: 0, missing: "Cargando datos..." }
+    if (componentErrors.rank) {
+      return { percent: 0, missing: "Error cargando datos de rango" }
+    }
+    
+    if (!rankData || rankData.length === 0) {
+      return { percent: 0, missing: "Cargando datos..." }
+    }
 
     const currentRank = rankData[0]
     const totalNeeded = currentRank.qv_needed + currentRank.act_left_needed + currentRank.act_right_needed
@@ -286,9 +419,14 @@ const Overview = ({customer}: OverviewProps) => {
     return { percent, missing: missingText || "¡Completaste todos los requisitos!" }
   }
 
-  // Generate alerts based on real data
+  // Generate alerts based on real data with error handling
   const getAlerts = () => {
     const alerts: Array<{ type: string; message: string }> = []
+    
+    if (componentErrors.rank) {
+      alerts.push({ type: "Error", message: "No se pudieron cargar los datos de rango." })
+      return alerts
+    }
     
     if (!rankData || rankData.length === 0) return alerts
 
@@ -349,8 +487,8 @@ const Overview = ({customer}: OverviewProps) => {
               {customer?.first_name} {customer?.last_name} &nbsp;| ID: {(customer?.metadata as any)?.netme_profile_id}
             </div>
             <div className="text-xs text-blue-600 font-semibold">
-              {rankData.length > 0 ? rankData[0].current_rank : "Cargando..."}
-              {rankSummaryData && (
+              {componentErrors.rank ? "Error" : (rankData.length > 0 ? rankData[0].current_rank : "Cargando...")}
+              {rankSummaryData && !componentErrors.rankSummary && (
               <span className="text-xs text-gray-500">
                 &nbsp; -- <span className="mr-2">Vitálicio: {rankSummaryData.lifetime_rank_name}</span>
                 <span>Anterior: {rankSummaryData.month_rank_name}</span>
@@ -361,7 +499,7 @@ const Overview = ({customer}: OverviewProps) => {
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Compact Renewal Status */}
-          {renewalData && (
+          {renewalData && !componentErrors.renewal && (
             <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium ${
               renewalData.days_left > 0 
                 ? 'bg-green-100 text-green-800 border border-green-200' 
@@ -393,12 +531,6 @@ const Overview = ({customer}: OverviewProps) => {
             <FaTrophy className="mr-1 text-xs sm:text-sm" />
             <span className="font-bold text-xs sm:text-sm">Ver Rangos</span>
           </button>
-          {/* <div className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 sm:px-3 py-1 rounded-lg shadow">
-            <FaWallet className="mr-1 text-xs sm:text-sm" />
-            <span className="font-bold text-xs sm:text-sm">
-                              {rankData.length > 0 ? `${rankData[0].qv_total.toLocaleString()} QV` : "0 QV"}
-            </span>
-          </div> */}
         </div>
       </header>
 
@@ -417,15 +549,13 @@ const Overview = ({customer}: OverviewProps) => {
           </div>
         </div>
 
-
-
         {/* Main Content Grid - Responsive */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           
           {/* Left Column */}
           <div className="space-y-4">
             {/* Calculadora de Avance */}
-            {rankData.length > 0 && (
+            {rankData.length > 0 && !componentErrors.rank && (
               <div className="rounded-2xl p-4 sm:p-6 shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white relative overflow-hidden">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
                   <div>
@@ -450,6 +580,17 @@ const Overview = ({customer}: OverviewProps) => {
               </div>
             )}
 
+            {/* Error state for rank calculator */}
+            {componentErrors.rank && (
+              <div className="rounded-2xl p-4 sm:p-6 shadow-lg bg-red-100 border border-red-300 text-red-800">
+                <div className="flex items-center gap-2">
+                  <FaBell className="text-red-600" />
+                  <div className="font-bold">Error cargando calculadora de avance</div>
+                </div>
+                <div className="text-sm mt-2">{componentErrors.rank}</div>
+              </div>
+            )}
+
             {/* Alertas */}
             {alerts.length > 0 && (
               <div className="bg-white rounded-2xl shadow p-4 flex flex-col gap-2 border-l-4 border-red-400">
@@ -467,7 +608,7 @@ const Overview = ({customer}: OverviewProps) => {
             )}
 
             {/* Volumen Binario de Pierna */}
-            {binaryData && (
+            {binaryData && !componentErrors.binary && (
               <div className="bg-white rounded-2xl shadow p-4">
                 <div className="font-bold text-gray-900 mb-3">Volumen Binario de Pierna</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -522,8 +663,16 @@ const Overview = ({customer}: OverviewProps) => {
               </div>
             )}
 
+            {/* Error state for binary data */}
+            {componentErrors.binary && (
+              <div className="bg-red-50 rounded-2xl shadow p-4 border border-red-200">
+                <div className="font-bold text-red-600 mb-2">Error cargando volumen binario</div>
+                <div className="text-sm text-red-700">{componentErrors.binary}</div>
+              </div>
+            )}
+
             {/* Volumen por Nivel (Unilevel) */}
-            {unilevelData.length > 0 && (
+            {unilevelData.length > 0 && !componentErrors.unilevel && (
               <div className="bg-white rounded-2xl shadow p-4">
                 <div className="font-bold text-gray-900 mb-3">Volumen por Nivel (Unilevel)</div>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -538,13 +687,18 @@ const Overview = ({customer}: OverviewProps) => {
                         <div className="text-xs text-gray-500">Nivel {level.level}</div>
                         <div className="text-sm font-bold text-gray-900">{level.cv_total.toLocaleString()}</div>
                         <div className="text-xs text-blue-600 font-semibold">{percentage}%</div>
-                        {/* <div className="text-xs text-green-600 font-medium">
-                          ${commission.toLocaleString()}
-                        </div> */}
                       </div>
                     )
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* Error state for unilevel data */}
+            {componentErrors.unilevel && (
+              <div className="bg-red-50 rounded-2xl shadow p-4 border border-red-200">
+                <div className="font-bold text-red-600 mb-2">Error cargando volumen unilevel</div>
+                <div className="text-sm text-red-700">{componentErrors.unilevel}</div>
               </div>
             )}
           </div>
@@ -552,7 +706,7 @@ const Overview = ({customer}: OverviewProps) => {
           {/* Right Column */}
           <div className="space-y-4">
             {/* Spillover vs Construcción Propia */}
-            {spilloverData.length > 0 && (
+            {spilloverData.length > 0 && !componentErrors.spillover && (
               <div className="bg-white rounded-2xl shadow p-4">
                 <div className="font-bold text-gray-900 mb-3">Derrame vs. Construcción Propia</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -573,10 +727,23 @@ const Overview = ({customer}: OverviewProps) => {
               </div>
             )}
 
+            {/* Error state for spillover data */}
+            {componentErrors.spillover && (
+              <div className="bg-red-50 rounded-2xl shadow p-4 border border-red-200">
+                <div className="font-bold text-red-600 mb-2">Error cargando datos de derrame</div>
+                <div className="text-sm text-red-700">{componentErrors.spillover}</div>
+              </div>
+            )}
+
             {/* Actividad de la Red */}
             <div className="bg-white rounded-2xl shadow p-4">
               <div className="font-bold text-gray-900 mb-3">Actividad de la Red</div>
-              {currentPeriodActivity ? (
+              {componentErrors.networkActivity ? (
+                <div className="text-center py-4 text-red-600">
+                  <div className="font-medium">Error cargando actividad de la red</div>
+                  <div className="text-sm mt-1">{componentErrors.networkActivity}</div>
+                </div>
+              ) : currentPeriodActivity ? (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
                     <div className="text-lg font-bold text-blue-600">{currentPeriodActivity.new_orders}</div>
@@ -608,7 +775,12 @@ const Overview = ({customer}: OverviewProps) => {
                 <div className="font-bold text-gray-900">Órdenes del Periodo</div>
                 <span className="text-xs text-gray-500">{networkOrdersData.length} órdenes</span>
               </div>
-              {networkOrdersData.length > 0 ? (
+              {componentErrors.networkOrders ? (
+                <div className="text-center py-4 text-red-600">
+                  <div className="font-medium">Error cargando órdenes</div>
+                  <div className="text-sm mt-1">{componentErrors.networkOrders}</div>
+                </div>
+              ) : networkOrdersData.length > 0 ? (
                 <div className="overflow-x-auto">
                   {/* Mobile Card View */}
                   <div className="lg:hidden space-y-2">
@@ -712,30 +884,6 @@ const Overview = ({customer}: OverviewProps) => {
           </a>
         </div>
       </div>
-
-      {/* Responsive Floating Action Button */}
-      {/* <div className="fixed bottom-4 sm:bottom-8 right-4 sm:right-8 z-30">
-        <button
-          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full shadow-lg w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center text-2xl sm:text-3xl hover:scale-105 transition"
-          onClick={() => setShowFAB((v) => !v)}
-                          aria-label="Acciones Rápidas"
-        >
-          +
-        </button>
-        {showFAB && (
-          <div className="absolute bottom-16 sm:bottom-20 right-0 flex flex-col gap-2 sm:gap-3 items-end animate-fade-in">
-            <button className="bg-white shadow px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 text-blue-700 font-semibold hover:bg-blue-50 text-sm">
-              <FaShoppingCart className="text-xs" /> Comprar
-            </button>
-            <button className="bg-white shadow px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 text-green-700 font-semibold hover:bg-green-50 text-sm">
-              <FaUserPlus className="text-xs" /> Patrocinar
-            </button>
-            <button className="bg-white shadow px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 text-purple-700 font-semibold hover:bg-purple-50 text-sm">
-              <FaMoneyBillWave className="text-xs" /> Retirar saldo
-            </button>
-          </div>
-        )}
-      </div> */}
 
       {/* Responsive Target Modal */}
       {showTargetModal && rankData.length > 0 && (
@@ -921,4 +1069,3 @@ const Overview = ({customer}: OverviewProps) => {
   );
 };
 export default Overview;
-
