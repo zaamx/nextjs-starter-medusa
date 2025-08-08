@@ -1,9 +1,8 @@
 import { Metadata } from "next"
-
-import Overview from "@modules/office/components/overview"
 import { notFound } from "next/navigation"
 import { retrieveCustomer } from "@lib/data/customer"
 import { listOrders } from "@lib/data/orders"
+import OverviewWrapper from "@modules/office/components/overview/OverviewWrapper"
 
 export const metadata: Metadata = {
   title: "Oficina Virtual",
@@ -18,5 +17,5 @@ export default async function OverviewTemplate() {
     notFound()
   }
 
-  return <Overview customer={customer} orders={orders} />
+  return <OverviewWrapper customer={customer} orders={orders} />
 }

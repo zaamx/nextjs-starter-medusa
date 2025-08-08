@@ -1,8 +1,8 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { sdk } from "@lib/config"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import Input from "@modules/common/components/input"
@@ -18,22 +18,11 @@ const ResetPasswordTemplate = ({ countryCode }: Props) => {
   const [message, setMessage] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   // Get token and email from URL parameters
-  const searchParams = useMemo(() => {
-    if (typeof window === "undefined") {
-      return null
-    }
-    return new URLSearchParams(window.location.search)
-  }, [])
-
-  const token = useMemo(() => {
-    return searchParams?.get("token")
-  }, [searchParams])
-
-  const email = useMemo(() => {
-    return searchParams?.get("email")
-  }, [searchParams])
+  const token = searchParams.get("token")
+  const email = searchParams.get("email")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
