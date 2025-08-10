@@ -34,11 +34,11 @@ export default function UnilevelNetworkWidget({ netmeProfileId }: { netmeProfile
     setLoading(true)
     fetchUnilevelNetwork(netmeProfileId)
       .then(res => {
-        const tree = buildTree(res, netmeProfileId)
-        console.log(tree)
+        console
+        const tree = buildTree(res.data, netmeProfileId)
         setTreeData(tree)
       })
-      .catch(() => setError('Error fetching network'))
+      .catch(() => setError('Error fetching network Unilevel'))
       .finally(() => setLoading(false))
   }, [netmeProfileId])
 

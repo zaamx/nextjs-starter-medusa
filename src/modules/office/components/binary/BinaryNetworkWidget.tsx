@@ -97,11 +97,11 @@ export default function UnilevelNetworkWidget({ netmeProfileId }: { netmeProfile
     setLoading(true)
     fetchBinaryNetwork(netmeProfileId)
       .then(res => {
-        const processed = addVacantNodesToData(res)
+        const processed = addVacantNodesToData(res.data)
         const tree = buildTree(processed, netmeProfileId)
         setTreeData(tree)
       })
-      .catch(() => setError('Error fetching network'))
+      .catch(() => setError('Error fetching network Binary'))
       .finally(() => setLoading(false))
   }, [netmeProfileId])
 
