@@ -79,7 +79,13 @@ export default function CommissionsPage() {
         setError(null);
 
         // Fetch commission summary for last 12 periods
-        const summaryData = await fetchCommissionSummary(Number(netmeProfileId), 12);
+        const summaryResponse = await fetchCommissionSummary(Number(netmeProfileId), 12);
+        
+        if (!summaryResponse.success) {
+          throw new Error(summaryResponse.error || 'Error fetching commission summary');
+        }
+        
+        const summaryData = summaryResponse.data;
         
         // Group summary data by period
         const groupedSummary = summaryData.reduce((acc: CommissionSummaryGrouped[], item: CommissionSummary) => {
@@ -109,8 +115,14 @@ export default function CommissionsPage() {
 
         // Fetch commission details for selected period
         if (selectedPeriod) {
-          const detailsData = await fetchCommissionDetails(Number(netmeProfileId), selectedPeriod.id);
-          setCommissionDetails(detailsData);
+          const detailsResponse = await fetchCommissionDetails(Number(netmeProfileId), selectedPeriod.id);
+          
+          if (detailsResponse.success) {
+            setCommissionDetails(detailsResponse.data);
+          } else {
+            console.error('Error fetching commission details:', detailsResponse.error);
+            setCommissionDetails([]);
+          }
         }
 
       } catch (err) {
