@@ -394,7 +394,7 @@ const Overview = ({customer}: OverviewProps) => {
       kpis.push({ label: "Derrame Recibido", value: "0 CV", countdown: false })
     }
 
-    return kpis
+    return kpis 
   }
 
   // Generate alerts based on real data with error handling
