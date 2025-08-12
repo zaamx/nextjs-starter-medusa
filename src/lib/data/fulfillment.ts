@@ -28,7 +28,9 @@ export const listCartShippingMethods = async (cartId: string) => {
         cache: "force-cache",
       }
     )
-    .then(({ shipping_options }) => shipping_options)
+    .then(({ shipping_options }) => {
+      return shipping_options
+    })
     .catch(() => {
       return null
     })

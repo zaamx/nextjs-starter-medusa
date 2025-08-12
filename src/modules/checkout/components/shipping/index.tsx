@@ -21,7 +21,7 @@ type ShippingProps = {
   availableShippingMethods: HttpTypes.StoreCartShippingOption[] | null
 }
 
-function formatAddress(address) {
+function formatAddress(address: any) {
   if (!address) {
     return ""
   }
@@ -70,12 +70,25 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const isOpen = searchParams.get("step") === "delivery"
 
-  const _shippingMethods = availableShippingMethods?.filter(
-    (sm) => sm.service_zone?.fulfillment_set?.type !== "pickup"
+  // Check if cart contains WNSTART SKU
+  const hasWNSTARTSku = cart.items?.some(item => item.variant_sku === "WNSTART")
+
+  // Filter shipping methods based on WNSTART SKU presence
+  // When WNSTART is present: show all options (including enrollment ones)
+  // When WNSTART is NOT present: hide enrollment options
+  const filteredShippingMethods = hasWNSTARTSku 
+    ? availableShippingMethods
+    : availableShippingMethods?.filter(sm => 
+        sm.name !== "Free Shipping on Enrollment" && 
+        sm.name !== "Envio Gratuito en Inscrición"
+      )
+
+  const _shippingMethods = filteredShippingMethods?.filter(
+    (sm) => (sm as any).service_zone?.fulfillment_set?.type !== "pickup"
   )
 
-  const _pickupMethods = availableShippingMethods?.filter(
-    (sm) => sm.service_zone?.fulfillment_set?.type === "pickup"
+  const _pickupMethods = filteredShippingMethods?.filter(
+    (sm) => (sm as any).service_zone?.fulfillment_set?.type === "pickup"
   )
 
   const hasPickupOptions = !!_pickupMethods?.length
@@ -199,7 +212,7 @@ const Shipping: React.FC<ShippingProps> = ({
                     value={showPickupOptions}
                     onChange={(value) => {
                       const id = _pickupMethods.find(
-                        (option) => !option.insufficient_inventory
+                        (option: any) => !option.insufficient_inventory
                       )?.id
 
                       if (id) {
@@ -312,7 +325,7 @@ const Shipping: React.FC<ShippingProps> = ({
                         <Radio
                           key={option.id}
                           value={option.id}
-                          disabled={option.insufficient_inventory}
+                          disabled={(option as any).insufficient_inventory}
                           data-testid="delivery-option-radio"
                           className={clx(
                             "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
@@ -320,7 +333,7 @@ const Shipping: React.FC<ShippingProps> = ({
                               "border-ui-border-interactive":
                                 option.id === shippingMethodId,
                               "hover:shadow-brders-none cursor-not-allowed":
-                                option.insufficient_inventory,
+                                (option as any).insufficient_inventory,
                             }
                           )}
                         >
@@ -334,7 +347,7 @@ const Shipping: React.FC<ShippingProps> = ({
                               </span>
                               <span className="text-base-regular text-ui-fg-muted">
                                 {formatAddress(
-                                  option.service_zone?.fulfillment_set?.location
+                                  (option as any).service_zone?.fulfillment_set?.location
                                     ?.address
                                 )}
                               </span>
