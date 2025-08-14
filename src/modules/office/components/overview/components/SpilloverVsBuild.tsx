@@ -17,7 +17,7 @@ const SpilloverVsBuildComponent: React.FC<SpilloverVsBuildProps> = ({ spilloverD
   if (error) {
     return (
       <div className="bg-red-50 rounded-2xl shadow p-4 border border-red-200">
-        <div className="font-bold text-red-600 mb-2">Error cargando datos de Linea de Poder</div>
+        <div className="font-bold text-red-600 mb-2">Error cargando datos de Línea de Poder</div>
         <div className="text-sm text-red-700">{error}</div>
       </div>
     )
@@ -26,7 +26,7 @@ const SpilloverVsBuildComponent: React.FC<SpilloverVsBuildProps> = ({ spilloverD
   if (!spilloverData || spilloverData.length === 0) {
     return (
       <div className="bg-gray-50 rounded-2xl shadow p-4 border border-gray-200">
-        <div className="font-bold text-gray-600 mb-2">Linea de Poder vs. Construcción</div>
+        <div className="font-bold text-gray-600 mb-2">Línea de Poder vs. Construcción</div>
         <div className="text-sm text-gray-700">No hay datos disponibles</div>
       </div>
     )
@@ -34,7 +34,7 @@ const SpilloverVsBuildComponent: React.FC<SpilloverVsBuildProps> = ({ spilloverD
 
   return (
     <div className="bg-white rounded-2xl shadow p-4">
-      <div className="font-bold text-gray-900 mb-3">Linea de Poder vs. Construcción</div>
+      <div className="font-bold text-gray-900 mb-3">Línea de Poder vs. Construcción</div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {spilloverData.map((leg, idx) => (
           <div key={idx} className="text-center">
