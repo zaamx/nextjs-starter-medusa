@@ -644,7 +644,7 @@ const Overview = ({customer}: OverviewProps) => {
                 {/* Spillover Volume */}
                 <div className="bg-green-50 rounded-lg p-3 mb-3">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium text-green-900">Derrame (Spillover)</span>
+                    <span className="font-medium text-green-900">Linea de Poder (Power Line)</span>
                     <span className="text-sm text-green-700">
                       {(rankDetailsData[0].qv_spill_current || 0).toLocaleString()} / {(rankDetailsData[0].qv_spill_needed || 0).toLocaleString()} QV
                     </span>
@@ -722,7 +722,7 @@ const Overview = ({customer}: OverviewProps) => {
             <div className="text-xs text-gray-400 border-t pt-3">
               Cumple todos los requisitos para avanzar de rango.
               <div className="mt-2 text-blue-600">
-                <strong>Nota:</strong> Al menos 70% del volumen debe provenir del lado de construcción, y 30% del lado del derrame.
+                <strong>Nota:</strong> Màximo un 70% del volumen debe provenir de la construcción, y al menos un 30% de la Linea de Poder.
               </div>
             </div>
           </div>
