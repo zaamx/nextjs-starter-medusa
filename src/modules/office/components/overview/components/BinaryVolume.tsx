@@ -32,7 +32,7 @@ const BinaryVolume: React.FC<BinaryVolumeProps> = ({ binaryData, error }) => {
   if (!binaryData) {
     return (
       <div className="bg-gray-50 rounded-2xl shadow p-4 border border-gray-200">
-        <div className="font-bold text-gray-600 mb-2">Volumen Binario de Pierna</div>
+        <div className="font-bold text-gray-600 mb-2">Volumen Binario</div>
         <div className="text-sm text-gray-700">No hay datos disponibles</div>
       </div>
     )
@@ -48,7 +48,7 @@ const BinaryVolume: React.FC<BinaryVolumeProps> = ({ binaryData, error }) => {
           <div className="text-lg font-bold text-blue-600">
             {(binaryData.cv_week_left || 0).toLocaleString()} CV
           </div>
-          <div className="text-xs text-gray-400">Generado esta semana</div>
+          <div className="text-xs text-gray-400">Volumen de esta semana</div>
           <div className="text-lg font-bold text-orange-600">
             {(binaryData.bank_prev_left || 0).toLocaleString()} CV
           </div>
@@ -60,7 +60,7 @@ const BinaryVolume: React.FC<BinaryVolumeProps> = ({ binaryData, error }) => {
           <div className="text-lg font-bold text-purple-600">
             {(binaryData.carry_left || 0).toLocaleString()} CV
           </div>
-          <div className="text-xs text-purple-600">Volumen que se arrastrará al próximo period</div>
+          <div className="text-xs text-purple-600">Acumulados al Banco Binario</div>
         </div>
 
         {/* Pierna Derecha */}
@@ -69,7 +69,7 @@ const BinaryVolume: React.FC<BinaryVolumeProps> = ({ binaryData, error }) => {
           <div className="text-lg font-bold text-blue-600">
             {(binaryData.cv_week_right || 0).toLocaleString()} CV
           </div>
-          <div className="text-xs text-gray-400">Generado esta semana</div>
+          <div className="text-xs text-gray-400">Volumen de esta semana</div>
           <div className="text-lg font-bold text-orange-600">
             {(binaryData.bank_prev_right || 0).toLocaleString()} CV
           </div>
@@ -81,7 +81,7 @@ const BinaryVolume: React.FC<BinaryVolumeProps> = ({ binaryData, error }) => {
           <div className="text-lg font-bold text-purple-600">
             {(binaryData.carry_right || 0).toLocaleString()} CV
           </div>
-          <div className="text-xs text-purple-600">Volumen que se arrastrará al próximo period</div>
+          <div className="text-xs text-purple-600">Acumulados al Banco Binario</div>
         </div>
       </div>
       <div className="mt-3 pt-3 border-t border-gray-100">
