@@ -26,7 +26,7 @@ const SpilloverVsBuildComponent: React.FC<SpilloverVsBuildProps> = ({ spilloverD
   if (!spilloverData || spilloverData.length === 0) {
     return (
       <div className="bg-gray-50 rounded-2xl shadow p-4 border border-gray-200">
-        <div className="font-bold text-gray-600 mb-2">Linea de Poder vs. Construcción Propia</div>
+        <div className="font-bold text-gray-600 mb-2">Linea de Poder vs. Construcción</div>
         <div className="text-sm text-gray-700">No hay datos disponibles</div>
       </div>
     )
@@ -34,13 +34,13 @@ const SpilloverVsBuildComponent: React.FC<SpilloverVsBuildProps> = ({ spilloverD
 
   return (
     <div className="bg-white rounded-2xl shadow p-4">
-      <div className="font-bold text-gray-900 mb-3">Linea de Poder vs. Construcción Propia</div>
+      <div className="font-bold text-gray-900 mb-3">Linea de Poder vs. Construcción</div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {spilloverData.map((leg, idx) => (
           <div key={idx} className="text-center">
             <div className="text-sm text-gray-500">Pierna {leg.side === 'left' ? 'Izquierda' : 'Derecha'}</div>
             <div className="text-lg font-bold text-blue-600">{(leg.cv_personal || 0).toLocaleString()} CV</div>
-            <div className="text-xs text-blue-600">Construcción propia</div>
+            <div className="text-xs text-blue-600">Construcción</div>
             <div className="text-lg font-bold text-green-600">{(leg.cv_spillover || 0).toLocaleString()} CV</div>
             <div className="text-xs text-green-600">Volumen recibido de tus uplines</div>
             <div className="text-lg font-bold text-purple-600">
