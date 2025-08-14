@@ -229,7 +229,7 @@ const Overview = ({customer}: OverviewProps) => {
     switch (type) {
       case 1: return "QV Personal"
       case 2: return "Construcción"
-      case 3: return "Spread"
+      case 3: return "Línea de Poder"
       default: return "Otro"
     }
   }
@@ -623,7 +623,7 @@ const Overview = ({customer}: OverviewProps) => {
                 {/* Construction Volume */}
                 <div className="bg-blue-50 rounded-lg p-3 mb-3">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium text-blue-900">Construcción Propia</span>
+                    <span className="font-medium text-blue-900">Construcción</span>
                     <span className="text-sm text-blue-700">
                       {(rankDetailsData[0].qv_const_current || 0).toLocaleString()} / {(rankDetailsData[0].qv_const_needed || 0).toLocaleString()} QV
                     </span>
@@ -722,7 +722,7 @@ const Overview = ({customer}: OverviewProps) => {
             <div className="text-xs text-gray-400 border-t pt-3">
               Cumple todos los requisitos para avanzar de rango.
               <div className="mt-2 text-blue-600">
-                <strong>Nota:</strong> Màximo un 70% del volumen debe provenir de la construcción, y al menos un 30% de la Linea de Poder.
+                <strong>Nota:</strong> Al menos un 70% del volumen debe provenir de la construcción, y máximo un 30% de la Linea de Poder.
               </div>
             </div>
           </div>
@@ -747,7 +747,7 @@ const Overview = ({customer}: OverviewProps) => {
                         <p className="text-sm text-gray-600">Nivel {rank.level}</p>
                       </div>
                       <div className="text-right">
-                        <div className="text-xs text-gray-500">Cap USD</div>
+                        <div className="text-xs text-gray-500">Tope USD</div>
                         <div className="font-bold text-green-600">${rank.cap_usd?.toLocaleString() || '0'}</div>
                       </div>
                     </div>

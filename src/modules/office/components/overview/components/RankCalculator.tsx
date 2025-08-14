@@ -96,9 +96,9 @@ const RankCalculator: React.FC<RankCalculatorProps> = ({ rankData, error, onShow
       <div className="w-full bg-white/30 rounded-full h-3 mt-2 mb-1">
         <div className="bg-white h-3 rounded-full transition-all duration-500" style={{ width: `${rankProgress.percent}%` }} />
       </div>
-      <div className="text-xs font-semibold mt-1">{rankProgress.percent}% hacia el siguiente rango</div>
+      <div className="text-xs font-semibold mt-1">{rankProgress.percent}% para el siguiente rango</div>
       <div className="text-sm mt-2 font-medium">{rankProgress.missing}</div>
-      <div className="text-xs text-white">Máximo un 70% del volumen debe provenir de la Construcción, y al menos un 30% de la Linea de Poder.</div>
+      <div className="text-xs text-white">Al menos un 70% del volumen debe provenir de la Construcción, y máximo un 30% de la Linea de Poder.</div>
     </div>
   )
 }
