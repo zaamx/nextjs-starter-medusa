@@ -40,7 +40,7 @@ const BinaryVolume: React.FC<BinaryVolumeProps> = ({ binaryData, error }) => {
 
   return (
     <div className="bg-white rounded-2xl shadow p-4">
-      <div className="font-bold text-gray-900 mb-3">Volumen Binario de Pierna</div>
+      <div className="font-bold text-gray-900 mb-3">Volumen Binario</div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Pierna Izquierda */}
         <div className="text-center">
