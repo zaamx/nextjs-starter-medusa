@@ -40,7 +40,7 @@ export default async function OrderCompletedTemplate({
           </Heading>
           <OrderDetails order={order} customer={customer} />
           <Heading level="h2" className="flex flex-row text-3xl-regular">
-            Summary
+            Resumen
           </Heading>
           <Items order={order} />
           <CartTotals totals={order} />
