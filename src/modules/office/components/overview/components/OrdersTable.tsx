@@ -50,7 +50,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
                     {order.is_first_sale ? 'Primera Venta' : 'Re-orden'}
                   </span>
                   <span className={`px-2 py-1 rounded-full text-xs ${order.is_subscription ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {order.is_subscription ? 'Autoship' : 'Manual'}
+                    {order.is_subscription ? 'Autoenvío' : 'Manual'}
                   </span>
                 </div>
               </div>
@@ -66,8 +66,9 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
                   <Table.HeaderCell className="text-xs">Profundidad</Table.HeaderCell>
                   <Table.HeaderCell className="text-xs">Posición</Table.HeaderCell>
                   <Table.HeaderCell className="text-xs">Primera Venta</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Autoship</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs">Autoenvío</Table.HeaderCell>
                   <Table.HeaderCell className="text-xs">CV</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs">QV</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
