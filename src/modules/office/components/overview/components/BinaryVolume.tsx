@@ -48,7 +48,7 @@ const BinaryVolume: React.FC<BinaryVolumeProps> = ({ binaryData, error }) => {
           <div className="text-lg font-bold text-blue-600">
             {(binaryData.cv_week_left || 0).toLocaleString()} CV
           </div>
-          <div className="text-xs text-gray-400">Volumen de esta semana</div>
+          <div className="text-xs text-gray-400">Volumen del período</div>
           <div className="text-lg font-bold text-orange-600">
             {(binaryData.bank_prev_left || 0).toLocaleString()} CV
           </div>
@@ -69,7 +69,7 @@ const BinaryVolume: React.FC<BinaryVolumeProps> = ({ binaryData, error }) => {
           <div className="text-lg font-bold text-blue-600">
             {(binaryData.cv_week_right || 0).toLocaleString()} CV
           </div>
-          <div className="text-xs text-gray-400">Volumen de esta semana</div>
+          <div className="text-xs text-gray-400">Volumen del período</div>
           <div className="text-lg font-bold text-orange-600">
             {(binaryData.bank_prev_right || 0).toLocaleString()} CV
           </div>
