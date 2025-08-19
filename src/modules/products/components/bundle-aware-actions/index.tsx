@@ -281,10 +281,10 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
         {/* Bundle Header */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h3 className="text-lg font-semibold text-blue-800 mb-2">
-            Bundle Product
+            Productos del paquete
           </h3>
           <p className="text-blue-700 text-sm">
-            {bundleMeta.bundle_description || `Create your custom bundle with ${bundleData.bundle.child_products.data.length} available products.`}
+            {bundleMeta.bundle_description || `Crea tu paquete personalizado con ${bundleData.bundle.child_products.data.length} productos disponibles.`}
           </p>
           <ProductPrice product={product} variant={bundleVariant} />
         </div>
@@ -292,18 +292,18 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
         {/* Bundle Validation Status */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-medium text-gray-900">Bundle Requirements</h4>
+            <h4 className="text-sm font-medium text-gray-900">Requisitos del paquete</h4>
             <span className={`px-2 py-1 text-xs font-medium rounded-full ${
               isValidSelection 
                 ? 'bg-green-100 text-green-800' 
                 : 'bg-yellow-100 text-yellow-800'
             }`}>
-              {isValidSelection ? "Complete" : "Incomplete"}
+              {isValidSelection ? "Completo" : "Incompleto"}
             </span>
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-700">Total Products Selected</span>
+              <span className="text-gray-700">Total de productos seleccionados</span>
               <span className="font-medium">
                 {totalSelectedQuantity} / {totalMaxQuantity}
               </span>
@@ -324,10 +324,10 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
           {!isValidSelection && (
             <div className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
               {totalSelectedQuantity < totalMaxQuantity && (
-                <p>• Select {totalMaxQuantity - totalSelectedQuantity} more product(s)</p>
+                <p>• Selecciona {totalMaxQuantity - totalSelectedQuantity} más producto(s)</p>
               )}
               {totalSelectedQuantity > totalMaxQuantity && (
-                <p>• Remove {totalSelectedQuantity - totalMaxQuantity} product(s)</p>
+                <p>• Elimina {totalSelectedQuantity - totalMaxQuantity} producto(s)</p>
               )}
             </div>
           )}
@@ -336,7 +336,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
         {/* Bundle Quantity Selector */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">
-            Bundle Quantity
+            Cantidad de paquetes
           </label>
           <div className="flex items-center space-x-2">
             {/* <Button
@@ -361,7 +361,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
 
         {/* Bundle Products */}
         <div className="space-y-4">
-          <h4 className="font-medium text-gray-900">Select Products</h4>
+          <h4 className="font-medium text-gray-900">Selecciona tus productos</h4>
           {bundleData.bundle.child_products.data.map((childProduct: any) => (
             <BundleProductItem
               key={childProduct.id}
@@ -384,7 +384,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
           className="w-full h-10"
           isLoading={isAdding}
         >
-          {!isValidSelection ? "Complete your bundle selection" : "Add Bundle to Cart"}
+          {!isValidSelection ? "Completa la selección de tu paquete" : "Agregar paquete al carrito"}
         </Button>
       </div>
     )

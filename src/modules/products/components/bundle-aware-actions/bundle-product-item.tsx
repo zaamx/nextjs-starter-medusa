@@ -204,7 +204,7 @@ const BundleProductItem: React.FC<BundleProductItemProps> = ({
       {/* No variants message */}
       {variantOptions.length === 0 && (
         <div className="text-center py-4 text-sm text-gray-500">
-          No available variants for this product
+          No hay variantes disponibles para este producto.
         </div>
       )}
     </div>
