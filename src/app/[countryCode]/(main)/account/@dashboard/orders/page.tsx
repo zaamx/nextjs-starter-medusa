@@ -23,8 +23,8 @@ export default async function Orders() {
       <div className="mb-8 flex flex-col gap-y-4">
         <h1 className="text-2xl-semi">Órdenes</h1>
         <p className="text-base-regular">
-          Ve tus órdenes anteriores y su estado. También puedes crear
-          devoluciones o intercambios para tus órdenes si es necesario.
+          Ve tus órdenes anteriores y su estado. También puedes hacer
+          devoluciones o cambios para tus órdenes si es necesario.
         </p>
       </div>
       <div>

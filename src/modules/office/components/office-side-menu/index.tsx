@@ -15,7 +15,7 @@ const OfficeSideMenuItems = {
   "Genealogía Binaria": "/office/binary-genealogy",
   "Genealogía Unilevel": "/office/unilevel-genealogy",
   "Estado de Comisiones": "/office/commissions",
-  "Órdenes & Autoship": "/office/orders-autoship",
+  "Órdenes & Autoenvío": "/office/orders-autoship",
   "Materiales de Marketing": "/office/marketing-materials",
   "Centro de Formación": "/office/training-center",
   "Soporte & Cumplimiento": "/office/support-compliance",

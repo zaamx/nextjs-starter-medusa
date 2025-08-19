@@ -22,11 +22,11 @@ export default async function Orders() {
     <div className="w-full p-8" data-testid="orders-page-wrapper">
       <div className="mb-8 flex flex-col gap-y-4">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Orders Autoship
+          Ordenes
         </h1>
         <p className="text-base-regular">
-          View your previous orders and their status. You can also create
-          returns or exchanges for your orders if needed.
+          Consulta tus órdenes anteriores y su estado. También puedes hacer
+          devoluciones o cambios si es necesario.
         </p>
       </div>
       <div>

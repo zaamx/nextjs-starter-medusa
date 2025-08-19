@@ -215,17 +215,17 @@ export default function CommissionsPage() {
       {/* Header with Total Earnings */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Estado de Comisiones
+          Reporte de Comisiones
         </h1>
         <p className="text-sm text-gray-500 mb-6">
-          Aquí podrás ver el estado de tus comisiones.
+          Aquí podrás ver el detalle de tus comisiones.
         </p>
         
         {/* Total Earnings Card */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white mb-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-lg font-medium">Total de Ganancias</h2>
+              <h2 className="text-lg font-medium">Total de Ganancias (USD)</h2>
               <p className="text-3xl font-bold">{formatCurrency(totalEarnings)}</p>
             </div>
             
@@ -274,13 +274,13 @@ export default function CommissionsPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Tipo de Bono
+                  Bono
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Período
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cantidad
+                  Monto (USD)
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Detalles
@@ -342,7 +342,7 @@ export default function CommissionsPage() {
                       Período
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Total
+                      Total (USD)
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Bonos
@@ -399,7 +399,7 @@ export default function CommissionsPage() {
                           Orden
                         </th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Perfil Origen
+                          ID Origen
                         </th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           CV
@@ -408,7 +408,7 @@ export default function CommissionsPage() {
                           Estado
                         </th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Monto USD
+                          Monto (USD)
                         </th>
                       </tr>
                     </thead>

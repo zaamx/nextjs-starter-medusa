@@ -46,10 +46,10 @@ const renderCustomNode: RenderCustomNodeElementFn = ({ nodeDatum, toggleNode }) 
         {!isVacant && attributes && (
           <>
             <div style={{ fontSize: 12, color: '#666', marginBottom: 2 }}>
-              {attributes.first_name} {attributes.last_name}
+              PID: {attributes.profile_id} {attributes.first_name} {attributes.last_name}
             </div>
             <div style={{ fontSize: 12, color: '#666', marginBottom: 2 }}>
-              PID: {attributes.profile_id} UID: {attributes.upline_profile_id}
+              SID: {attributes.sponsor_id} UID: {attributes.upline_profile_id}
             </div>
             {typeof attributes.position !== 'undefined' && (
               <div style={{ fontSize: 12, color: '#888' }}>
@@ -92,4 +92,4 @@ const renderCustomNode: RenderCustomNodeElementFn = ({ nodeDatum, toggleNode }) 
   );
 };
 
-export default renderCustomNode; 
+export default renderCustomNode;

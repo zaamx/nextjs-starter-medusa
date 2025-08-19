@@ -37,7 +37,7 @@ const NetworkActivityComponent: React.FC<NetworkActivityProps> = ({ currentPerio
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-purple-600">{currentPeriodActivity.autoship_orders}</div>
-            <div className="text-xs text-purple-600">Autoship ({currentPeriodActivity.autoship_pct}%)</div>
+            <div className="text-xs text-purple-600">Autoenvío ({currentPeriodActivity.autoship_pct}%)</div>
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-orange-600">{currentPeriodActivity.avg_ticket_cv} CV</div>
