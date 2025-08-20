@@ -49,7 +49,8 @@ const renderCustomNode: RenderCustomNodeElementFn = ({ nodeDatum, toggleNode }) 
               PID: {attributes.profile_id} {attributes.first_name} {attributes.last_name}
             </div>
             <div style={{ fontSize: 12, color: '#666', marginBottom: 2 }}>
-              SID: {attributes.sponsor_id} UID: {attributes.upline_profile_id}
+              SID: {attributes.sponsor_id ? attributes.sponsor_id : attributes.upline_profile_id} &nbsp;
+              UID: {attributes.upline_profile_id}
             </div>
             {typeof attributes.position !== 'undefined' && (
               <div style={{ fontSize: 12, color: '#888' }}>

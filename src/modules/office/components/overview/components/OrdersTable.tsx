@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useState } from "react"
 import { Table } from "@medusajs/ui"
 
 interface NetworkOrder {
@@ -24,6 +24,100 @@ interface OrdersTableProps {
 }
 
 const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+
+  // Calculate pagination
+  const totalPages = Math.ceil(networkOrdersData.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentOrders = networkOrdersData.slice(startIndex, endIndex)
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
+
+  const PaginationControls = () => {
+    if (totalPages <= 1) return null
+
+    const getPageNumbers = () => {
+      const pages = []
+      const maxVisiblePages = 5
+      
+      if (totalPages <= maxVisiblePages) {
+        for (let i = 1; i <= totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        if (currentPage <= 3) {
+          for (let i = 1; i <= 4; i++) {
+            pages.push(i)
+          }
+          pages.push('...')
+          pages.push(totalPages)
+        } else if (currentPage >= totalPages - 2) {
+          pages.push(1)
+          pages.push('...')
+          for (let i = totalPages - 3; i <= totalPages; i++) {
+            pages.push(i)
+          }
+        } else {
+          pages.push(1)
+          pages.push('...')
+          for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+            pages.push(i)
+          }
+          pages.push('...')
+          pages.push(totalPages)
+        }
+      }
+      
+      return pages
+    }
+
+    return (
+      <div className="flex items-center justify-between mt-4">
+        <div className="text-sm text-gray-700">
+          Mostrando {startIndex + 1} a {Math.min(endIndex, networkOrdersData.length)} de {networkOrdersData.length} órdenes
+        </div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            Anterior
+          </button>
+          
+          {getPageNumbers().map((page, index) => (
+            <button
+              key={index}
+              onClick={() => typeof page === 'number' && handlePageChange(page)}
+              disabled={page === '...'}
+              className={`px-3 py-1 text-sm border rounded-md ${
+                page === currentPage
+                  ? 'bg-blue-500 text-white border-blue-500'
+                  : page === '...'
+                  ? 'border-transparent cursor-default'
+                  : 'hover:bg-gray-50'
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+          
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            Siguiente
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-white rounded-2xl shadow p-4">
       <div className="flex items-center justify-between mb-3">
@@ -39,8 +133,8 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
         <div className="overflow-x-auto">
           {/* Mobile Card View */}
           <div className="lg:hidden space-y-2">
-            {networkOrdersData.slice(0, 5).map((order, idx) => (
-              <div key={idx} className="bg-gray-50 rounded-lg p-3 border">
+            {currentOrders.map((order, idx) => (
+              <div key={startIndex + idx} className="bg-gray-50 rounded-lg p-3 border">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium text-sm">#{order.order_display}</span>
                   <span className="text-xs font-bold">{(order.cv || 0).toLocaleString()} CV / {(order.qv || 0).toLocaleString()} QV</span>
@@ -82,11 +176,11 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {networkOrdersData.slice(0, 5).map((order, idx) => (
-                  <Table.Row key={idx} className="hover:bg-gray-50">
+                {currentOrders.map((order, idx) => (
+                  <Table.Row key={startIndex + idx} className="hover:bg-gray-50">
                     <Table.Cell className="text-xs font-medium">#{order.order_display}</Table.Cell>
-                    <Table.Cell className="text-xs">{order.profile_id}</Table.Cell>
-                    <Table.Cell className="text-xs">{order.sponsor_id}</Table.Cell>
+                    <Table.Cell className="text-xs">{order.buyer_profile}</Table.Cell>
+                    <Table.Cell className="text-xs">{order.profiles_id}</Table.Cell>
                     <Table.Cell className="text-xs">{order.depth}</Table.Cell>
                     <Table.Cell className="text-xs">
                       <span className={`px-2 py-1 rounded-full text-xs ${order.position === 0 ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
@@ -111,13 +205,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
             </Table>
           </div>
           
-          {networkOrdersData.length > 5 && (
-            <div className="text-center mt-2">
-              <span className="text-xs text-gray-500">
-                Mostrando 5 de {networkOrdersData.length} órdenes
-              </span>
-            </div>
-          )}
+          <PaginationControls />
         </div>
       ) : (
         <div className="text-center py-4 text-gray-500">
