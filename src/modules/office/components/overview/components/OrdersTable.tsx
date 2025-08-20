@@ -10,6 +10,9 @@ interface NetworkOrder {
   is_first_sale: boolean
   is_subscription: boolean | null
   cv: number
+  qv: number; // ADDED: Se agregó la propiedad qv.
+  profile_id: string; // ADDED: Se agregó la propiedad profile_id.
+  sponsor_id: string; // ADDED: Se agregó la propiedad sponsor_id.
   transaction_date: string
   depth: number
   position: number
@@ -40,10 +43,15 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
               <div key={idx} className="bg-gray-50 rounded-lg p-3 border">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium text-sm">#{order.order_display}</span>
-                  <span className="text-xs font-bold">{(order.cv || 0).toLocaleString()} CV</span>
+                  <span className="text-xs font-bold">{(order.cv || 0).toLocaleString()} CV / {(order.qv || 0).toLocaleString()} QV</span>
                 </div>
                 <div className="text-xs text-gray-600 mb-2">
-                  Profundidad: {order.depth} | Posición: {order.position === 0 ? 'Izquierda' : 'Derecha'}
+                  <span className="mr-2">Profundidad: {order.depth}</span>
+                  <span>Posición: {order.position === 0 ? 'Izquierda' : 'Derecha'}</span>
+                </div>
+                <div className="text-xs text-gray-600 mb-2">
+                  <span className="mr-2">Profile ID: {order.profile_id}</span>
+                  <span>Patrocinador: {order.sponsor_id}</span>
                 </div>
                 <div className="flex gap-2">
                   <span className={`px-2 py-1 rounded-full text-xs ${order.is_first_sale ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
@@ -63,6 +71,8 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell className="text-xs">Orden</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs">ID</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs">Patrocinador</Table.HeaderCell>
                   <Table.HeaderCell className="text-xs">Profundidad</Table.HeaderCell>
                   <Table.HeaderCell className="text-xs">Posición</Table.HeaderCell>
                   <Table.HeaderCell className="text-xs">Primera Venta</Table.HeaderCell>
@@ -75,6 +85,8 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
                 {networkOrdersData.slice(0, 5).map((order, idx) => (
                   <Table.Row key={idx} className="hover:bg-gray-50">
                     <Table.Cell className="text-xs font-medium">#{order.order_display}</Table.Cell>
+                    <Table.Cell className="text-xs">{order.profile_id}</Table.Cell>
+                    <Table.Cell className="text-xs">{order.sponsor_id}</Table.Cell>
                     <Table.Cell className="text-xs">{order.depth}</Table.Cell>
                     <Table.Cell className="text-xs">
                       <span className={`px-2 py-1 rounded-full text-xs ${order.position === 0 ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
@@ -92,6 +104,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
                       </span>
                     </Table.Cell>
                     <Table.Cell className="text-xs font-bold">{(order.cv || 0).toLocaleString()}</Table.Cell>
+                    <Table.Cell className="text-xs font-bold">{(order.qv || 0).toLocaleString()}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
