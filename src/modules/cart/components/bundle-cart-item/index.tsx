@@ -79,7 +79,7 @@ const BundleCartItem: React.FC<BundleCartItemProps> = ({
             className="txt-medium-plus text-ui-fg-base"
             data-testid="bundle-product-title"
           >
-            {parentItem.product_title} (Bundle)
+            {parentItem.product_title} (Paquete)
           </Text>
           <LineItemOptions variant={parentItem.variant} data-testid="bundle-product-variant" />
         </Table.Cell>
@@ -100,7 +100,7 @@ const BundleCartItem: React.FC<BundleCartItemProps> = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 )}
-                <span>Remove</span>
+                <span>Eliminar</span>
               </button>
             </div>
           </Table.Cell>
@@ -178,7 +178,10 @@ const BundleCartItem: React.FC<BundleCartItemProps> = ({
             <Table.Cell>
               <div className="flex gap-2 items-center w-28">
                 <Text className="text-sm text-gray-500">
-                  Qty: {childItem.quantity}
+                  
+                  
+                  
+                  : {childItem.quantity}
                 </Text>
               </div>
             </Table.Cell>
