@@ -3,8 +3,8 @@
 import { useState } from "react"
 
 
-const mockReferralLink = "https://store.wenow.global/ref/1";
-const mockQrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://store.wenow.global/ref/1";
+const mockReferralLink = "https://store.wenow.global/?mystore=1";
+const mockQrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=" + encodeURIComponent(mockReferralLink);
 const mockTemplates = [
   { type: "Instagram Story", url: "#", preview: "/marketing/ig-story.png" },
   { type: "Facebook Post", url: "#", preview: "/marketing/fb-post.png" },
@@ -29,9 +29,9 @@ export default function MarketingMaterialsPage() {
   return (
     <div className="relative p-8 ">
       {/* Overlay */}
-      <div className="absolute inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center pointer-events-auto">
+      {/* <div className="absolute inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center pointer-events-auto">
         <span className="text-3xl font-bold text-gray-700">Próximamente</span>
-      </div>
+      </div> */}
       {/* Page content below (will be covered by overlay) */}
       <h1 className="text-2xl font-bold mb-2">Materiales de Marketing</h1>
       <p className="text-sm text-gray-500 mb-8">

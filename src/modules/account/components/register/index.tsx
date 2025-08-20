@@ -32,6 +32,12 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
     setSponsorId(sponsorId)
   }
 
+  const handleSponsorInfoLoaded = (sponsorInfo: any) => {
+    console.log('=== SPONSOR INFO LOADED ===')
+    console.log('Sponsor info loaded:', sponsorInfo)
+    // You can add additional logic here if needed when sponsor info is loaded
+  }
+
   // Check if user has required product in cart
   const hasRequiredProduct = hasRequiredRegistrationProduct(cart || null)
   const productUrl = getRequiredProductUrl()
@@ -183,6 +189,7 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
             name="sponsor_profile_id"
             value={sponsorId}
             onChange={handleSponsorSelect}
+            onSponsorInfoLoaded={handleSponsorInfoLoaded}
             required
             data-testid="sponsor-profile-id-input"
           />
