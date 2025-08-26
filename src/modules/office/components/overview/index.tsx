@@ -526,7 +526,7 @@ const Overview = ({customer}: OverviewProps) => {
         <KPIBar kpis={kpis} />
 
         {/* Main Content Grid - Responsive */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           
           {/* Left Column */}
           <div className="space-y-4">
@@ -572,31 +572,39 @@ const Overview = ({customer}: OverviewProps) => {
               networkOrdersData={networkOrdersData}
               error={componentErrors.networkOrders || null}
             />
+          </div>
+          <div className="space-y-4">
+            <div className="text-xs text-gray-500">
+              <a href="https://myvortex365.com/WeNow" target="_blank" rel="noopener noreferrer">
+                <img src="/viaja-wenow.jpg" alt="Viaja Wenow" className="w-full h-auto" />
+              </a>
+            </div>
+            {/* Responsive Office Navigation */}
+            <div className="px-3 sm:px-4 pb-20 sm:pb-24">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                <a href="/us/office/commissions" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
+                  <div className="text-xl sm:text-2xl mb-1"><FaWallet /></div>
+                  <div className="text-xs font-semibold text-gray-700 text-center">Comisiones</div>
+                </a>
+                <a href="/us/office/marketing-materials" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
+                  <div className="text-xl sm:text-2xl mb-1"><FaBell /></div>
+                  <div className="text-xs font-semibold text-gray-700 text-center">Marketing</div>
+                </a>
+                <a href="/us/office/training-center" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
+                  <div className="text-xl sm:text-2xl mb-1"><FaTrophy /></div>
+                  <div className="text-xs font-semibold text-gray-700 text-center">Formación</div>
+                </a>
+                <a href="/us/office/support-compliance" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
+                  <div className="text-xl sm:text-2xl mb-1"><FaBell /></div>
+                  <div className="text-xs font-semibold text-gray-700 text-center">Soporte</div>
+                </a>
               </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Responsive Office Navigation */}
-      <div className="px-3 sm:px-4 pb-20 sm:pb-24">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <a href="/us/office/commissions" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
-            <div className="text-xl sm:text-2xl mb-1"><FaWallet /></div>
-            <div className="text-xs font-semibold text-gray-700 text-center">Comisiones</div>
-          </a>
-          <a href="/us/office/marketing-materials" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
-            <div className="text-xl sm:text-2xl mb-1"><FaBell /></div>
-            <div className="text-xs font-semibold text-gray-700 text-center">Marketing</div>
-          </a>
-          <a href="/us/office/training-center" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
-            <div className="text-xl sm:text-2xl mb-1"><FaTrophy /></div>
-            <div className="text-xs font-semibold text-gray-700 text-center">Formación</div>
-          </a>
-          <a href="/us/office/support-compliance" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
-            <div className="text-xl sm:text-2xl mb-1"><FaBell /></div>
-            <div className="text-xs font-semibold text-gray-700 text-center">Soporte</div>
-          </a>
-        </div>
-      </div>
+      
 
       {/* Responsive Target Modal */}
       {showTargetModal && rankData.length > 0 && (
