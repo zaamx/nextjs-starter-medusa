@@ -87,7 +87,7 @@ const ShippingInfoTab = () => {
           <div>
             <span className="font-semibold">Envío</span>
             <p className="max-w-sm">
-              Su paquete llegará en 3-5 días hábiles a su lugar de recolección
+              Su paquete llegará en 5-7 días hábiles a su lugar de recolección
               o a la comodidad de su hogar.
             </p>
           </div>
@@ -97,8 +97,7 @@ const ShippingInfoTab = () => {
           <div>
             <span className="font-semibold">Cambios</span>
             <p className="max-w-sm">
-              ¿No es el producto correcto? No te preocupes, cambiaremos tu
-              producto por el de tu elección.
+              Para más información sobre nuestra política de cambios, por favor contacta a nuestro equipo de soporte
             </p>
           </div>
         </div>
@@ -107,9 +106,7 @@ const ShippingInfoTab = () => {
           <div>
             <span className="font-semibold">Devoluciones</span>
             <p className="max-w-sm">
-              Simplemente devuelve tu producto y te reembolsaremos tu dinero. Sin
-              preguntas, haremos nuestro mejor esfuerzo para que tu devolución
-              sea fácil y sin complicaciones.
+              Para más información sobre nuestra política de devoluciones, por favor contacta a nuestro equipo de soporte
             </p>
           </div>
         </div>
