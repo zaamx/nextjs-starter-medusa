@@ -17,16 +17,20 @@ const RefinementList = ({ sortBy, 'data-testid': dataTestId }: RefinementListPro
   const searchParams = useSearchParams()
 
   const createQueryString = useCallback(
-    (name: string, value: string) => {
+    (name: string, value: SortOptions | undefined) => {
       const params = new URLSearchParams(searchParams)
-      params.set(name, value)
+      if (value !== undefined) {
+        params.set(name, value)
+      } else {
+        params.delete(name)
+      }
 
       return params.toString()
     },
     [searchParams]
   )
 
-  const setQueryParams = (name: string, value: string) => {
+  const setQueryParams = (name: string, value: SortOptions | undefined) => {
     const query = createQueryString(name, value)
     router.push(`${pathname}?${query}`)
   }
