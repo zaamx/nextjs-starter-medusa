@@ -37,7 +37,7 @@ const OfficeLayout: React.FC<OfficeLayoutProps> = ({
         </div> */}
       </div>
       {/* Responsive Footer/help section */}
-      <footer className="flex flex-col sm:flex-row items-start sm:items-end justify-between border-t border-gray-200 py-6 sm:py-8 px-4 sm:px-8 gap-4 sm:gap-8 bg-white">
+      <footer className="flex flex-col sm:flex-row items-start sm:items-end justify-between border-t border-gray-200 py-4 sm:py-4 px-4 sm:px-8 gap-6 sm:gap-6 bg-white">
         <div className="w-full sm:w-auto">
           <h3 className="text-lg sm:text-xl-semi mb-2 sm:mb-4">¿Tienes preguntas?</h3>
           <span className="txt-medium text-sm sm:text-base">

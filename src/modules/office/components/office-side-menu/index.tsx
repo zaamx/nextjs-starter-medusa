@@ -14,7 +14,7 @@ const OfficeSideMenuItems = {
   Dashboard: "/office",
   "Genealogía Binaria": "/office/binary-genealogy",
   "Genealogía Unilevel": "/office/unilevel-genealogy",
-  "Estado de Comisiones": "/office/commissions",
+  "Comisiones": "/office/commissions",
   "Órdenes & Autoenvío": "/office/orders-autoship",
   "Materiales de Marketing": "/office/marketing-materials",
   "Centro de Formación": "/office/training-center",
