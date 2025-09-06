@@ -4,6 +4,8 @@ import { RadioGroup, Radio } from "@headlessui/react"
 import { setShippingMethod } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
 import { convertToLocale } from "@lib/util/money"
+import { logError, logInfo, logWarn } from "@lib/util/server-logger"
+import { useServerLogger } from "@lib/hooks/use-server-logger"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { Button, Heading, Text, clx } from "@medusajs/ui"
@@ -94,6 +96,7 @@ const Shipping: React.FC<ShippingProps> = ({
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
+  const { logInfo: logToAPI, logError: logErrorToAPI } = useServerLogger()
 
   const isOpen = searchParams.get("step") === "delivery"
 
@@ -282,6 +285,14 @@ const Shipping: React.FC<ShippingProps> = ({
       timestamp: new Date().toISOString()
     })
 
+    // Log to server for Vercel console
+    await logInfo("Shipping method selection started", {
+      id,
+      variant,
+      cartId: cart.id,
+      currentShippingMethodId: shippingMethodId
+    })
+
     setError(null)
 
     // Update pickup options state based on variant
@@ -317,6 +328,17 @@ const Shipping: React.FC<ShippingProps> = ({
         timestamp: new Date().toISOString()
       })
 
+      // Log success to server
+      await logInfo("Shipping method selection successful", {
+        cartId: cart.id,
+        shippingMethodId: id,
+        variant,
+        result: {
+          cartId: result.cart?.id,
+          shippingMethodsCount: result.cart?.shipping_methods?.length || 0
+        }
+      })
+
       // Don't reset the shippingMethodId here - let the useEffect handle it
       // The cart will be updated and the useEffect will sync the state
     } catch (err: any) {
@@ -327,6 +349,17 @@ const Shipping: React.FC<ShippingProps> = ({
         cartId: cart.id,
         shippingMethodId: id,
         timestamp: new Date().toISOString()
+      })
+      
+      // Log error to server
+      await logError("Shipping method selection failed", {
+        cartId: cart.id,
+        shippingMethodId: id,
+        variant,
+        error: {
+          message: err.message,
+          stack: err.stack
+        }
       })
       
       // Only reset on error
@@ -467,6 +500,15 @@ const Shipping: React.FC<ShippingProps> = ({
                         shippingMethodIds: _shippingMethods?.map(m => m.id),
                         timestamp: new Date().toISOString()
                       })
+                      
+                      // Log to API for Vercel console
+                      logToAPI("User selected shipping method", {
+                        selectedValue: v,
+                        isPickupMethod,
+                        cartId: cart.id,
+                        currentShippingMethodId: shippingMethodId
+                      })
+                      
                       handleSetShippingMethod(v, isPickupMethod ? "pickup" : "shipping")
                     }
                   }}

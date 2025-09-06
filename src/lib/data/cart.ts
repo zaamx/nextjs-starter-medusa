@@ -272,20 +272,49 @@ export async function setShippingMethod({
   cartId: string
   shippingMethodId: string
 }) {
+  console.log("🚀 [SERVER] setShippingMethod called", {
+    cartId,
+    shippingMethodId,
+    timestamp: new Date().toISOString()
+  })
+
   const headers = {
     ...(await getAuthHeaders()),
   }
 
+  console.log("🚀 [SERVER] Headers prepared", {
+    hasAuth: !!headers.authorization,
+    timestamp: new Date().toISOString()
+  })
+
   return sdk.store.cart
     .addShippingMethod(cartId, { option_id: shippingMethodId }, {}, headers)
     .then(async (result) => {
+      console.log("🚀 [SERVER] addShippingMethod success", {
+        result: {
+          id: result.cart?.id,
+          shippingMethods: result.cart?.shipping_methods?.length || 0
+        },
+        timestamp: new Date().toISOString()
+      })
+
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
+      
+      console.log("🚀 [SERVER] Cache revalidated", {
+        cartCacheTag,
+        timestamp: new Date().toISOString()
+      })
+      
       return result
     })
     .catch((error) => {
-      console.error("🚀 [CART DEBUG] addShippingMethod error", {
-        error,
+      console.error("🚀 [SERVER] addShippingMethod error", {
+        error: {
+          message: error.message,
+          status: error.response?.status,
+          data: error.response?.data
+        },
         cartId,
         shippingMethodId,
         timestamp: new Date().toISOString()

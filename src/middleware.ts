@@ -87,7 +87,7 @@ async function getCountryCode(
 
     const urlCountryCode = request.nextUrl.pathname.split("/")[1]?.toLowerCase()
 
-    console.log(`[middleware] getCountryCode: urlCountryCode=${urlCountryCode}, vercelCountryCode=${vercelCountryCode}`)
+    // console.log(`[middleware] getCountryCode: urlCountryCode=${urlCountryCode}, vercelCountryCode=${vercelCountryCode}`)
 
     if (urlCountryCode && regionMap.has(urlCountryCode)) {
       countryCode = urlCountryCode
@@ -99,7 +99,7 @@ async function getCountryCode(
       countryCode = regionMap.keys().next().value
     }
 
-    console.log(`[middleware] getCountryCode: resolved countryCode=${countryCode}`)
+    // console.log(`[middleware] getCountryCode: resolved countryCode=${countryCode}`)
     return countryCode
   } catch (error: any) {
     console.error("[middleware] getCountryCode error:", error?.stack || error)
