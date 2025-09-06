@@ -278,11 +278,20 @@ export async function setShippingMethod({
 
   return sdk.store.cart
     .addShippingMethod(cartId, { option_id: shippingMethodId }, {}, headers)
-    .then(async () => {
+    .then(async (result) => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
+      return result
     })
-    .catch(medusaError)
+    .catch((error) => {
+      console.error("🚀 [CART DEBUG] addShippingMethod error", {
+        error,
+        cartId,
+        shippingMethodId,
+        timestamp: new Date().toISOString()
+      })
+      throw medusaError(error)
+    })
 }
 
 export async function initiatePaymentSession(

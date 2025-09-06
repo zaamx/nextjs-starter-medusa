@@ -116,10 +116,10 @@ async function getCountryCode(
  */
 export async function middleware(request: NextRequest) {
   try {
-    console.log("[middleware] Incoming request:", request.url)
-    console.log("[middleware] BACKEND_URL:", BACKEND_URL)
-    console.log("[middleware] PUBLISHABLE_API_KEY exists?", !!PUBLISHABLE_API_KEY)
-    console.log("[middleware] DEFAULT_REGION:", DEFAULT_REGION)
+    // console.log("[middleware] Incoming request:", request.url)
+    // console.log("[middleware] BACKEND_URL:", BACKEND_URL)
+    // console.log("[middleware] PUBLISHABLE_API_KEY exists?", !!PUBLISHABLE_API_KEY)
+    // console.log("[middleware] DEFAULT_REGION:", DEFAULT_REGION)
 
     let redirectUrl = request.nextUrl.href
     let response = NextResponse.redirect(redirectUrl, 307)
@@ -127,16 +127,16 @@ export async function middleware(request: NextRequest) {
     let cacheId = cacheIdCookie?.value || crypto.randomUUID()
 
     const regionMap = await getRegionMap(cacheId)
-    console.log("[middleware] regionMap keys:", Array.from(regionMap.keys()))
+    // console.log("[middleware] regionMap keys:", Array.from(regionMap.keys()))
 
     const countryCode = regionMap && (await getCountryCode(request, regionMap))
-    console.log("[middleware] countryCode:", countryCode)
+    // console.log("[middleware] countryCode:", countryCode)
 
     const urlHasCountryCode =
       countryCode && request.nextUrl.pathname.split("/")[1].includes(countryCode)
 
     if (urlHasCountryCode && cacheIdCookie) {
-      console.log("[middleware] urlHasCountryCode && cacheIdCookie: NextResponse.next()")
+      //  cacheIdCookie: NextResponse.next()")
       return NextResponse.next()
     }
 
@@ -144,12 +144,12 @@ export async function middleware(request: NextRequest) {
       response.cookies.set("_medusa_cache_id", cacheId, {
         maxAge: 60 * 60 * 24,
       })
-      console.log("[middleware] urlHasCountryCode && !cacheIdCookie: set cookie and redirect")
+      // console.log("[middleware] urlHasCountryCode && !cacheIdCookie: set cookie and redirect")
       return response
     }
 
     if (request.nextUrl.pathname.includes(".")) {
-      console.log("[middleware] Static asset detected: NextResponse.next()")
+      // console.log("[middleware] Static asset detected: NextResponse.next()")
       return NextResponse.next()
     }
 
@@ -160,7 +160,7 @@ export async function middleware(request: NextRequest) {
     if (!urlHasCountryCode && countryCode) {
       redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`
       response = NextResponse.redirect(`${redirectUrl}`, 307)
-      console.log("[middleware] Redirecting to:", redirectUrl)
+      // console.log("[middleware] Redirecting to:", redirectUrl)
     }
 
     return response
