@@ -216,32 +216,43 @@ const ShippingSimple: React.FC<ShippingSimpleProps> = ({
                 >
                   {/* Pickup Option */}
                   {hasPickupOptions && (
-                    <Radio
-                      value={_pickupMethods?.find((option: any) => !option.insufficient_inventory)?.id || ""}
-                      data-testid="delivery-option-radio"
-                      disabled={isLoading}
-                      className={clx(
-                        "flex items-center justify-between text-small-regular py-4 border rounded-rounded px-8 mb-2",
-                        {
-                          "border-ui-border-interactive":
-                            _pickupMethods?.some(m => m.id === selectedShippingMethodId),
-                          "cursor-pointer hover:shadow-borders-interactive-with-active": !isLoading,
-                          "cursor-not-allowed opacity-50": isLoading,
-                        }
-                      )}
-                    >
-                      <div className="flex items-center gap-x-4">
-                        <MedusaRadio
-                          checked={_pickupMethods?.some(m => m.id === selectedShippingMethodId)}
-                        />
-                        <span className="text-base-regular">
-                          Recoger pedido en sucursal
+                    <div className="mb-2">
+                      <Radio
+                        value={_pickupMethods?.find((option: any) => !option.insufficient_inventory)?.id || ""}
+                        data-testid="delivery-option-radio"
+                        disabled={isLoading}
+                        className={clx(
+                          "flex items-center justify-between text-small-regular py-4 border rounded-rounded px-8",
+                          {
+                            "border-ui-border-interactive":
+                              _pickupMethods?.some(m => m.id === selectedShippingMethodId),
+                            "cursor-pointer hover:shadow-borders-interactive-with-active": !isLoading,
+                            "cursor-not-allowed opacity-50": isLoading,
+                          }
+                        )}
+                      >
+                        <div className="flex items-center gap-x-4">
+                          <MedusaRadio
+                            checked={_pickupMethods?.some(m => m.id === selectedShippingMethodId)}
+                          />
+                          <span className="text-base-regular">
+                            Recoger pedido en sucursal
+                          </span>
+                        </div>
+                        <span className="justify-self-end text-ui-fg-base">
+                          -
                         </span>
-                      </div>
-                      <span className="justify-self-end text-ui-fg-base">
-                        -
-                      </span>
-                    </Radio>
+                      </Radio>
+                      
+                      {/* Show message if all pickup methods have insufficient inventory */}
+                      {_pickupMethods?.every((option: any) => option.insufficient_inventory) && (
+                        <div className="mt-2 px-8">
+                          <span className="text-sm text-red-600">
+                            No disponible: Sin inventario suficiente en las sucursales
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   )}
                   
                   {/* Shipping Methods */}
@@ -316,46 +327,58 @@ const ShippingSimple: React.FC<ShippingSimpleProps> = ({
                     }}
                   >
                     {_pickupMethods?.map((option) => {
+                      const hasInsufficientInventory = (option as any).insufficient_inventory
+                      
                       return (
-                        <Radio
-                          key={option.id}
-                          value={option.id}
-                          disabled={(option as any).insufficient_inventory || isLoading}
-                          data-testid="delivery-option-radio"
-                          className={clx(
-                            "flex items-center justify-between text-small-regular py-4 border rounded-rounded px-8 mb-2",
-                            {
-                              "border-ui-border-interactive":
-                                option.id === selectedShippingMethodId,
-                              "cursor-pointer hover:shadow-borders-interactive-with-active": !(option as any).insufficient_inventory && !isLoading,
-                              "hover:shadow-brders-none cursor-not-allowed opacity-50":
-                                (option as any).insufficient_inventory || isLoading,
-                            }
-                          )}
-                        >
-                          <div className="flex items-start gap-x-4">
-                            <MedusaRadio
-                              checked={option.id === selectedShippingMethodId}
-                            />
-                            <div className="flex flex-col">
-                              <span className="text-base-regular">
-                                {option.name}
-                              </span>
-                              <span className="text-base-regular text-ui-fg-muted">
-                                {formatAddress(
-                                  (option as any).service_zone?.fulfillment_set?.location
-                                    ?.address
-                                )}
+                        <div key={option.id} className="mb-2">
+                          <Radio
+                            value={option.id}
+                            disabled={hasInsufficientInventory || isLoading}
+                            data-testid="delivery-option-radio"
+                            className={clx(
+                              "flex items-center justify-between text-small-regular py-4 border rounded-rounded px-8",
+                              {
+                                "border-ui-border-interactive":
+                                  option.id === selectedShippingMethodId,
+                                "cursor-pointer hover:shadow-borders-interactive-with-active": !hasInsufficientInventory && !isLoading,
+                                "hover:shadow-brders-none cursor-not-allowed opacity-50":
+                                  hasInsufficientInventory || isLoading,
+                              }
+                            )}
+                          >
+                            <div className="flex items-start gap-x-4">
+                              <MedusaRadio
+                                checked={option.id === selectedShippingMethodId}
+                              />
+                              <div className="flex flex-col">
+                                <span className="text-base-regular">
+                                  {option.name}
+                                </span>
+                                <span className="text-base-regular text-ui-fg-muted">
+                                  {formatAddress(
+                                    (option as any).service_zone?.fulfillment_set?.location
+                                      ?.address
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+                            <span className="justify-self-end text-ui-fg-base">
+                              {convertToLocale({
+                                amount: option.amount!,
+                                currency_code: cart?.currency_code,
+                              })}
+                            </span>
+                          </Radio>
+                          
+                          {/* Show message if this specific pickup location has insufficient inventory */}
+                          {hasInsufficientInventory && (
+                            <div className="mt-2 px-8">
+                              <span className="text-sm text-red-600">
+                                No disponible: Sin inventario suficiente en esta sucursal
                               </span>
                             </div>
-                          </div>
-                          <span className="justify-self-end text-ui-fg-base">
-                            {convertToLocale({
-                              amount: option.amount!,
-                              currency_code: cart?.currency_code,
-                            })}
-                          </span>
-                        </Radio>
+                          )}
+                        </div>
                       )
                     })}
                   </RadioGroup>
