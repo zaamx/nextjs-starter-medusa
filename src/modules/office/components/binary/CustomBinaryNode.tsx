@@ -8,11 +8,11 @@ const renderCustomNode: RenderCustomNodeElementFn = ({ nodeDatum, toggleNode }) 
   const isActive = attributes?.active !== false; // Default to true if active property doesn't exist
 
   return (
-    <foreignObject width={180} height={70} x={-90} y={-35}>
+    <foreignObject width={180} height={100} x={-90} y={-35}>
               <div
           style={{
             width: 180,
-            height: 70,
+            height: 95,
             background: isVacant ? '#e7f0fd' : '#fff',
             borderRadius: 12,
             boxShadow: isVacant ? 'none' : '0 2px 8px #0001',
@@ -25,35 +25,32 @@ const renderCustomNode: RenderCustomNodeElementFn = ({ nodeDatum, toggleNode }) 
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'flex-start',
-            padding: 12,
+            padding: '10px 35px 10px 10px',
             position: 'relative',
           }}
         >
         <div
           style={{
             fontWeight: 600,
-            fontSize: 15,
+            fontSize: 12,
             color: isVacant ? '#4682c7' : '#222',
-            marginBottom: 2,
-            whiteSpace: 'nowrap',
+            marginBottom: 0,
+            whiteSpace: 'normal',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
           }}
         >
-          {isVacant ? 'Vacante' : nodeDatum.name}
+          {isVacant ? 'Vacante' : `PID: ${attributes.profile_id} ${nodeDatum.name}`}
         </div>
         {/* Only render info for non-vacant nodes */}
         {!isVacant && attributes && (
           <>
-            <div style={{ fontSize: 12, color: '#666', marginBottom: 2 }}>
-              PID: {attributes.profile_id} {attributes.first_name} {attributes.last_name}
-            </div>
-            <div style={{ fontSize: 12, color: '#666', marginBottom: 2 }}>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 0 }}>
               SID: {attributes.sponsor_id ? attributes.sponsor_id : attributes.upline_profile_id} &nbsp;
               UID: {attributes.upline_profile_id}
             </div>
             {typeof attributes.position !== 'undefined' && (
-              <div style={{ fontSize: 12, color: '#888' }}>
+              <div style={{ fontSize: 12, color: '#666' }}>
                 {attributes.position === 0 ? 'Izquierda' : 'Derecha'}
               </div>
             )}
