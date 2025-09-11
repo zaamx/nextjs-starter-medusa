@@ -25,8 +25,8 @@ const SpilloverVsBuildComponent: React.FC<SpilloverVsBuildProps> = ({ spilloverD
 
   if (!spilloverData || spilloverData.length === 0) {
     return (
-      <div className="bg-gray-50 rounded-2xl shadow p-4 border border-gray-200">
-        <div className="font-bold text-gray-600 mb-2">Línea de Poder vs. Construcción</div>
+      <div className="bg-white rounded-2xl shadow p-4 border border-gray-200">
+        <div className="font-bold text-gray-900 mb-2">Línea de Poder vs. Construcción</div>
         <div className="text-sm text-gray-700">No hay datos disponibles</div>
       </div>
     )

@@ -14,7 +14,8 @@ export default async function Footer() {
   return (
     <footer className="border-t border-ui-border-base w-full">
       <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
+        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-4
+        ">
           <div>
             <LocalizedClientLink
               href="/"
@@ -111,7 +112,7 @@ export default async function Footer() {
             
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
+        <div className="flex w-full mb-5 justify-center text-ui-fg-muted">
           <Text className="txt-compact-small">
             © {new Date().getFullYear()} WeNow. Todos los derechos reservados.
           </Text>

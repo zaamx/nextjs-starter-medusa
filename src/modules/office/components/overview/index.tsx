@@ -478,7 +478,7 @@ const Overview = ({customer}: OverviewProps) => {
               {componentErrors.rank ? "Error" : (rankData.length > 0 ? rankData[0].current_rank : "Cargando...")}
               {rankSummaryData && !componentErrors.rankSummary && (
               <span className="text-xs text-gray-500">
-                &nbsp; - <span className="mr-2">Vitálicio: {rankSummaryData.lifetime_rank_name}</span>
+                &nbsp; - <span className="mr-2">Vitalicio: {rankSummaryData.lifetime_rank_name}</span>
                 <span>Anterior: {rankSummaryData.month_rank_name}</span>
               </span>
             )}

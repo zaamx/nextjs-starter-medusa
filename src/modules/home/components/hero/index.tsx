@@ -31,7 +31,7 @@ const Hero = () => {
           </div>
           <div className="text-center">
             <h1 className="text-5xl font-semibold tracking-tight text-balance text-white sm:text-7xl">
-              We Now, el momento es ahora
+              We Now, tu momento es ahora
             </h1>
             <p className="mt-8 text-lg font-medium text-pretty text-white sm:text-xl/8">
               Únete a WE NOW y transforma tu vida con productos de bienestar de alta calidad.
