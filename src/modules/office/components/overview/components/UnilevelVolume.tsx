@@ -6,6 +6,9 @@ interface UnilevelLevelVolume {
   cv_total: number
   actives: number
   inactives: number
+  cv_qualified: number
+  usd_paid: string
+  usd_expected_lvl: string
 }
 
 interface UnilevelVolumeProps {
@@ -34,18 +37,76 @@ const UnilevelVolume: React.FC<UnilevelVolumeProps> = ({ unilevelData, error }) 
 
   return (
     <div className="bg-white rounded-2xl shadow p-4">
-      <div className="font-bold text-gray-900 mb-3">Volumen Unilevel</div>
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+      <div className="font-bold text-gray-900 mb-4">Volumen Unilevel</div>
+      
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        <div className="text-center bg-blue-50 rounded-lg p-3">
+          <div className="text-xs text-blue-600 font-medium">CV Total</div>
+          <div className="text-lg font-bold text-blue-900">
+            {unilevelData.reduce((sum, level) => sum + (level.cv_total || 0), 0).toLocaleString()}
+          </div>
+        </div>
+        <div className="text-center bg-green-50 rounded-lg p-3">
+          <div className="text-xs text-green-600 font-medium">CV Calificado</div>
+          <div className="text-lg font-bold text-green-900">
+            {unilevelData.reduce((sum, level) => sum + (level.cv_qualified || 0), 0).toLocaleString()}
+          </div>
+        </div>
+        <div className="text-center bg-purple-50 rounded-lg p-3">
+          <div className="text-xs text-purple-600 font-medium">USD Pagado</div>
+          <div className="text-lg font-bold text-purple-900">
+            ${unilevelData.reduce((sum, level) => sum + parseFloat(level.usd_paid || '0'), 0).toFixed(2)}
+          </div>
+        </div>
+        <div className="text-center bg-orange-50 rounded-lg p-3">
+          <div className="text-xs text-orange-600 font-medium">USD Esperado</div>
+          <div className="text-lg font-bold text-orange-900">
+            ${unilevelData.reduce((sum, level) => sum + parseFloat(level.usd_expected_lvl || '0'), 0).toFixed(2)}
+          </div>
+        </div>
+      </div>
+
+      {/* Level Details */}
+      <div className="space-y-3">
+        <div className="text-sm font-semibold text-gray-700 mb-2">Detalles por Nivel</div>
         {unilevelData.slice(0, 5).map((level, idx) => {
-          // Unilevel commission percentages
-          const commissionPercentages = [5, 25, 10, 5, 5]
-          const percentage = commissionPercentages[level.level - 1] || 0
+          const usdPaid = parseFloat(level.usd_paid || '0')
+          const usdExpected = parseFloat(level.usd_expected_lvl || '0')
+          const efficiency = usdExpected > 0 ? (usdPaid / usdExpected * 100) : 0
           
           return (
-            <div key={idx} className="text-center">
-              <div className="text-xs text-gray-500">Nivel {level.level}</div>
-              <div className="text-sm font-bold text-gray-900">{(level.cv_total || 0).toLocaleString()}</div>
-              <div className="text-xs text-blue-600 font-semibold">{percentage}%</div>
+            <div key={idx} className="bg-gray-50 rounded-lg p-3">
+              <div className="flex justify-between items-center mb-2">
+                <div className="font-semibold text-gray-900">Nivel {level.level}</div>
+                <div className="text-sm text-gray-600">
+                  Eficiencia: <span className={`font-semibold ${efficiency >= 80 ? 'text-green-600' : efficiency >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
+                    {efficiency.toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div>
+                  <div className="text-gray-500">CV Total</div>
+                  <div className="font-semibold text-gray-900">{(level.cv_total || 0).toLocaleString()}</div>
+                </div>
+                <div>
+                  <div className="text-gray-500">CV Calificado</div>
+                  <div className="font-semibold text-gray-900">{(level.cv_qualified || 0).toLocaleString()}</div>
+                </div>
+                <div>
+                  <div className="text-gray-500">Miembros</div>
+                  <div className="font-semibold text-gray-900">
+                    {(level.actives || 0) + (level.inactives || 0)}
+                    <span className="text-green-600 ml-1">({level.actives || 0}A)</span>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-gray-500">USD Pagado</div>
+                  <div className="font-semibold text-gray-900">${usdPaid.toFixed(2)}</div>
+                </div>
+              </div>
             </div>
           )
         })}
