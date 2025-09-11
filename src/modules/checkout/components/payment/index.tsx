@@ -11,7 +11,14 @@ import PaymentContainer, {
 } from "@modules/checkout/components/payment-container"
 import Divider from "@modules/common/components/divider"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, useRef } from "react"
+import {
+  validatePaymentSession,
+  hasCartChanged,
+  createInitialPaymentSessionState,
+  updatePaymentSessionState,
+  PaymentSessionState
+} from "@lib/util/payment-session-validation"
 
 const Payment = ({
   cart,
@@ -31,6 +38,14 @@ const Payment = ({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? ""
   )
+  
+  // Estado para rastrear la vinculación cart_id ↔ payment_session_id
+  const [paymentSessionState, setPaymentSessionState] = useState<PaymentSessionState>(
+    createInitialPaymentSessionState()
+  )
+  
+  // Ref para prevenir múltiples submits simultáneos
+  const isSubmittingRef = useRef(false)
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -40,12 +55,48 @@ const Payment = ({
 
   const isStripe = isStripeFunc(selectedPaymentMethod)
 
+  // Función para validar si la payment session es válida para el cart actual
+  const isPaymentSessionValid = useCallback(() => {
+    if (!activeSession || !cart) return false
+    
+    const validation = validatePaymentSession(cart, activeSession, paymentSessionState)
+    return validation.isValid
+  }, [activeSession, cart, paymentSessionState])
+
+  // Función para invalidar y recrear payment session
+  const invalidateAndRecreatePaymentSession = useCallback(async (method: string) => {
+    try {
+      setError(null)
+      setPaymentSessionState(createInitialPaymentSessionState())
+      
+      // Crear nueva payment session
+      await initiatePaymentSession(cart, {
+        provider_id: method,
+        data: {
+          setup_future_usage: "off_session",
+        },      
+      })
+      
+      // Actualizar el estado con la nueva sesión
+      setPaymentSessionState(updatePaymentSessionState(cart, activeSession))
+    } catch (err: any) {
+      setError(err.message || "Error al actualizar método de pago")
+    }
+  }, [cart, activeSession])
+
   const setPaymentMethod = async (method: string) => {
     setError(null)
     setSelectedPaymentMethod(method)
-    if (isStripeFunc(method)) {
+    
+    // Si la sesión actual no es válida o no existe, crear una nueva
+    if (!isPaymentSessionValid() || !activeSession) {
+      await invalidateAndRecreatePaymentSession(method)
+    } else if (isStripeFunc(method)) {
       await initiatePaymentSession(cart, {
         provider_id: method,
+        data: {
+          setup_future_usage: "off_session",
+        },      
       })
     }
   }
@@ -73,8 +124,22 @@ const Payment = ({
   }
 
   const handleSubmit = async () => {
+    // Prevenir múltiples submits simultáneos
+    if (isSubmittingRef.current) {
+      return
+    }
+    
+    isSubmittingRef.current = true
     setIsLoading(true)
+    
     try {
+      // Validar que la payment session sea válida antes de continuar
+      if (!isPaymentSessionValid()) {
+        setError("La sesión de pago ha expirado. Actualizando método de pago...")
+        await invalidateAndRecreatePaymentSession(selectedPaymentMethod)
+        return
+      }
+
       const shouldInputCard =
         isStripeFunc(selectedPaymentMethod) && !activeSession
 
@@ -84,6 +149,9 @@ const Payment = ({
       if (!checkActiveSession) {
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
+          data: {
+            setup_future_usage: "off_session",
+          }
         })
       }
 
@@ -99,8 +167,30 @@ const Payment = ({
       setError(err.message)
     } finally {
       setIsLoading(false)
+      isSubmittingRef.current = false
     }
   }
+
+  // Inicializar y monitorear el estado de la payment session
+  useEffect(() => {
+    if (cart && activeSession) {
+      // Si es la primera vez o el cart cambió, actualizar el estado
+      if (!paymentSessionState.cartId || paymentSessionState.cartId !== cart.id) {
+        setPaymentSessionState(updatePaymentSessionState(cart, activeSession))
+      }
+    }
+  }, [cart, activeSession, paymentSessionState.cartId])
+
+  // Monitorear cambios en el cart que requieren invalidar la payment session
+  useEffect(() => {
+    if (cart && paymentSessionState.cartId === cart.id) {
+      if (hasCartChanged(cart, paymentSessionState) && activeSession) {
+        // Invalidar la sesión actual y mostrar mensaje al usuario
+        setError("Actualizamos tu método de pago por seguridad")
+        setPaymentSessionState(createInitialPaymentSessionState())
+      }
+    }
+  }, [cart, paymentSessionState, activeSession])
 
   useEffect(() => {
     setError(null)
@@ -192,7 +282,9 @@ const Payment = ({
             isLoading={isLoading}
             disabled={
               (isStripe && !cardComplete) ||
-              (!selectedPaymentMethod && !paidByGiftcard)
+              (!selectedPaymentMethod && !paidByGiftcard) ||
+              !isPaymentSessionValid() ||
+              isSubmittingRef.current
             }
             data-testid="submit-payment-button"
           >
