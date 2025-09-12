@@ -7,11 +7,11 @@ const Hero = () => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        minHeight: "30vh",
+        minHeight: "25vh",
       }}
     >
       {/* Overlay for better text contrast */}
-      <div className="absolute inset-0 bg-black/40 z-0" aria-hidden="true"></div>
+      <div className="absolute inset-0 bg-black/50 z-0" aria-hidden="true"></div>
       <div className="relative z-10 text-white">
         <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
           <div
@@ -28,13 +28,13 @@ const Hero = () => {
               We Now
             </h1>
             {/* Subtítulo: La segunda parte de la frase con letra más pequeña */}
-            <h2 className="text-3xl font-semibold tracking-tight text-balance text-white mt-4 sm:text-4xl">
+            <h2 className="text-3xl font-semibold tracking-tight text-balance text-white mt-2 sm:text-4xl">
               Tu cambio, tu momento. Empieza ahora.
             </h2>
-            <p className="mt-8 text-lg font-medium text-pretty text-white sm:text-xl/8">
+            <p className="mt-6 text-lg font-medium text-pretty text-white sm:text-xl/8">
               Tu bienestar, nuestra misión.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
+            <div className="mt-8 flex items-center justify-center gap-x-6">
               <a href="/account" className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Únete a nosotros
               </a>
