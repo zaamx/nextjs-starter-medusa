@@ -40,11 +40,46 @@ export async function retrieveCart(cartId?: string) {
       method: "GET",
       query: {
         fields:
-          "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name",
+          "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, *payment_collection, *payment_collection.payment_sessions",
       },
       headers,
       next,
-      cache: "force-cache",
+      cache: "no-store", // Cambiado de "force-cache" a "no-store" para evitar datos obsoletos
+    })
+    .then(({ cart }) => cart)
+    .catch(() => null)
+}
+
+/**
+ * Retrieves a cart with fresh data, bypassing all cache layers
+ * Use this for critical operations like payment session validation
+ */
+export async function retrieveCartFresh(cartId?: string) {
+  const id = cartId || (await getCartId())
+
+  if (!id) {
+    return null
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  // Invalidar caché antes de obtener datos frescos
+  const cartCacheTag = await getCacheTag("carts")
+  if (cartCacheTag) {
+    revalidateTag(cartCacheTag)
+  }
+
+  return await sdk.client
+    .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${id}`, {
+      method: "GET",
+      query: {
+        fields:
+          "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, *payment_collection, *payment_collection.payment_sessions",
+      },
+      headers,
+      cache: "no-store", // Sin caché para datos completamente frescos
     })
     .then(({ cart }) => cart)
     .catch(() => null)
@@ -331,11 +366,19 @@ export async function initiatePaymentSession(
     ...(await getAuthHeaders()),
   }
 
+  // Invalidar caché antes de crear la payment session para asegurar datos frescos
+  const cartCacheTag = await getCacheTag("carts")
+  if (cartCacheTag) {
+    revalidateTag(cartCacheTag)
+  }
+
   return sdk.store.payment
     .initiatePaymentSession(cart, data, {}, headers)
     .then(async (resp) => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
+      // Invalidar caché después de crear la payment session
+      if (cartCacheTag) {
+        revalidateTag(cartCacheTag)
+      }
       return resp
     })
     .catch(medusaError)
@@ -554,6 +597,6 @@ export async function listCartOptions() {
     query: { cart_id: cartId },
     next,
     headers,
-    cache: "force-cache",
+    cache: "no-store", // Cambiado de "force-cache" a "no-store" para evitar datos obsoletos
   })
 }

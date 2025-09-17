@@ -5,8 +5,9 @@ import { placeOrder } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
-import React, { useState } from "react"
+import React, { useState, useRef, useCallback } from "react"
 import ErrorMessage from "../error-message"
+import { validatePaymentSession, generateIdempotencyKey } from "@lib/util/payment-session-validation"
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -55,6 +56,32 @@ const StripePaymentButton = ({
 }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const isSubmittingRef = useRef(false)
+
+  // Función para validar la payment session antes del pago
+  const validateCurrentPaymentSession = useCallback(() => {
+    const session = cart.payment_collection?.payment_sessions?.find(
+      (s) => s.status === "pending"
+    )
+    
+    // Crear un estado temporal para la validación
+    const tempPaymentSessionState = {
+      cartId: cart.id,
+      paymentSessionId: session?.id || null,
+      cartTotal: cart.total,
+      cartCurrency: cart.currency_code,
+      cartRegion: cart.region_id || null,
+    }
+    
+    const validation = validatePaymentSession(cart, session, tempPaymentSessionState)
+    
+    if (!validation.isValid) {
+      setErrorMessage(validation.error || "Error en la validación de la sesión de pago")
+      return false
+    }
+    
+    return true
+  }, [cart])
 
   const onPaymentCompleted = async () => {
     await placeOrder()
@@ -63,6 +90,7 @@ const StripePaymentButton = ({
       })
       .finally(() => {
         setSubmitting(false)
+        isSubmittingRef.current = false
       })
   }
 
@@ -74,18 +102,37 @@ const StripePaymentButton = ({
     (s) => s.status === "pending"
   )
 
-  const disabled = !stripe || !elements ? true : false
+  const disabled = !stripe || !elements || !validateCurrentPaymentSession() ? true : false
 
   const handlePayment = async () => {
+    // Prevenir múltiples submits simultáneos
+    if (isSubmittingRef.current) {
+      return
+    }
+    
+    isSubmittingRef.current = true
     setSubmitting(true)
+    setErrorMessage(null)
 
-    if (!stripe || !elements || !card || !cart) {
+    // Validar la payment session antes de proceder
+    if (!validateCurrentPaymentSession()) {
       setSubmitting(false)
+      isSubmittingRef.current = false
       return
     }
 
-    await stripe
-      .confirmCardPayment(session?.data.client_secret as string, {
+    if (!stripe || !elements || !card || !cart || !session) {
+      setSubmitting(false)
+      isSubmittingRef.current = false
+      setErrorMessage("Error: faltan elementos necesarios para el pago")
+      return
+    }
+
+    // Generar idempotency key único para este intento
+    const idempotencyKey = generateIdempotencyKey(cart.id)
+
+    try {
+      const result = await stripe.confirmCardPayment(session.data.client_secret as string, {
         payment_method: {
           card: card,
           billing_details: {
@@ -106,30 +153,36 @@ const StripePaymentButton = ({
           },
         },
       })
-      .then(({ error, paymentIntent }) => {
-        if (error) {
-          const pi = error.payment_intent
 
-          if (
-            (pi && pi.status === "requires_capture") ||
-            (pi && pi.status === "succeeded")
-          ) {
-            onPaymentCompleted()
-          }
+      const { error, paymentIntent } = result
 
-          setErrorMessage(error.message || null)
-          return
-        }
+      if (error) {
+        const pi = error.payment_intent
 
         if (
-          (paymentIntent && paymentIntent.status === "requires_capture") ||
-          paymentIntent.status === "succeeded"
+          (pi && pi.status === "requires_capture") ||
+          (pi && pi.status === "succeeded")
         ) {
-          return onPaymentCompleted()
+          onPaymentCompleted()
+        } else {
+          setErrorMessage(error.message || "Error en el procesamiento del pago")
         }
-
         return
-      })
+      }
+
+      if (
+        (paymentIntent && paymentIntent.status === "requires_capture") ||
+        paymentIntent.status === "succeeded"
+      ) {
+        return onPaymentCompleted()
+      }
+
+    } catch (err: any) {
+      setErrorMessage(err.message || "Error inesperado durante el pago")
+    } finally {
+      setSubmitting(false)
+      isSubmittingRef.current = false
+    }
   }
 
   return (
@@ -154,6 +207,7 @@ const StripePaymentButton = ({
 const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const isSubmittingRef = useRef(false)
 
   const onPaymentCompleted = async () => {
     await placeOrder()
@@ -162,11 +216,19 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
       })
       .finally(() => {
         setSubmitting(false)
+        isSubmittingRef.current = false
       })
   }
 
   const handlePayment = () => {
+    // Prevenir múltiples submits simultáneos
+    if (isSubmittingRef.current) {
+      return
+    }
+    
+    isSubmittingRef.current = true
     setSubmitting(true)
+    setErrorMessage(null)
 
     onPaymentCompleted()
   }
@@ -174,7 +236,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   return (
     <>
       <Button
-        disabled={notReady}
+        disabled={notReady || isSubmittingRef.current}
         isLoading={submitting}
         onClick={handlePayment}
         size="large"
