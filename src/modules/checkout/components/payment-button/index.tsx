@@ -5,10 +5,11 @@ import { placeOrder } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
-import React, { useState, useRef, useCallback } from "react"
+import React, { useState, useRef, useCallback, useContext, useEffect } from "react"
 import ErrorMessage from "../error-message"
 import { validatePaymentSession, generateIdempotencyKey } from "@lib/util/payment-session-validation"
 import * as Sentry from "@sentry/nextjs"
+import { StripeContext } from "@modules/checkout/components/payment-wrapper/stripe-wrapper"
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -51,6 +52,65 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
 }
 
 const StripePaymentButton = ({
+  cart,
+  notReady,
+  "data-testid": dataTestId,
+}: {
+  cart: HttpTypes.StoreCart
+  notReady: boolean
+  "data-testid"?: string
+}) => {
+  const stripeReady = useContext(StripeContext)
+
+  useEffect(() => {
+    if (!stripeReady) {
+      Sentry.captureMessage("Stripe payment button rendered without Elements provider", {
+        level: "warning",
+        tags: { feature: "checkout", provider: "stripe", action: "render" },
+        extra: { cartId: cart?.id },
+      })
+    }
+  }, [stripeReady, cart?.id])
+
+  if (!stripeReady) {
+    const refreshCheckout = () => {
+      Sentry.captureMessage("Stripe Elements context missing – forcing checkout reload", {
+        level: "warning",
+        tags: { feature: "checkout", provider: "stripe", action: "refresh" },
+        extra: { cartId: cart?.id },
+      })
+
+      // Full reload to force Stripe Elements re-initialisation
+      window.location.reload()
+    }
+
+    return (
+      <>
+        <Button
+          size="large"
+          onClick={refreshCheckout}
+          data-testid={dataTestId}
+        >
+          Actualizar página
+        </Button>
+        <ErrorMessage
+          error="No pudimos inicializar la pasarela de pago. Refrescamos la página para intentarlo nuevamente."
+          data-testid="stripe-payment-error-message"
+        />
+      </>
+    )
+  }
+
+  return (
+    <StripePaymentButtonWithContext
+      cart={cart}
+      notReady={notReady}
+      data-testid={dataTestId}
+    />
+  )
+}
+
+const StripePaymentButtonWithContext = ({
   cart,
   notReady,
   "data-testid": dataTestId,
