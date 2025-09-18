@@ -19,6 +19,7 @@ import {
   updatePaymentSessionState,
   PaymentSessionState
 } from "@lib/util/payment-session-validation"
+import * as Sentry from "@sentry/nextjs"
 
 const Payment = ({
   cart,
@@ -80,6 +81,14 @@ const Payment = ({
       // Actualizar el estado con la nueva sesión
       setPaymentSessionState(updatePaymentSessionState(cart, activeSession))
     } catch (err: any) {
+      Sentry.captureException(err, {
+        tags: { feature: "checkout", action: "invalidatePaymentSession" },
+        extra: {
+          cartId: cart?.id,
+          providerId: method,
+          activeSessionId: activeSession?.id,
+        },
+      })
       setError(err.message || "Error al actualizar método de pago")
     }
   }, [cart, activeSession])
@@ -88,16 +97,27 @@ const Payment = ({
     setError(null)
     setSelectedPaymentMethod(method)
     
-    // Si la sesión actual no es válida o no existe, crear una nueva
-    if (!isPaymentSessionValid() || !activeSession) {
-      await invalidateAndRecreatePaymentSession(method)
-    } else if (isStripeFunc(method)) {
-      await initiatePaymentSession(cart, {
-        provider_id: method,
-        data: {
-          setup_future_usage: "off_session",
-        },      
+    try {
+      // Si la sesión actual no es válida o no existe, crear una nueva
+      if (!isPaymentSessionValid() || !activeSession) {
+        await invalidateAndRecreatePaymentSession(method)
+      } else if (isStripeFunc(method)) {
+        await initiatePaymentSession(cart, {
+          provider_id: method,
+          data: {
+            setup_future_usage: "off_session",
+          },      
+        })
+      }
+    } catch (err: any) {
+      Sentry.captureException(err, {
+        tags: { feature: "checkout", action: "setPaymentMethod" },
+        extra: {
+          cartId: cart?.id,
+          providerId: method,
+        },
       })
+      setError(err.message || "Error al seleccionar método de pago")
     }
   }
 
@@ -135,6 +155,15 @@ const Payment = ({
     try {
       // Validar que la payment session sea válida antes de continuar
       if (!isPaymentSessionValid()) {
+        Sentry.captureMessage("Payment session invalid during submit", {
+          level: "warning",
+          tags: { feature: "checkout", action: "handleSubmit" },
+          extra: {
+            cartId: cart?.id,
+            activeSessionId: activeSession?.id,
+            selectedPaymentMethod,
+          },
+        })
         setError("La sesión de pago ha expirado. Actualizando método de pago...")
         await invalidateAndRecreatePaymentSession(selectedPaymentMethod)
         return
@@ -164,6 +193,14 @@ const Payment = ({
         )
       }
     } catch (err: any) {
+      Sentry.captureException(err, {
+        tags: { feature: "checkout", action: "handleSubmit" },
+        extra: {
+          cartId: cart?.id,
+          activeSessionId: activeSession?.id,
+          selectedPaymentMethod,
+        },
+      })
       setError(err.message)
     } finally {
       setIsLoading(false)
@@ -186,6 +223,14 @@ const Payment = ({
     if (cart && paymentSessionState.cartId === cart.id) {
       if (hasCartChanged(cart, paymentSessionState) && activeSession) {
         // Invalidar la sesión actual y mostrar mensaje al usuario
+        Sentry.captureMessage("Payment session invalidated after cart change", {
+          level: "info",
+          tags: { feature: "checkout", action: "cartChanged" },
+          extra: {
+            cartId: cart.id,
+            activeSessionId: activeSession.id,
+          },
+        })
         setError("Actualizamos tu método de pago por seguridad")
         setPaymentSessionState(createInitialPaymentSessionState())
       }

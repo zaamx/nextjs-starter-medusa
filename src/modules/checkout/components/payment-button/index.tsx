@@ -8,6 +8,7 @@ import { useElements, useStripe } from "@stripe/react-stripe-js"
 import React, { useState, useRef, useCallback } from "react"
 import ErrorMessage from "../error-message"
 import { validatePaymentSession, generateIdempotencyKey } from "@lib/util/payment-session-validation"
+import * as Sentry from "@sentry/nextjs"
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -38,7 +39,11 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
       )
     case isManual(paymentSession?.provider_id):
       return (
-        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+        <ManualTestPaymentButton
+          cart={cart}
+          notReady={notReady}
+          data-testid={dataTestId}
+        />
       )
     default:
       return <Button disabled>Selecciona un método de pago</Button>
@@ -84,8 +89,23 @@ const StripePaymentButton = ({
   }, [cart])
 
   const onPaymentCompleted = async () => {
-    await placeOrder()
+    if (!cart?.id) {
+      Sentry.captureMessage("Stripe payment completed without cart context", {
+        level: "warning",
+        tags: { feature: "checkout", provider: "stripe" },
+      })
+      setErrorMessage("No se encontró un carrito activo para completar el pedido")
+      setSubmitting(false)
+      isSubmittingRef.current = false
+      return
+    }
+
+    await placeOrder(cart.id)
       .catch((err) => {
+        Sentry.captureException(err, {
+          tags: { feature: "checkout", provider: "stripe", action: "placeOrder" },
+          extra: { cartId: cart.id },
+        })
         setErrorMessage(err.message)
       })
       .finally(() => {
@@ -178,6 +198,13 @@ const StripePaymentButton = ({
       }
 
     } catch (err: any) {
+      Sentry.captureException(err, {
+        tags: { feature: "checkout", provider: "stripe", action: "confirmCardPayment" },
+        extra: {
+          cartId: cart.id,
+          paymentSessionId: session?.id,
+        },
+      })
       setErrorMessage(err.message || "Error inesperado durante el pago")
     } finally {
       setSubmitting(false)
@@ -204,14 +231,37 @@ const StripePaymentButton = ({
   )
 }
 
-const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
+const ManualTestPaymentButton = ({
+  cart,
+  notReady,
+  "data-testid": dataTestId,
+}: {
+  cart: HttpTypes.StoreCart
+  notReady: boolean
+  "data-testid"?: string
+}) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const isSubmittingRef = useRef(false)
 
   const onPaymentCompleted = async () => {
-    await placeOrder()
+    if (!cart?.id) {
+      Sentry.captureMessage("Manual payment completed without cart context", {
+        level: "warning",
+        tags: { feature: "checkout", provider: "manual" },
+      })
+      setErrorMessage("No se encontró un carrito activo para completar el pedido")
+      setSubmitting(false)
+      isSubmittingRef.current = false
+      return
+    }
+
+    await placeOrder(cart.id)
       .catch((err) => {
+        Sentry.captureException(err, {
+          tags: { feature: "checkout", provider: "manual", action: "placeOrder" },
+          extra: { cartId: cart.id },
+        })
         setErrorMessage(err.message)
       })
       .finally(() => {
@@ -240,7 +290,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         isLoading={submitting}
         onClick={handlePayment}
         size="large"
-        data-testid="submit-order-button"
+        data-testid={dataTestId || "submit-order-button"}
       >
         Realizar pedido
       </Button>

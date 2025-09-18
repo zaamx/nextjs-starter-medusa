@@ -3,6 +3,7 @@
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
 import { HttpTypes } from "@medusajs/types"
+import * as Sentry from "@sentry/nextjs"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import {
@@ -344,6 +345,13 @@ export async function setShippingMethod({
       return result
     })
     .catch((error) => {
+      Sentry.captureException(error, {
+        tags: { feature: "checkout", action: "setShippingMethod" },
+        extra: {
+          cartId,
+          shippingMethodId,
+        },
+      })
       console.error("🚀 [SERVER] addShippingMethod error", {
         error: {
           message: error.message,
@@ -381,7 +389,16 @@ export async function initiatePaymentSession(
       }
       return resp
     })
-    .catch(medusaError)
+    .catch((error) => {
+      Sentry.captureException(error, {
+        tags: { feature: "checkout", action: "initiatePaymentSession" },
+        extra: {
+          cartId: cart.id,
+          providerId: data.provider_id,
+        },
+      })
+      throw medusaError(error)
+    })
 }
 
 export async function applyPromotions(codes: string[]) {
@@ -524,6 +541,10 @@ export async function placeOrder(cartId?: string) {
   const id = cartId || (await getCartId())
 
   if (!id) {
+    Sentry.captureMessage("Checkout attempted to place order without cart id", {
+      level: "warning",
+      tags: { feature: "checkout", action: "placeOrder" },
+    })
     throw new Error("No existing cart found when placing an order")
   }
 
@@ -538,7 +559,15 @@ export async function placeOrder(cartId?: string) {
       revalidateTag(cartCacheTag)
       return cartRes
     })
-    .catch(medusaError)
+    .catch((error) => {
+      Sentry.captureException(error, {
+        tags: { feature: "checkout", action: "completeCart" },
+        extra: {
+          cartId: id,
+        },
+      })
+      throw medusaError(error)
+    })
 
   if (cartRes?.type === "order") {
     const countryCode =
