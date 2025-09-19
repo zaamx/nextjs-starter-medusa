@@ -52,6 +52,9 @@ interface UnilevelLevelVolume {
   cv_total: number
   actives: number
   inactives: number
+  cv_qualified: number
+  usd_paid: string
+  usd_expected_lvl: string
 }
 
 interface RankProgress {
@@ -129,6 +132,9 @@ interface NetworkOrder {
   is_first_sale: boolean
   is_subscription: boolean | null
   cv: number
+  qv: number
+  profile_id: string
+  sponsor_id: string
   transaction_date: string
   depth: number
   position: number
