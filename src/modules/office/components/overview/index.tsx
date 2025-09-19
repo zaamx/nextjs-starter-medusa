@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { FaUserCircle, FaWallet, FaTrophy, FaBell } from "react-icons/fa";
+import { FaUserCircle, FaWallet, FaTrophy, FaBell, FaSitemap } from "react-icons/fa";
 import { HttpTypes } from "@medusajs/types"
 import { useOffice } from "@lib/context/office-context"
 import { 
@@ -585,6 +585,10 @@ const Overview = ({customer}: OverviewProps) => {
                 <a href="/us/office/commissions" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
                   <div className="text-xl sm:text-2xl mb-1"><FaWallet /></div>
                   <div className="text-xs font-semibold text-gray-700 text-center">Comisiones</div>
+                </a>
+                <a href="/us/office/matrix" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
+                  <div className="text-xl sm:text-2xl mb-1"><FaSitemap /></div>
+                  <div className="text-xs font-semibold text-gray-700 text-center">Matriz</div>
                 </a>
                 <a href="/us/office/marketing-materials" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
                   <div className="text-xl sm:text-2xl mb-1"><FaBell /></div>

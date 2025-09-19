@@ -286,3 +286,22 @@ export const fetchProfileRankSummary = async (profileId: number, periodId: numbe
     return { success: false, data: null, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
+
+// 10. Matrix data - Get matrix structure
+export const fetchMatrixData = async (profileId: number): Promise<ApiResponse<any[]>> => {
+  try {
+    const { data, error } = await supabase
+      .rpc('netme_get_matrix', { p_root_profiles_id: profileId })
+      .order('profiles_id', { ascending: true })
+      .order('parent_profiles_id', { ascending: true })
+    
+    if (error) {
+      console.error('Error fetching matrix data:', error)
+      return { success: false, data: [], error: error.message }
+    }
+    return { success: true, data: data || [], error: null }
+  } catch (error) {
+    console.error('Error in fetchMatrixData:', error)
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
+  }
+}
