@@ -175,6 +175,23 @@ export const fetchCommissionSummary = async (profileId: number, periods: number 
   }
 }
 
+export const fetchCommissionSummaryTotal = async (profileId: number): Promise<ApiResponse<any | null>> => {
+  try {
+    const { data, error } = await supabase
+      .rpc('report_commission_summary_total', { p_profile: profileId })
+
+    if (error) {
+      console.error('Error fetching commission summary total:', error)
+      return { success: false, data: null, error: error.message }
+    }
+
+    return { success: true, data: data ?? null, error: null }
+  } catch (error) {
+    console.error('Error in fetchCommissionSummaryTotal:', error)
+    return { success: false, data: null, error: error instanceof Error ? error.message : 'Unknown error' }
+  }
+}
+
 // 5. Reporte “Actividad de la red – por afiliado”
 export const fetchNetworkActivityMember = async (profileId: number, periodStartId?: number, periodEndId?: number) => {
   try {

@@ -5,7 +5,8 @@ import { HttpTypes } from "@medusajs/types";
 import { useOffice } from "@lib/context/office-context";
 import { 
   fetchCommissionSummary, 
-  fetchCommissionDetails 
+  fetchCommissionDetails,
+  fetchCommissionSummaryTotal
 } from "@lib/data/netme_network";
 import { retrieveCustomer } from "@lib/data/customer";
 import Modal from "@modules/common/components/modal";
@@ -36,11 +37,19 @@ interface CommissionSummaryGrouped {
   }[];
 }
 
+interface CommissionSummaryTotal {
+  period_name: string;
+  bonus_type: string;
+  monto_bruto: string;
+  total_bruto: string;
+}
+
 export default function CommissionsPage() {
   const { periods, selectedPeriod, setSelectedPeriodById } = useOffice();
   const [customer, setCustomer] = useState<HttpTypes.StoreCustomer | null>(null);
   const [commissionSummary, setCommissionSummary] = useState<CommissionSummaryGrouped[]>([]);
   const [commissionDetails, setCommissionDetails] = useState<CommissionDetail[]>([]);
+  const [lifetimeSummary, setLifetimeSummary] = useState<CommissionSummaryTotal | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -70,6 +79,9 @@ export default function CommissionsPage() {
   useEffect(() => {
     const fetchData = async () => {
       if (!netmeProfileId) {
+        setCommissionSummary([]);
+        setCommissionDetails([]);
+        setLifetimeSummary(null);
         setLoading(false);
         return;
       }
@@ -113,6 +125,17 @@ export default function CommissionsPage() {
 
         setCommissionSummary(groupedSummary);
 
+        // Fetch lifetime commission total
+        const totalResponse = await fetchCommissionSummaryTotal(Number(netmeProfileId));
+
+        if (totalResponse.success && Array.isArray(totalResponse.data) && totalResponse.data.length > 0) {
+          const [summaryTotal] = totalResponse.data as CommissionSummaryTotal[];
+          setLifetimeSummary(summaryTotal);
+        } else {
+          console.error('Error fetching lifetime commission total:', totalResponse.error);
+          setLifetimeSummary(null);
+        }
+
         // Fetch commission details for selected period
         if (selectedPeriod) {
           const detailsResponse = await fetchCommissionDetails(Number(netmeProfileId), selectedPeriod.id);
@@ -143,6 +166,13 @@ export default function CommissionsPage() {
 
   // Calculate total earnings for current period
   const totalEarnings = currentPeriodSummary?.bonuses.reduce((sum, bonus) => sum + bonus.amount, 0) || 0;
+
+  const lifetimeTotal = lifetimeSummary
+    ? (() => {
+        const parsed = parseFloat(lifetimeSummary.total_bruto || lifetimeSummary.monto_bruto);
+        return Number.isFinite(parsed) ? parsed : 0;
+      })()
+    : null;
 
   // Get bonus type colors
   const getBonusTypeColor = (type: string) => {
@@ -223,25 +253,37 @@ export default function CommissionsPage() {
         
         {/* Total Earnings Card */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white mb-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-lg font-medium">Total de Ganancias (USD)</h2>
-              <p className="text-3xl font-bold">{formatCurrency(totalEarnings)}</p>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h2 className="text-lg font-medium">Total de Ganancias (USD)</h2>
+                <p className="text-3xl font-bold">{formatCurrency(totalEarnings)}</p>
+              </div>
+              
+              {/* Bonus Type Totals */}
+              {currentPeriodSummary && (
+                <div className="flex flex-wrap gap-4">
+                  {currentPeriodSummary.bonuses.map((bonus) => {
+                    const colors = getBonusTypeColor(bonus.type);
+                    return (
+                      <div key={bonus.type} className="text-center">
+                        <div className={`w-3 h-3 rounded-full ${colors.color} mx-auto mb-1`}></div>
+                        <p className="text-xs opacity-90">{formatBonusType(bonus.type)}</p>
+                        <p className="text-sm font-semibold">{formatCurrency(bonus.amount)}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-            
-            {/* Bonus Type Totals */}
-            {currentPeriodSummary && (
-              <div className="flex gap-4">
-                {currentPeriodSummary.bonuses.map((bonus) => {
-                  const colors = getBonusTypeColor(bonus.type);
-                  return (
-                    <div key={bonus.type} className="text-center">
-                      <div className={`w-3 h-3 rounded-full ${colors.color} mx-auto mb-1`}></div>
-                      <p className="text-xs opacity-90">{formatBonusType(bonus.type)}</p>
-                      <p className="text-sm font-semibold">{formatCurrency(bonus.amount)}</p>
-                    </div>
-                  );
-                })}
+
+            {(lifetimeTotal !== null) && (
+              <div className="rounded-lg bg-white/10 p-4">
+                <p className="text-sm font-medium text-white/80">Ganancias Totales (Histórico)</p>
+                <p className="text-2xl font-bold">{formatCurrency(lifetimeTotal)}</p>
+                {lifetimeSummary?.period_name && (
+                  <p className="text-xs text-white/70 mt-1">{lifetimeSummary.period_name}</p>
+                )}
               </div>
             )}
           </div>
