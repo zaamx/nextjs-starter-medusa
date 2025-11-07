@@ -217,7 +217,8 @@ export const fetchNetworkActivityMember = async (profileId: number, periodStartI
 export const fetchNetworkActivityMemberOrders = async (profileId: number, periodId: number) => {
   try {
     const { data, error } = await supabase
-      .from('vw_binary_activity_member_orders')
+      // .from('vw_binary_activity_member_orders')
+      .from('vw_network_activity_member_orders')
       .select('*')
       .eq('profiles_id', profileId)
       .eq('periods_id', periodId)
