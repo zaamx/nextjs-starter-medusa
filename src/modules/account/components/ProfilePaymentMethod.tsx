@@ -81,6 +81,9 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
 
   // Get initial payment method from metadata if present
   const initialPayment = (customer.metadata?.netme_payment_method || {}) as any
+  
+  // Check if payment method already exists
+  const hasPaymentMethod = !!customer.metadata?.netme_payment_method
 
   const [banks, setBanks] = useState<Bank[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>(initialPayment.country_code || "")
@@ -172,8 +175,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
         errorMessage={state.error}
         clearState={() => {/* clear logic if needed */}}
         data-testid="account-payment-method-editor"
-        // if customer has metadata.netme_payment_method, disable edit
-        // disableEdit={!!customer.metadata?.netme_payment_method}
+        disableEdit={hasPaymentMethod}
       >
         <div className="grid grid-cols-1 gap-y-2">
           <NativeSelect
@@ -181,6 +183,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             value={form.country_code}
             onChange={handleChange}
             required
+            disabled={hasPaymentMethod}
             data-testid="payment-country-code-select"
           >
             <option value="">País</option>
@@ -196,7 +199,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             onChange={handleChange}
             required
             data-testid="payment-currency-select"
-            disabled
+            disabled={true}
           >
             <option value="">Moneda</option>
             {currency && <option value={currency}>{currency}</option>}
@@ -207,7 +210,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             onChange={handleChange}
             required
             data-testid="payment-bank-select"
-            disabled={!selectedCountry}
+            disabled={!selectedCountry || hasPaymentMethod}
           >
             <option value="">Banco</option>
             {filteredBanks.map((bank) => (
@@ -221,6 +224,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             value={form.account}
             onChange={handleChange}
             required
+            disabled={hasPaymentMethod}
             data-testid="payment-account-input"
           />
           <Input
@@ -229,6 +233,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             value={form.repeat_account}
             onChange={handleChange}
             required
+            disabled={hasPaymentMethod}
             data-testid="payment-repeat-account-input"
           />
           <Input
@@ -238,6 +243,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             value={form.clabe}
             onChange={handleChange}
             required
+            disabled={hasPaymentMethod}
             data-testid="payment-clabe-input"
           />
           <Input
@@ -246,6 +252,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             value={form.repeat_clabe}
             onChange={handleChange}
             required
+            disabled={hasPaymentMethod}
             data-testid="payment-repeat-clabe-input"
           />
           <Input
@@ -255,6 +262,7 @@ const ProfilePaymentMethod: React.FC<PaymentMethodProps> = ({ customer, regions 
             value={form.phone_linked}
             onChange={handleChange}
             required
+            disabled={hasPaymentMethod}
             data-testid="payment-phone-linked-input"
           />
         </div>
