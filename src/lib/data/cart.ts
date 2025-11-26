@@ -480,6 +480,61 @@ export async function submitPromotionForm(
 }
 
 // TODO: Pass a POJO instead of a form entity here
+// Helper function to build address from new fields or fallback to existing fields
+const buildAddress = (formData: FormData, prefix: string) => {
+  // Try to get new fields first
+  const streetNumber = formData.get(`${prefix}.street_number`) as string
+  const interiorNumber = formData.get(`${prefix}.interior_number`) as string
+  const colonia = formData.get(`${prefix}.colonia`) as string
+  const localidad = formData.get(`${prefix}.localidad`) as string
+  const referencias = formData.get(`${prefix}.referencias`) as string
+
+  // Build address_1: "Calle y número exterior, Colonia"
+  let address_1 = ""
+  if (streetNumber || colonia) {
+    const parts = [streetNumber, colonia].filter(Boolean)
+    address_1 = parts.join(", ")
+  } else {
+    // Fallback to existing address_1 if new fields are not available
+    address_1 = (formData.get(`${prefix}.address_1`) as string) || ""
+  }
+
+  // Build address_2: "Número interior, Referencias"
+  let address_2 = ""
+  if (interiorNumber || referencias) {
+    const parts = [interiorNumber, referencias].filter(Boolean)
+    address_2 = parts.join(", ")
+  } else {
+    // Fallback to existing address_2 if new fields are not available
+    address_2 = (formData.get(`${prefix}.address_2`) as string) || ""
+  }
+
+  // Use localidad for city, fallback to existing city field
+  const city = localidad || (formData.get(`${prefix}.city`) as string) || ""
+
+  // Build metadata with all new fields
+  const metadata: Record<string, any> = {}
+  if (streetNumber) metadata.street_number = streetNumber
+  if (interiorNumber) metadata.interior_number = interiorNumber
+  if (colonia) metadata.colonia = colonia
+  if (localidad) metadata.localidad = localidad
+  if (referencias) metadata.referencias = referencias
+
+  return {
+    first_name: formData.get(`${prefix}.first_name`),
+    last_name: formData.get(`${prefix}.last_name`),
+    address_1: address_1.trim(),
+    address_2: address_2.trim(),
+    company: formData.get(`${prefix}.company`),
+    postal_code: formData.get(`${prefix}.postal_code`),
+    city: city.trim(),
+    country_code: formData.get(`${prefix}.country_code`),
+    province: formData.get(`${prefix}.province`),
+    phone: formData.get(`${prefix}.phone`),
+    ...(Object.keys(metadata).length > 0 && { metadata }),
+  }
+}
+
 export async function setAddresses(currentState: unknown, formData: FormData) {
   try {
     if (!formData) {
@@ -490,38 +545,20 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
       throw new Error("No existing cart found when setting addresses")
     }
 
+    const shippingAddress = buildAddress(formData, "shipping_address")
+
     const data = {
-      shipping_address: {
-        first_name: formData.get("shipping_address.first_name"),
-        last_name: formData.get("shipping_address.last_name"),
-        address_1: formData.get("shipping_address.address_1"),
-        address_2: "",
-        company: formData.get("shipping_address.company"),
-        postal_code: formData.get("shipping_address.postal_code"),
-        city: formData.get("shipping_address.city"),
-        country_code: formData.get("shipping_address.country_code"),
-        province: formData.get("shipping_address.province"),
-        phone: formData.get("shipping_address.phone"),
-      },
+      shipping_address: shippingAddress,
       email: formData.get("email"),
     } as any
 
     const sameAsBilling = formData.get("same_as_billing")
-    if (sameAsBilling === "on") data.billing_address = data.shipping_address
+    if (sameAsBilling === "on") {
+      data.billing_address = shippingAddress
+    } else {
+      data.billing_address = buildAddress(formData, "billing_address")
+    }
 
-    if (sameAsBilling !== "on")
-      data.billing_address = {
-        first_name: formData.get("billing_address.first_name"),
-        last_name: formData.get("billing_address.last_name"),
-        address_1: formData.get("billing_address.address_1"),
-        address_2: "",
-        company: formData.get("billing_address.company"),
-        postal_code: formData.get("billing_address.postal_code"),
-        city: formData.get("billing_address.city"),
-        country_code: formData.get("billing_address.country_code"),
-        province: formData.get("billing_address.province"),
-        phone: formData.get("billing_address.phone"),
-      }
     await updateCart(data)
   } catch (e: any) {
     return e.message

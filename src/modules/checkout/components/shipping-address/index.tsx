@@ -6,6 +6,7 @@ import { mapKeys } from "lodash"
 import React, { useEffect, useMemo, useState } from "react"
 import AddressSelect from "../address-select"
 import CountrySelect from "../country-select"
+import ProvinceSelect from "../province-select"
 
 const ShippingAddress = ({
   customer,
@@ -18,16 +19,42 @@ const ShippingAddress = ({
   checked: boolean
   onChange: () => void
 }) => {
+  // Helper function to parse address fields from address_1 and address_2
+  const parseAddressFields = (address_1?: string, address_2?: string, metadata?: Record<string, any>) => {
+    return {
+      street_number: metadata?.street_number || address_1?.split(",")[0]?.trim() || "",
+      interior_number: metadata?.interior_number || "",
+      colonia: metadata?.colonia || address_1?.split(",")[1]?.trim() || "",
+      localidad: "",
+      referencias: metadata?.referencias || address_2 || "",
+    }
+  }
+
+  const parsedFields = useMemo(() => {
+    if (cart?.shipping_address) {
+      return parseAddressFields(
+        cart.shipping_address.address_1,
+        cart.shipping_address.address_2,
+        cart.shipping_address.metadata as Record<string, any> | undefined
+      )
+    }
+    return parseAddressFields()
+  }, [cart?.shipping_address])
+
   const [formData, setFormData] = useState<Record<string, any>>({
     "shipping_address.first_name": cart?.shipping_address?.first_name || "",
     "shipping_address.last_name": cart?.shipping_address?.last_name || "",
-    "shipping_address.address_1": cart?.shipping_address?.address_1 || "",
+    "shipping_address.street_number": parsedFields.street_number,
+    "shipping_address.interior_number": parsedFields.interior_number,
+    "shipping_address.colonia": parsedFields.colonia,
+    "shipping_address.localidad": cart?.shipping_address?.city || parsedFields.localidad,
     "shipping_address.company": cart?.shipping_address?.company || "",
     "shipping_address.postal_code": cart?.shipping_address?.postal_code || "",
     "shipping_address.city": cart?.shipping_address?.city || "",
     "shipping_address.country_code": cart?.shipping_address?.country_code || "",
     "shipping_address.province": cart?.shipping_address?.province || "",
     "shipping_address.phone": cart?.shipping_address?.phone || "",
+    "shipping_address.referencias": parsedFields.referencias,
     email: cart?.email || "",
   })
 
@@ -49,30 +76,54 @@ const ShippingAddress = ({
     address?: HttpTypes.StoreCartAddress,
     email?: string
   ) => {
-    address &&
+    if (address) {
+      const parsed = parseAddressFields(
+        address.address_1,
+        address.address_2,
+        address.metadata as Record<string, any> | undefined
+      )
       setFormData((prevState: Record<string, any>) => ({
         ...prevState,
         "shipping_address.first_name": address?.first_name || "",
         "shipping_address.last_name": address?.last_name || "",
-        "shipping_address.address_1": address?.address_1 || "",
+        "shipping_address.street_number": parsed.street_number,
+        "shipping_address.interior_number": parsed.interior_number,
+        "shipping_address.colonia": parsed.colonia,
+        "shipping_address.localidad": address?.city || parsed.localidad,
         "shipping_address.company": address?.company || "",
         "shipping_address.postal_code": address?.postal_code || "",
         "shipping_address.city": address?.city || "",
         "shipping_address.country_code": address?.country_code || "",
         "shipping_address.province": address?.province || "",
         "shipping_address.phone": address?.phone || "",
+        "shipping_address.referencias": parsed.referencias,
       }))
+    }
 
-    email &&
+    if (email) {
       setFormData((prevState: Record<string, any>) => ({
         ...prevState,
         email: email,
       }))
+    }
   }
 
   useEffect(() => {
     // Ensure cart is not null and has a shipping_address before setting form data
     if (cart && cart.shipping_address) {
+      const parsed = parseAddressFields(
+        cart.shipping_address.address_1,
+        cart.shipping_address.address_2,
+        cart.shipping_address.metadata as Record<string, any> | undefined
+      )
+      setFormData((prevState) => ({
+        ...prevState,
+        "shipping_address.street_number": parsed.street_number,
+        "shipping_address.interior_number": parsed.interior_number,
+        "shipping_address.colonia": parsed.colonia,
+        "shipping_address.localidad": cart.shipping_address?.city || parsed.localidad,
+        "shipping_address.referencias": parsed.referencias,
+      }))
       setFormAddress(cart?.shipping_address, cart?.email)
     }
 
@@ -86,10 +137,17 @@ const ShippingAddress = ({
       HTMLInputElement | HTMLInputElement | HTMLSelectElement
     >
   ) => {
-    setFormData({
+    const newFormData = {
       ...formData,
       [e.target.name]: e.target.value,
-    })
+    }
+    
+    // Clear province when country changes
+    if (e.target.name === "shipping_address.country_code") {
+      newFormData["shipping_address.province"] = ""
+    }
+    
+    setFormData(newFormData)
   }
 
   return (
@@ -130,13 +188,30 @@ const ShippingAddress = ({
           data-testid="shipping-last-name-input"
         />
         <Input
-          label="Dirección"
-          name="shipping_address.address_1"
+          label="Calle y número exterior"
+          name="shipping_address.street_number"
           autoComplete="address-line1"
-          value={formData["shipping_address.address_1"]}
+          value={formData["shipping_address.street_number"]}
           onChange={handleChange}
           required
-          data-testid="shipping-address-input"
+          data-testid="shipping-street-number-input"
+        />
+        <Input
+          label="Número interior (si aplica)"
+          name="shipping_address.interior_number"
+          autoComplete="address-line2"
+          value={formData["shipping_address.interior_number"]}
+          onChange={handleChange}
+          data-testid="shipping-interior-number-input"
+        />
+        <Input
+          label="Colonia"
+          name="shipping_address.colonia"
+          autoComplete="address-line2"
+          value={formData["shipping_address.colonia"]}
+          onChange={handleChange}
+          required
+          data-testid="shipping-colonia-input"
         />
         <Input
           label="Empresa"
@@ -147,6 +222,15 @@ const ShippingAddress = ({
           data-testid="shipping-company-input"
         />
         <Input
+          label="Localidad (ciudad, municipio o alcaldía)"
+          name="shipping_address.localidad"
+          autoComplete="address-level2"
+          value={formData["shipping_address.localidad"]}
+          onChange={handleChange}
+          required
+          data-testid="shipping-localidad-input"
+        />
+        <Input
           label="Código postal"
           name="shipping_address.postal_code"
           autoComplete="postal-code"
@@ -154,15 +238,6 @@ const ShippingAddress = ({
           onChange={handleChange}
           required
           data-testid="shipping-postal-code-input"
-        />
-        <Input
-          label="Ciudad"
-          name="shipping_address.city"
-          autoComplete="address-level2"
-          value={formData["shipping_address.city"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-city-input"
         />
         <CountrySelect
           name="shipping_address.country_code"
@@ -173,15 +248,40 @@ const ShippingAddress = ({
           required
           data-testid="shipping-country-select"
         />
-        <Input
-          label="State / Province"
+        <ProvinceSelect
           name="shipping_address.province"
           autoComplete="address-level1"
+          countryCode={formData["shipping_address.country_code"]}
           value={formData["shipping_address.province"]}
           onChange={handleChange}
-          data-testid="shipping-province-input"
+          required
+          data-testid="shipping-province-select"
+        />
+        <Input
+          label="Referencias (opcionales)"
+          name="shipping_address.referencias"
+          autoComplete="off"
+          value={formData["shipping_address.referencias"]}
+          onChange={handleChange}
+          data-testid="shipping-referencias-input"
         />
       </div>
+      {/* Hidden inputs for backward compatibility with Medusa API */}
+      <input
+        type="hidden"
+        name="shipping_address.address_1"
+        value={`${formData["shipping_address.street_number"] || ""}${formData["shipping_address.colonia"] ? `, ${formData["shipping_address.colonia"]}` : ""}`.trim()}
+      />
+      <input
+        type="hidden"
+        name="shipping_address.address_2"
+        value={`${formData["shipping_address.interior_number"] || ""}${formData["shipping_address.referencias"] ? (formData["shipping_address.interior_number"] ? `, ${formData["shipping_address.referencias"]}` : formData["shipping_address.referencias"]) : ""}`.trim()}
+      />
+      <input
+        type="hidden"
+        name="shipping_address.city"
+        value={formData["shipping_address.localidad"] || ""}
+      />
       <div className="my-8">
         <Checkbox
                       label="Dirección de facturación igual a la de envío"
