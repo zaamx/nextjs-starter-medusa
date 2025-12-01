@@ -262,8 +262,11 @@ export async function updateLineItem({
     ...(await getAuthHeaders()),
   }
 
-  await sdk.store.cart
-    .updateLineItem(cartId, lineId, { quantity }, {}, headers)
+  await sdk.client.fetch(`/store/carts/${cartId}/line-items/${lineId}`, {
+    method: "POST",
+    body: { quantity },
+    headers,
+  })
     .then(async () => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
@@ -289,8 +292,10 @@ export async function deleteLineItem(lineId: string) {
     ...(await getAuthHeaders()),
   }
 
-  await sdk.store.cart
-    .deleteLineItem(cartId, lineId, headers)
+  await sdk.client.fetch(`/store/carts/${cartId}/line-items/${lineId}`, {
+    method: "DELETE",
+    headers,
+  })
     .then(async () => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
@@ -336,12 +341,12 @@ export async function setShippingMethod({
 
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
-      
+
       console.log("🚀 [SERVER] Cache revalidated", {
         cartCacheTag,
         timestamp: new Date().toISOString()
       })
-      
+
       return result
     })
     .catch((error) => {
