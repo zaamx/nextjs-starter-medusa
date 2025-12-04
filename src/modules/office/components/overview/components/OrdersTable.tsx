@@ -7,6 +7,7 @@ interface NetworkOrder {
   periods_id: number
   order_display: number
   buyer_profile: number
+  unilevel_sponsor_id: number
   is_first_sale: boolean
   is_subscription: boolean | null
   cv: number
@@ -43,7 +44,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
     const getPageNumbers = () => {
       const pages = []
       const maxVisiblePages = 5
-      
+
       if (totalPages <= maxVisiblePages) {
         for (let i = 1; i <= totalPages; i++) {
           pages.push(i)
@@ -71,7 +72,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
           pages.push(totalPages)
         }
       }
-      
+
       return pages
     }
 
@@ -88,24 +89,23 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
           >
             Anterior
           </button>
-          
+
           {getPageNumbers().map((page, index) => (
             <button
               key={index}
               onClick={() => typeof page === 'number' && handlePageChange(page)}
               disabled={page === '...'}
-              className={`px-3 py-1 text-sm border rounded-md ${
-                page === currentPage
-                  ? 'bg-blue-500 text-white border-blue-500'
-                  : page === '...'
+              className={`px-3 py-1 text-sm border rounded-md ${page === currentPage
+                ? 'bg-blue-500 text-white border-blue-500'
+                : page === '...'
                   ? 'border-transparent cursor-default'
                   : 'hover:bg-gray-50'
-              }`}
+                }`}
             >
               {page}
             </button>
           ))}
-          
+
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
@@ -158,7 +158,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
               </div>
             ))}
           </div>
-          
+
           {/* Desktop Table View */}
           <div className="hidden lg:block">
             <Table>
@@ -180,7 +180,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
                   <Table.Row key={startIndex + idx} className="hover:bg-gray-50">
                     <Table.Cell className="text-xs font-medium">#{order.order_display}</Table.Cell>
                     <Table.Cell className="text-xs">{order.buyer_profile}</Table.Cell>
-                    <Table.Cell className="text-xs">{order.profiles_id}</Table.Cell>
+                    <Table.Cell className="text-xs">{order.unilevel_sponsor_id}</Table.Cell>
                     <Table.Cell className="text-xs">{order.depth}</Table.Cell>
                     <Table.Cell className="text-xs">
                       <span className={`px-2 py-1 rounded-full text-xs ${order.position === 0 ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
@@ -204,7 +204,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
               </Table.Body>
             </Table>
           </div>
-          
+
           <PaginationControls />
         </div>
       ) : (
