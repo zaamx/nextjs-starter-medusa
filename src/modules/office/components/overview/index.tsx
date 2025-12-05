@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import { FaUserCircle, FaWallet, FaTrophy, FaBell, FaSitemap } from "react-icons/fa";
 import { HttpTypes } from "@medusajs/types"
 import { useOffice } from "@lib/context/office-context"
-import { 
-  fetchBinaryLegVolume, 
-  fetchUnilevelLevelVolume, 
+import {
+  fetchBinaryLegVolume,
+  fetchUnilevelLevelVolume,
   fetchRankProgress,
   fetchRankProgressDetails,
   fetchNetmeRanks,
@@ -150,15 +150,17 @@ interface RenewalStatus {
 interface ProfileRankSummary {
   lifetime_rank_name: string
   lifetime_period_name: string
-  month_rank_name: string
-  month_period_name: string
+  current_rank_name: string
+  current_period_name: string
+  last_monthly_rank_name: string
+  last_monthly_period_name: string
 }
 
-const Overview = ({customer}: OverviewProps) => {
+const Overview = ({ customer }: OverviewProps) => {
   const { selectedPeriod, currentPeriod } = useOffice()
   const [showTargetModal, setShowTargetModal] = useState(false);
   const [showRanksModal, setShowRanksModal] = useState(false);
-  
+
   // State for real data
   const [binaryData, setBinaryData] = useState<BinaryLegVolume | null>(null)
   const [unilevelData, setUnilevelData] = useState<UnilevelLevelVolume[]>([])
@@ -203,7 +205,7 @@ const Overview = ({customer}: OverviewProps) => {
         fetchNetmeRanks(),
         fetchNetmeRankRequirements()
       ])
-      
+
       if (ranksResult.success) {
         setRanksData(ranksResult.data || [])
         setComponentErrors(prev => ({ ...prev, ranks: '' }))
@@ -211,7 +213,7 @@ const Overview = ({customer}: OverviewProps) => {
         console.error('Error fetching ranks:', ranksResult.error)
         setComponentErrors(prev => ({ ...prev, ranks: ranksResult.error || 'Error loading ranks' }))
       }
-      
+
       if (requirementsResult.success) {
         setRankRequirementsData(requirementsResult.data || [])
         setComponentErrors(prev => ({ ...prev, rankRequirements: '' }))
@@ -359,11 +361,11 @@ const Overview = ({customer}: OverviewProps) => {
 
     // Week and Period Volume from binary data
     if (binaryData && !componentErrors.binary) {
-    const totalCV = (binaryData.cv_period_left || 0) + (binaryData.cv_period_right || 0)
-    const weekCV = (binaryData.cv_week_left || 0) + (binaryData.cv_week_right || 0)
+      const totalCV = (binaryData.cv_period_left || 0) + (binaryData.cv_period_right || 0)
+      const weekCV = (binaryData.cv_week_left || 0) + (binaryData.cv_week_right || 0)
       kpis.push(
-      { label: "Vol. Semana", value: `${weekCV.toLocaleString()} CV`, countdown: false },
-      { label: "Vol. Periodo", value: `${totalCV.toLocaleString()} CV`, countdown: false },
+        { label: "Vol. Semana", value: `${weekCV.toLocaleString()} CV`, countdown: false },
+        { label: "Vol. Periodo", value: `${totalCV.toLocaleString()} CV`, countdown: false },
         { label: "Puntos Pagados", value: `${(binaryData.pairs_paid || 0).toLocaleString()}`, countdown: false }
       )
     } else if (componentErrors.binary) {
@@ -379,7 +381,7 @@ const Overview = ({customer}: OverviewProps) => {
         { label: "Puntos Pagados", value: "0", countdown: false }
       )
     }
-    
+
     // Actives from unilevel data
     if (unilevelData.length > 0 && !componentErrors.unilevel) {
       const totalActives = unilevelData.reduce((sum, level) => sum + level.actives, 0)
@@ -389,7 +391,7 @@ const Overview = ({customer}: OverviewProps) => {
     } else {
       kpis.push({ label: "Activos Unilevel", value: "0 activos", countdown: false })
     }
-    
+
     // Spillover from spillover data
     if (spilloverData.length > 0 && !componentErrors.spillover) {
       const totalSpillover = spilloverData.reduce((sum, item) => sum + (item.cv_spillover || 0), 0)
@@ -400,18 +402,18 @@ const Overview = ({customer}: OverviewProps) => {
       kpis.push({ label: "Derrame Recibido", value: "0 CV", countdown: false })
     }
 
-    return kpis 
+    return kpis
   }
 
   // Generate alerts based on real data with error handling
   const getAlerts = () => {
     const alerts: Array<{ type: string; message: string }> = []
-    
+
     if (componentErrors.rank) {
       alerts.push({ type: "Error", message: "No se pudieron cargar los datos de rango." })
       return alerts
     }
-    
+
     if (!rankData || rankData.length === 0) return alerts
 
     const currentRank = rankData[0]
@@ -481,29 +483,28 @@ const Overview = ({customer}: OverviewProps) => {
               {customer?.first_name} {customer?.last_name} &nbsp;| ID: {(customer?.metadata as any)?.netme_profile_id}
             </div>
             <div className="text-xs text-blue-600 font-semibold">
-              {componentErrors.rank ? "Error" : (rankData.length > 0 ? rankData[0].current_rank : "Cargando...")}
-              {rankSummaryData && !componentErrors.rankSummary && (
-              <span className="text-xs text-gray-500">
-                &nbsp; - <span className="mr-2">Vitalicio: {rankSummaryData.lifetime_rank_name}</span>
-                <span>Anterior: {rankSummaryData.month_rank_name}</span>
+              <span className="text-sm text-blue-600 font-semibold">
+                {rankSummaryData && (
+                  <span className="text-xs text-gray-500 ml-2">
+                    Vitalicio: {rankSummaryData.lifetime_rank_name} | Anterior: {rankSummaryData.last_monthly_rank_name} | Actual: {rankSummaryData.current_rank_name}
+                  </span>
+                )}
               </span>
-            )}
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Compact Renewal Status */}
           {renewalData && !componentErrors.renewal && (
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium ${
-              renewalData.days_left > 0 
-                ? 'bg-green-100 text-green-800 border border-green-200' 
-                : 'bg-red-100 text-red-800 border border-red-200'
-            }`}>
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium ${renewalData.days_left > 0
+              ? 'bg-green-100 text-green-800 border border-green-200'
+              : 'bg-red-100 text-red-800 border border-red-200'
+              }`}>
               <div className={`w-2 h-2 rounded-full ${renewalData.days_left > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
               <div className="flex flex-col">
                 <span className="font-semibold">{renewalData.days_left > 0 ? 'Activo' : 'Inactivo'} Hasta {renewalData.renewal_period_name.replace(/\d+$/, (match) => String(parseInt(match) - 1))} </span>
                 <span className="text-xs opacity-75">
-                  {renewalData.days_left > 0 
+                  {renewalData.days_left > 0
                     ? `Renovar ${renewalData.renewal_period_name}`
                     : 'Renovación vencida'
                   }
@@ -514,8 +515,8 @@ const Overview = ({customer}: OverviewProps) => {
               )}
             </div>
           )}
-          
-          <button 
+
+          <button
             onClick={handleShowRanksModal}
             className="flex items-center gap-1 bg-gradient-to-r from-green-500 to-blue-500 text-white px-2 sm:px-3 py-1 rounded-lg shadow hover:from-green-600 hover:to-blue-600 transition"
           >
@@ -527,17 +528,17 @@ const Overview = ({customer}: OverviewProps) => {
 
       {/* Responsive Grid Layout */}
       <div className="p-3 sm:p-4 space-y-4">
-        
+
         {/* KPI Bar */}
         <KPIBar kpis={kpis} />
 
         {/* Main Content Grid - Responsive */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          
+
           {/* Left Column */}
           <div className="space-y-4">
             {/* Rank Calculator */}
-            <RankCalculator 
+            <RankCalculator
               rankData={rankData}
               error={componentErrors.rank || null}
               onShowModal={handleShowTargetModal}
@@ -547,13 +548,13 @@ const Overview = ({customer}: OverviewProps) => {
             <Alerts alerts={alerts} />
 
             {/* Binary Volume */}
-            <BinaryVolume 
+            <BinaryVolume
               binaryData={binaryData}
               error={componentErrors.binary || null}
             />
 
             {/* Unilevel Volume */}
-            <UnilevelVolume 
+            <UnilevelVolume
               unilevelData={unilevelData}
               error={componentErrors.unilevel || null}
             />
@@ -562,19 +563,19 @@ const Overview = ({customer}: OverviewProps) => {
           {/* Right Column */}
           <div className="space-y-4">
             {/* Spillover vs Build */}
-            <SpilloverVsBuildComponent 
+            <SpilloverVsBuildComponent
               spilloverData={spilloverData}
               error={componentErrors.spillover || null}
             />
 
             {/* Network Activity */}
-            <NetworkActivityComponent 
+            <NetworkActivityComponent
               currentPeriodActivity={currentPeriodActivity}
               error={componentErrors.networkActivity || null}
             />
 
             {/* Orders Table */}
-            <OrdersTable 
+            <OrdersTable
               networkOrdersData={networkOrdersData}
               error={componentErrors.networkOrders || null}
             />
@@ -614,7 +615,7 @@ const Overview = ({customer}: OverviewProps) => {
         </div>
       </div>
 
-      
+
 
       {/* Responsive Target Modal */}
       {showTargetModal && rankData.length > 0 && (
@@ -622,7 +623,7 @@ const Overview = ({customer}: OverviewProps) => {
           <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-md w-full relative max-h-[90vh] overflow-y-auto">
             <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-xl" onClick={() => setShowTargetModal(false)}>&times;</button>
             <div className="font-bold text-lg mb-4 text-blue-700">Requisitos para rango {rankData[0].next_rank}</div>
-            
+
             {/* Basic Requirements */}
             <div className="mb-4">
               <h3 className="font-semibold text-gray-900 mb-2">Requisitos Básicos</h3>
@@ -637,7 +638,7 @@ const Overview = ({customer}: OverviewProps) => {
             {rankDetailsData.length > 0 && (
               <div className="mb-4">
                 <h3 className="font-semibold text-gray-900 mb-2">Desglose de Volumen</h3>
-                
+
                 {/* Construction Volume */}
                 <div className="bg-blue-50 rounded-lg p-3 mb-3">
                   <div className="flex justify-between items-center mb-2">
@@ -647,14 +648,14 @@ const Overview = ({customer}: OverviewProps) => {
                     </span>
                   </div>
                   <div className="w-full bg-blue-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-500" 
-                      style={{ width: `${Math.min(100, (rankDetailsData[0].qv_const_current / rankDetailsData[0].qv_const_needed) * 100)}%` }} 
+                    <div
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${Math.min(100, (rankDetailsData[0].qv_const_current / rankDetailsData[0].qv_const_needed) * 100)}%` }}
                     />
                   </div>
                   <div className="text-xs text-blue-600 mt-1">
-                    {rankDetailsData[0].qv_const_missing > 0 
-                      ? `Faltan ${(rankDetailsData[0].qv_const_missing || 0).toLocaleString()} QV` 
+                    {rankDetailsData[0].qv_const_missing > 0
+                      ? `Faltan ${(rankDetailsData[0].qv_const_missing || 0).toLocaleString()} QV`
                       : "¡Completado!"}
                   </div>
                 </div>
@@ -668,14 +669,14 @@ const Overview = ({customer}: OverviewProps) => {
                     </span>
                   </div>
                   <div className="w-full bg-green-200 rounded-full h-2">
-                    <div 
-                      className="bg-green-600 h-2 rounded-full transition-all duration-500" 
-                      style={{ width: `${Math.min(100, (rankDetailsData[0].qv_spill_current / rankDetailsData[0].qv_spill_needed) * 100)}%` }} 
+                    <div
+                      className="bg-green-600 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${Math.min(100, (rankDetailsData[0].qv_spill_current / rankDetailsData[0].qv_spill_needed) * 100)}%` }}
                     />
                   </div>
                   <div className="text-xs text-green-600 mt-1">
-                    {rankDetailsData[0].qv_spill_missing > 0 
-                      ? `Faltan ${(rankDetailsData[0].qv_spill_missing || 0).toLocaleString()} QV` 
+                    {rankDetailsData[0].qv_spill_missing > 0
+                      ? `Faltan ${(rankDetailsData[0].qv_spill_missing || 0).toLocaleString()} QV`
                       : "¡Completado!"}
                   </div>
                 </div>
@@ -689,14 +690,14 @@ const Overview = ({customer}: OverviewProps) => {
                     </span>
                   </div>
                   <div className="w-full bg-purple-200 rounded-full h-2">
-                    <div 
-                      className="bg-purple-600 h-2 rounded-full transition-all duration-500" 
-                      style={{ width: `${Math.min(100, (rankDetailsData[0].qv_total / rankDetailsData[0].qv_needed) * 100)}%` }} 
+                    <div
+                      className="bg-purple-600 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${Math.min(100, (rankDetailsData[0].qv_total / rankDetailsData[0].qv_needed) * 100)}%` }}
                     />
                   </div>
                   <div className="text-xs text-purple-600 mt-1">
-                    {rankDetailsData[0].qv_missing > 0 
-                      ? `Faltan ${(rankDetailsData[0].qv_missing || 0).toLocaleString()} QV` 
+                    {rankDetailsData[0].qv_missing > 0
+                      ? `Faltan ${(rankDetailsData[0].qv_missing || 0).toLocaleString()} QV`
                       : "¡Completado!"}
                   </div>
                 </div>
@@ -714,8 +715,8 @@ const Overview = ({customer}: OverviewProps) => {
                       {(rankData[0].active_left ?? 0)} / {rankData[0].act_left_needed}
                     </div>
                     <div className="text-xs text-orange-600">
-                      {rankData[0].act_left_missing > 0 
-                        ? `Falta ${rankData[0].act_left_missing}` 
+                      {rankData[0].act_left_missing > 0
+                        ? `Falta ${rankData[0].act_left_missing}`
                         : "¡Completado!"}
                     </div>
                   </div>
@@ -727,8 +728,8 @@ const Overview = ({customer}: OverviewProps) => {
                       {(rankData[0].active_right ?? 0)} / {rankData[0].act_right_needed}
                     </div>
                     <div className="text-xs text-orange-600">
-                      {rankData[0].act_right_missing > 0 
-                        ? `Falta ${rankData[0].act_right_missing}` 
+                      {rankData[0].act_right_missing > 0
+                        ? `Falta ${rankData[0].act_right_missing}`
                         : "¡Completado!"}
                     </div>
                   </div>
@@ -753,7 +754,7 @@ const Overview = ({customer}: OverviewProps) => {
           <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-4xl w-full relative max-h-[90vh] overflow-y-auto">
             <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-xl" onClick={() => setShowRanksModal(false)}>&times;</button>
             <div className="font-bold text-xl mb-6 text-blue-700">Catálogo de Rangos</div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {ranksData.map((rank) => {
                 const requirements = getRankRequirements(rank.id)
@@ -769,7 +770,7 @@ const Overview = ({customer}: OverviewProps) => {
                         <div className="font-bold text-green-600">${rank.cap_usd?.toLocaleString() || '0'}</div>
                       </div>
                     </div>
-                    
+
                     {requirements.length > 0 && (
                       <div>
                         <h4 className="font-semibold text-sm text-gray-700 mb-2">Requerimientos:</h4>
