@@ -9,6 +9,15 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout(props: { children: React.ReactNode }) {
+  // Fix for Next.js dev overlay crash when global.localStorage is improperly mocked as {}
+  if (typeof window === 'undefined' && typeof global !== 'undefined') {
+    // @ts-ignore
+    if (typeof global.localStorage !== 'undefined' && typeof global.localStorage.getItem !== 'function') {
+      // @ts-ignore
+      delete global.localStorage
+    }
+  }
+
   return (
     <html lang="en" data-mode="light">
       <body>
