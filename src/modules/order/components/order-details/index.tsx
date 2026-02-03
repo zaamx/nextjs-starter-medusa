@@ -1,4 +1,5 @@
 import { HttpTypes } from "@medusajs/types"
+import { formatDateToMexicoCity } from "@lib/util/date"
 import { Text } from "@medusajs/ui"
 
 type OrderDetailsProps = {
@@ -19,7 +20,7 @@ const OrderDetails = ({ order, showStatus, customer }: OrderDetailsProps) => {
   }
 
   // Check if customer has the required metadata
-  const hasWeNowMetadata = customer?.metadata && 
+  const hasWeNowMetadata = customer?.metadata &&
     typeof customer.metadata.binary_position === 'number' &&
     typeof customer.metadata.netme_profile_id === 'number' &&
     typeof customer.metadata.sponsor_profile_id === 'number'
@@ -41,13 +42,13 @@ const OrderDetails = ({ order, showStatus, customer }: OrderDetailsProps) => {
         </span>
         .
       </Text>
-      
+
       {customer && (
         <Text className="mt-2">
           Cliente:{" "}
           <span className="text-ui-fg-medium-plus font-semibold" data-testid="customer-name">
             {customer.first_name} {customer.last_name}
-          </span>         
+          </span>
         </Text>
       )}
 
@@ -81,11 +82,11 @@ const OrderDetails = ({ order, showStatus, customer }: OrderDetailsProps) => {
           </div>
         </div>
       )}
-      
+
       <Text className="mt-2">
         Fecha del pedido:{" "}
         <span data-testid="order-date">
-          {new Date(order.created_at).toDateString()}
+          {formatDateToMexicoCity(order.created_at)}
         </span>
       </Text>
       <Text className="mt-2 text-ui-fg-interactive">
