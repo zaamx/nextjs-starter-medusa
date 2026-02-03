@@ -9,14 +9,29 @@ export interface MystoreData {
 }
 
 /**
+ * Safely check if localStorage is available
+ */
+const isLocalStorageAvailable = (): boolean => {
+  try {
+    return (
+      typeof window !== 'undefined' &&
+      typeof window.localStorage !== 'undefined' &&
+      typeof window.localStorage.getItem === 'function'
+    )
+  } catch (e) {
+    return false
+  }
+}
+
+/**
  * Store the mystore sponsor ID in localStorage
  */
 export const storeMystoreSponsor = (sponsorId: string, isLocked: boolean = true): boolean => {
-  if (typeof window === 'undefined') return false
-  
+  if (!isLocalStorageAvailable()) return false
+
   try {
-    localStorage.setItem(MYSTORE_STORAGE_KEY, sponsorId)
-    localStorage.setItem(MYSTORE_LOCKED_KEY, isLocked.toString())
+    window.localStorage.setItem(MYSTORE_STORAGE_KEY, sponsorId)
+    window.localStorage.setItem(MYSTORE_LOCKED_KEY, isLocked.toString())
     return true
   } catch (error) {
     console.error('Failed to store mystore sponsor:', error)
@@ -28,12 +43,12 @@ export const storeMystoreSponsor = (sponsorId: string, isLocked: boolean = true)
  * Get the stored mystore sponsor ID from localStorage
  */
 export const getMystoreSponsor = (): MystoreData | null => {
-  if (typeof window === 'undefined') return null
-  
+  if (!isLocalStorageAvailable()) return null
+
   try {
-    const sponsorId = localStorage.getItem(MYSTORE_STORAGE_KEY)
-    const isLocked = localStorage.getItem(MYSTORE_LOCKED_KEY) === 'true'
-    
+    const sponsorId = window.localStorage.getItem(MYSTORE_STORAGE_KEY)
+    const isLocked = window.localStorage.getItem(MYSTORE_LOCKED_KEY) === 'true'
+
     if (sponsorId) {
       return {
         sponsorId,
@@ -43,7 +58,7 @@ export const getMystoreSponsor = (): MystoreData | null => {
   } catch (error) {
     console.error('Failed to get mystore sponsor:', error)
   }
-  
+
   return null
 }
 
@@ -51,11 +66,11 @@ export const getMystoreSponsor = (): MystoreData | null => {
  * Clear the stored mystore sponsor ID
  */
 export const clearMystoreSponsor = (): void => {
-  if (typeof window === 'undefined') return
-  
+  if (!isLocalStorageAvailable()) return
+
   try {
-    localStorage.removeItem(MYSTORE_STORAGE_KEY)
-    localStorage.removeItem(MYSTORE_LOCKED_KEY)
+    window.localStorage.removeItem(MYSTORE_STORAGE_KEY)
+    window.localStorage.removeItem(MYSTORE_LOCKED_KEY)
   } catch (error) {
     console.error('Failed to clear mystore sponsor:', error)
   }
