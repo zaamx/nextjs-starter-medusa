@@ -72,11 +72,15 @@ export const listProducts = async ({
       }
     )
     .then(({ products, count }) => {
+      const filteredProducts = products.filter((product) =>
+        product.variants?.some((variant) => variant.calculated_price)
+      )
+
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
       return {
         response: {
-          products,
+          products: filteredProducts,
           count,
         },
         nextPage: nextPage,
@@ -107,7 +111,7 @@ export const listProductsWithSort = async ({
   const limit = queryParams?.limit || 12
 
   const {
-    response: { products, count },
+    response: { products },
   } = await listProducts({
     pageParam: 0,
     queryParams: {
@@ -116,6 +120,9 @@ export const listProductsWithSort = async ({
     },
     countryCode,
   })
+
+  // Since we filtered products in listProducts, we update the count to reflect the available products to sort/display
+  const count = products.length
 
   const sortedProducts = sortProducts(products, sortBy)
 
