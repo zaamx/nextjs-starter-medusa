@@ -587,7 +587,7 @@ const Overview = ({ customer }: OverviewProps) => {
               </a>
             </div>
             {/* Responsive Office Navigation */}
-            <div className="px-3 sm:px-4 pb-20 sm:pb-24">
+            {/* <div className="px-3 sm:px-4 pb-20 sm:pb-24">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                 <a href="/us/office/commissions" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
                   <div className="text-xl sm:text-2xl mb-1"><FaWallet /></div>
@@ -610,7 +610,7 @@ const Overview = ({ customer }: OverviewProps) => {
                   <div className="text-xs font-semibold text-gray-700 text-center">Soporte</div>
                 </a>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
