@@ -129,6 +129,7 @@ interface NetworkOrder {
   periods_id: number
   order_display: number
   buyer_profile: number
+  unilevel_sponsor_id: number
   is_first_sale: boolean
   is_subscription: boolean | null
   cv: number
