@@ -1,4 +1,4 @@
- "use client"
+"use client"
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { supabase } from '@lib/supabaseClient'
@@ -40,7 +40,7 @@ export const OfficeProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     try {
       setLoading(true)
       setError(null)
-      
+
       // First, get the current period
       const { data: currentPeriodData, error: currentError } = await supabase
         .from('netme_periods')
@@ -64,7 +64,7 @@ export const OfficeProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         .from('netme_periods')
         .select('*')
         .lte('id', currentPeriodData.id)
-        .gte('id', currentPeriodData.id - 10)
+        .gte('id', currentPeriodData.id - 20)
         .order('id', { ascending: false })
 
       if (error) {
@@ -74,15 +74,15 @@ export const OfficeProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       }
 
       setPeriods(data || [])
-      
+
       // Set current period
       setCurrentPeriod(currentPeriodData)
-      
+
       // Set selected period to current period if not already set
       if (!selectedPeriod) {
         setSelectedPeriod(currentPeriodData)
       }
-      
+
     } catch (err) {
       console.error('Error in fetchPeriods:', err)
       setError('Error fetching periods')

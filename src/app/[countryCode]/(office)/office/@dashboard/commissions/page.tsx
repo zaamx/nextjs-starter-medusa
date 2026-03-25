@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { HttpTypes } from "@medusajs/types";
 import { useOffice } from "@lib/context/office-context";
-import { 
-  fetchCommissionSummary, 
+import {
+  fetchCommissionSummary,
   fetchCommissionDetails,
   fetchCommissionSummaryTotal
 } from "@lib/data/netme_network";
@@ -52,7 +52,7 @@ export default function CommissionsPage() {
   const [lifetimeSummary, setLifetimeSummary] = useState<CommissionSummaryTotal | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Modal state
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedBonusType, setSelectedBonusType] = useState<string>("");
@@ -91,18 +91,18 @@ export default function CommissionsPage() {
         setError(null);
 
         // Fetch commission summary for last 12 periods
-        const summaryResponse = await fetchCommissionSummary(Number(netmeProfileId), 12);
-        
+        const summaryResponse = await fetchCommissionSummary(Number(netmeProfileId), 20);
+
         if (!summaryResponse.success) {
           throw new Error(summaryResponse.error || 'Error fetching commission summary');
         }
-        
+
         const summaryData = summaryResponse.data;
-        
+
         // Group summary data by period
         const groupedSummary = summaryData.reduce((acc: CommissionSummaryGrouped[], item: CommissionSummary) => {
           const existingPeriod = acc.find(p => p.period_name === item.period_name);
-          
+
           if (existingPeriod) {
             existingPeriod.bonuses.push({
               type: item.bonus_type,
@@ -119,7 +119,7 @@ export default function CommissionsPage() {
               }]
             });
           }
-          
+
           return acc;
         }, []);
 
@@ -139,7 +139,7 @@ export default function CommissionsPage() {
         // Fetch commission details for selected period
         if (selectedPeriod) {
           const detailsResponse = await fetchCommissionDetails(Number(netmeProfileId), selectedPeriod.id);
-          
+
           if (detailsResponse.success) {
             setCommissionDetails(detailsResponse.data);
           } else {
@@ -160,7 +160,7 @@ export default function CommissionsPage() {
   }, [netmeProfileId, selectedPeriod]);
 
   // Get current period summary
-  const currentPeriodSummary = commissionSummary.find(summary => 
+  const currentPeriodSummary = commissionSummary.find(summary =>
     summary.period_name === selectedPeriod?.name
   );
 
@@ -169,9 +169,9 @@ export default function CommissionsPage() {
 
   const lifetimeTotal = lifetimeSummary
     ? (() => {
-        const parsed = parseFloat(lifetimeSummary.total_bruto || lifetimeSummary.monto_bruto);
-        return Number.isFinite(parsed) ? parsed : 0;
-      })()
+      const parsed = parseFloat(lifetimeSummary.total_bruto || lifetimeSummary.monto_bruto);
+      return Number.isFinite(parsed) ? parsed : 0;
+    })()
     : null;
 
   // Get bonus type colors
@@ -201,11 +201,11 @@ export default function CommissionsPage() {
 
   const formatBonusType = (type: string) => {
     const labels = {
-          binary: "Bono Binario",
-    unilevel: "Bono Unilevel",
-    fast_start: "Bono de Inicio Rápido",
-    leadership: "Bono de Liderazgo",
-    matching: "Bono de Igualación"
+      binary: "Bono Binario",
+      unilevel: "Bono Unilevel",
+      fast_start: "Bono de Inicio Rápido",
+      leadership: "Bono de Liderazgo",
+      matching: "Bono de Igualación"
     };
     return labels[type as keyof typeof labels] || type;
   };
@@ -250,7 +250,7 @@ export default function CommissionsPage() {
         <p className="text-sm text-gray-500 mb-6">
           Aquí podrás ver el detalle de tus comisiones.
         </p>
-        
+
         {/* Total Earnings Card */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white mb-6">
           <div className="flex flex-col gap-6">
@@ -259,7 +259,7 @@ export default function CommissionsPage() {
                 <h2 className="text-lg font-medium">Total de Ganancias (USD)</h2>
                 <p className="text-3xl font-bold">{formatCurrency(totalEarnings)}</p>
               </div>
-              
+
               {/* Bonus Type Totals */}
               {currentPeriodSummary && (
                 <div className="flex flex-wrap gap-4">
@@ -333,7 +333,7 @@ export default function CommissionsPage() {
               {currentPeriodSummary?.bonuses.map((bonus) => {
                 const colors = getBonusTypeColor(bonus.type);
                 const detailsCount = commissionDetails.filter(detail => detail.bonus_type === bonus.type).length;
-                
+
                 return (
                   <tr key={bonus.type} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
