@@ -87,3 +87,25 @@ export const removeCartId = async () => {
     maxAge: -1,
   })
 }
+
+export const setQualifiedInfo = async (info: string) => {
+  const cookies = await nextCookies()
+  cookies.set("_medusa_last_qualified_info", info, {
+    maxAge: 60 * 60 * 24 * 7,
+    httpOnly: false,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  })
+}
+
+export const getQualifiedInfoCookie = async () => {
+  const cookies = await nextCookies()
+  return cookies.get("_medusa_last_qualified_info")?.value
+}
+
+export const removeQualifiedInfo = async () => {
+  const cookies = await nextCookies()
+  cookies.set("_medusa_last_qualified_info", "", {
+    maxAge: -1,
+  })
+}

@@ -13,8 +13,31 @@ import {
   removeAuthToken,
   removeCartId,
   setAuthToken,
+  setQualifiedInfo,
+  removeQualifiedInfo,
 } from "./cookies"
 import { revalidateProductsCache } from "@lib/util/revalidate-cache"
+
+export async function fetchAndStoreQualifiedInfo(token?: string) {
+  const authHeaders = token ? { authorization: `Bearer ${token}` } : await getAuthHeaders()
+
+  if (!authHeaders || !("authorization" in authHeaders)) {
+    return null
+  }
+
+  try {
+    const data = await sdk.client.fetch<any>('/store/customers/me/last-qualified-info', {
+      method: "GET",
+      headers: authHeaders as Record<string, string>
+    });
+    console.log('Qualified info:', data);
+    if (data && Array.isArray(data) && data.length > 0) {
+      await setQualifiedInfo(JSON.stringify(data[0]));
+    }
+  } catch (err) {
+    console.error("Failed to fetch qualified info:", err);
+  }
+}
 
 export const retrieveCustomer =
   async (): Promise<HttpTypes.StoreCustomer | null> => {
@@ -62,7 +85,7 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
 
 export async function signup(_currentState: unknown, formData: FormData) {
   const password = formData.get("password") as string
-  
+
   // Get MLM-specific form data
   const sponsorProfileId = formData.get("sponsor_profile_id") as string
   const profileTypesId = formData.get("profile_types_id") as string
@@ -70,35 +93,35 @@ export async function signup(_currentState: unknown, formData: FormData) {
   const personalId = formData.get("personal_id") as string
   const birthDate = formData.get("birth_date") as string
   const preferredSide = formData.get("preferred_side") as string
-  
+
   // Validate sponsor profile ID
   if (!sponsorProfileId || sponsorProfileId.trim() === "") {
     return "Sponsor Profile ID is required"
   }
-  
+
   // Validate sponsor profile ID format (must be a number)
   if (!/^\d+$/.test(sponsorProfileId.trim())) {
     return "Invalid Sponsor Profile ID format"
   }
-  
+
   // Convert to number and validate it's positive
   const sponsorIdNumber = parseInt(sponsorProfileId.trim())
   if (isNaN(sponsorIdNumber) || sponsorIdNumber <= 0) {
     return "Sponsor Profile ID must be a valid positive number"
   }
-  
+
   // Get address fields
   const street = formData.get("street") as string
   const district = formData.get("district") as string
   const city = formData.get("city") as string
   const state = formData.get("state") as string
   const postalCode = formData.get("postal_code") as string
-  
+
   // Get tax information (assuming it's a JSON string or structured data)
   const taxId = formData.get("tax_id") as string
-  
-  
-  
+
+
+
   const customerForm = {
     email: formData.get("email") as string,
     first_name: formData.get("first_name") as string,
@@ -154,10 +177,12 @@ export async function signup(_currentState: unknown, formData: FormData) {
 
     const customerCacheTag = await getCacheTag("customers")
     revalidateTag(customerCacheTag)
-    
+
     // Revalidate products cache to ensure user gets correct pricing based on their customer group
     const cacheId = await getCacheTag("products")
     await revalidateProductsCache(cacheId)
+
+    await fetchAndStoreQualifiedInfo(loginToken as string)
 
     await transferCart()
 
@@ -178,10 +203,12 @@ export async function login(_currentState: unknown, formData: FormData) {
         await setAuthToken(token as string)
         const customerCacheTag = await getCacheTag("customers")
         revalidateTag(customerCacheTag)
-        
+
         // Revalidate products cache to ensure user gets correct pricing based on their customer group
         const cacheId = await getCacheTag("products")
         await revalidateProductsCache(cacheId)
+
+        await fetchAndStoreQualifiedInfo(token as string)
       })
   } catch (error: any) {
     return error.toString()
@@ -203,6 +230,7 @@ export async function signout(countryCode: string) {
   revalidateTag(customerCacheTag)
 
   await removeCartId()
+  await removeQualifiedInfo()
 
   const cartCacheTag = await getCacheTag("carts")
   revalidateTag(cartCacheTag)
