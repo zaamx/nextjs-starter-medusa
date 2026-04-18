@@ -21,6 +21,12 @@ module.exports = {
         padding: "padding-top padding-right padding-bottom padding-left",
       },
       colors: {
+        brand: {
+          magenta: "#A31C5A",
+          cream: "#F5F0E8",
+          dark: "#0F0F0F",
+          "cream-border": "#E0D9D0",
+        },
         grey: {
           0: "#FFFFFF",
           5: "#F9FAFB",
@@ -67,6 +73,11 @@ module.exports = {
           "Roboto",
           "Helvetica Neue",
           "Ubuntu",
+          "sans-serif",
+        ],
+        display: [
+          "Barlow Condensed",
+          "Inter",
           "sans-serif",
         ],
       },
