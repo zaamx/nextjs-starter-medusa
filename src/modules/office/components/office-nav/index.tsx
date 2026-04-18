@@ -58,14 +58,16 @@ const PeriodCountdown = ({ selectedPeriod }: { selectedPeriod: any }) => {
   })()
 
   return (
-    <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
-      isExpired 
-        ? 'bg-red-100 text-red-800 border border-red-200' 
-        : isNearExpiry 
-          ? 'bg-orange-100 text-orange-800 border border-orange-200'
-          : 'bg-green-100 text-green-800 border border-green-200'
+    <div className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium border ${
+      isExpired
+        ? 'border-red-500/40 text-red-400'
+        : isNearExpiry
+          ? 'border-orange-500/40 text-orange-400'
+          : 'border-white/15 text-white/70'
     }`}>
-      <span className="text-xs">⏰</span>
+      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+        isExpired ? 'bg-red-500' : isNearExpiry ? 'bg-orange-400' : 'bg-green-400'
+      }`} />
       <span>{timeLeft}</span>
     </div>
   )
@@ -80,59 +82,47 @@ export default function OfficeNav() {
   }
 
   return (
-    <div className="sticky top-0 inset-x-0 z-50 group">
-      <header className="relative h-14 sm:h-16 mx-auto border-b duration-200 bg-white border-ui-border-base">
-        <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular px-3 sm:px-6">
-          <div className="flex-1 basis-0 h-full flex items-center">
-            <div className="h-full">
-              <OfficeSideMenu regions={[]} />
-            </div>
+    <div className="inset-x-0 z-50 flex-shrink-0">
+      <header className="h-14 bg-brand-dark border-b border-white/10">
+        <nav className="flex items-center justify-between w-full h-full px-3 sm:px-6 gap-4">
+
+          {/* Mobile hamburger — hidden on desktop */}
+          <div className="flex items-center h-full small:hidden">
+            <OfficeSideMenu regions={[]} />
           </div>
 
-          <div className="flex items-center h-full gap-2 sm:gap-4">
-            <LocalizedClientLink
-              href="/"
-              className="txt-compact-large-plus sm:txt-compact-xlarge-plus hover:text-ui-fg-base uppercase font-bold"
-              data-testid="nav-store-link"
+          {/* Brand — desktop only (sidebar shows it on mobile) */}
+          <div className="hidden small:flex flex-col justify-center">
+            <span className="font-display text-sm tracking-widest text-brand-magenta leading-none">
+              WE NOW
+            </span>
+            <span className="text-[9px] text-white/30 tracking-widest uppercase">
+              Oficina Virtual
+            </span>
+          </div>
+
+          {/* Period selector + countdown — pushed to the right */}
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+            <label htmlFor="period-selector" className="text-[10px] tracking-widest uppercase text-white/40 hidden sm:block">
+              Período
+            </label>
+            <select
+              id="period-selector"
+              value={selectedPeriod?.id || ""}
+              onChange={handlePeriodChange}
+              className="text-xs bg-white/8 border border-white/15 text-white px-2 py-1.5 focus:outline-none focus:border-brand-magenta min-w-[90px] sm:min-w-[120px] rounded-none appearance-none cursor-pointer"
+              style={{ backgroundColor: "rgba(255,255,255,0.07)" }}
             >
-              <span className="hidden sm:inline">WeNow Office</span>
-              <span className="sm:hidden">WENOW</span>
-            </LocalizedClientLink>
-            
-            {/* Responsive Period Selector */}
-            <div className="flex items-center gap-1 sm:gap-2">
-              <label htmlFor="period-selector" className="text-xs font-medium text-gray-600 hidden sm:block">
-                Período:
-              </label>
-              <select
-                id="period-selector"
-                value={selectedPeriod?.id || ""}
-                onChange={handlePeriodChange}
-                className="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white min-w-[80px] sm:min-w-[120px]"
-              >
-                {periods.map((period) => (
-                  <option key={period.id} value={period.id}>
-                    {period.name}
-                  </option>
-                ))}
-              </select>
-              
-              {/* Contador de tiempo restante */}
-              <PeriodCountdown selectedPeriod={selectedPeriod} />
-            </div>
+              {periods.map((period) => (
+                <option key={period.id} value={period.id} className="bg-gray-900 text-white">
+                  {period.name}
+                </option>
+              ))}
+            </select>
+
+            <PeriodCountdown selectedPeriod={selectedPeriod} />
           </div>
 
-          {/* <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
-            <div className="hidden small:flex items-center gap-x-6 h-full">
-              <LocalizedClientLink
-                className="hover:text-ui-fg-base"
-                href="/account"
-                data-testid="nav-account-link"
-              >
-                Tu Cuenta
-              </LocalizedClientLink>
-            </div>
-          </div> */}
         </nav>
       </header>
     </div>

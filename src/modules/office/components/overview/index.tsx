@@ -471,57 +471,54 @@ const Overview = ({ customer }: OverviewProps) => {
   return (
     <div className="relative min-h-screen bg-gray-50">
       {/* Responsive Header */}
-      <header className="flex items-center justify-between px-3 sm:px-4 py-3 bg-white shadow-sm sticky top-0 z-20">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-3 sm:px-4 py-3 bg-white border-b border-gray-100 gap-2">
+        {/* User info row */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           {((customer?.metadata as any)?.mlm_data as any)?.profile_picture ? (
-            <img src={((customer?.metadata as any)?.mlm_data as any)?.profile_picture} alt="avatar" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
+            <img src={((customer?.metadata as any)?.mlm_data as any)?.profile_picture} alt="avatar" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0" />
           ) : (
-            <FaUserCircle className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
+            <FaUserCircle className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 flex-shrink-0" />
           )}
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0">
             <div className="font-bold text-gray-900 text-sm sm:text-base leading-tight truncate">
-              {customer?.first_name} {customer?.last_name} &nbsp;| ID: {(customer?.metadata as any)?.netme_profile_id}
+              {customer?.first_name} {customer?.last_name}&nbsp;| ID: {(customer?.metadata as any)?.netme_profile_id}
             </div>
-            <div className="text-xs text-blue-600 font-semibold">
-              <span className="text-sm text-blue-600 font-semibold">
-                {rankSummaryData && (
-                  <span className="text-xs text-gray-500 ml-2">
-                    Vitalicio: {rankSummaryData.lifetime_rank_name} | Anterior: {rankSummaryData.last_monthly_rank_name} | Actual: {rankSummaryData.current_rank_name}
-                  </span>
-                )}
-              </span>
-            </div>
+            {rankSummaryData && (
+              <div className="text-xs text-gray-500 leading-tight truncate">
+                Vitalicio: {rankSummaryData.lifetime_rank_name} | Anterior: {rankSummaryData.last_monthly_rank_name} | Actual: {rankSummaryData.current_rank_name}
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex items-center gap-2 sm:gap-4">
-          {/* Compact Renewal Status */}
+
+        {/* Actions row */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           {renewalData && !componentErrors.renewal && (
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium ${renewalData.days_left > 0
-              ? 'bg-green-100 text-green-800 border border-green-200'
-              : 'bg-red-100 text-red-800 border border-red-200'
-              }`}>
-              <div className={`w-2 h-2 rounded-full ${renewalData.days_left > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
-              <div className="flex flex-col">
-                <span className="font-semibold">{renewalData.days_left > 0 ? 'Activo' : 'Inactivo'} Hasta {renewalData.renewal_period_name.replace(/\d+$/, (match) => String(parseInt(match) - 1))} </span>
-                <span className="text-xs opacity-75">
-                  {renewalData.days_left > 0
-                    ? `Renovar ${renewalData.renewal_period_name}`
-                    : 'Renovación vencida'
-                  }
+            <div className={`flex items-center gap-2 px-3 py-1.5 text-xs border ${renewalData.days_left > 0
+              ? 'border-green-500/30 text-green-700 bg-green-50'
+              : 'border-red-400/30 text-red-700 bg-red-50'
+            }`}>
+              <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${renewalData.days_left > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+              <div className="flex flex-col leading-tight">
+                <span className="font-medium whitespace-nowrap">
+                  {renewalData.days_left > 0 ? 'Activo' : 'Inactivo'} Hasta {renewalData.renewal_period_name.replace(/\d+$/, (match) => String(parseInt(match) - 1))}
+                </span>
+                <span className="text-[10px] opacity-70 whitespace-nowrap">
+                  {renewalData.days_left > 0 ? `Renovar ${renewalData.renewal_period_name}` : 'Renovación vencida'}
                 </span>
               </div>
               {renewalData.days_left <= 7 && renewalData.days_left > 0 && (
-                <span className="text-orange-600 font-bold">⚠</span>
+                <span className="text-orange-500">⚠</span>
               )}
             </div>
           )}
 
           <button
             onClick={handleShowRanksModal}
-            className="flex items-center gap-1 bg-gradient-to-r from-green-500 to-blue-500 text-white px-2 sm:px-3 py-1 rounded-lg shadow hover:from-green-600 hover:to-blue-600 transition"
+            className="flex items-center gap-1.5 bg-brand-magenta text-white px-3 py-1.5 text-xs font-display tracking-widest hover:opacity-90 transition-opacity whitespace-nowrap flex-shrink-0"
           >
-            <FaTrophy className="mr-1 text-xs sm:text-sm" />
-            <span className="font-bold text-xs sm:text-sm">Ver Rangos</span>
+            <FaTrophy className="text-xs" />
+            <span>VER RANGOS</span>
           </button>
         </div>
       </header>

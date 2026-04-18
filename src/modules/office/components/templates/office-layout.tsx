@@ -3,16 +3,7 @@ import React from "react"
 
 import UnderlineLink from "@modules/common/components/interactive-link"
 import { HttpTypes } from "@medusajs/types"
-
-// Placeholder for the right panel (profile/activity)
-const OfficeRightPanel = () => (
-  <aside className="h-full w-full bg-white rounded-xl shadow p-6 flex flex-col gap-6">
-    {/* TODO: Add profile card, activity feed, and message input here */}
-    <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
-      <span>Right Panel (Profile & Activity)</span>
-    </div>
-  </aside>
-)
+import OfficeSidebar from "@modules/office/components/office-sidebar"
 
 interface OfficeLayoutProps {
   customer: HttpTypes.StoreCustomer | null
@@ -24,33 +15,28 @@ const OfficeLayout: React.FC<OfficeLayoutProps> = ({
   children,
 }) => {
   return (
-    <div className="w-full min-h-screen bg-gray-50 flex flex-col">
-      <div className="flex flex-1 min-h-0">
-        {/* {customer && <OfficeNav customer={customer} isCollapsed={isCollapsed} />} */}
-        {/* Main Content */}
-        <main className="flex-1 flex flex-col overflow-y-auto">
+    <div className="flex flex-1 overflow-hidden">
+      {/* Permanent sidebar — desktop only */}
+      {customer && <OfficeSidebar />}
+
+      {/* Main area — scrolls independently */}
+      <div className="flex-1 flex flex-col overflow-y-auto bg-gray-50">
+        <main className="flex-1">
           {children}
         </main>
-        {/* Right Panel */}
-        {/* <div className="w-[340px] border-l border-gray-200 bg-gray-50 p-0">
-          <OfficeRightPanel />
-        </div> */}
-      </div>
-      {/* Responsive Footer/help section */}
-      <footer className="flex flex-col sm:flex-row items-start sm:items-end justify-between border-t border-gray-200 py-4 sm:py-4 px-4 sm:px-8 gap-6 sm:gap-6 bg-white">
-        <div className="w-full sm:w-auto">
-          <h3 className="text-lg sm:text-xl-semi mb-2 sm:mb-4">¿Tienes preguntas?</h3>
-          <span className="txt-medium text-sm sm:text-base">
-            Puedes encontrar preguntas frecuentes y respuestas en nuestra
-            página de servicio al cliente.
-          </span>
-        </div>
-        <div className="w-full sm:w-auto">
+
+        <footer className="flex flex-col sm:flex-row items-start sm:items-end justify-between border-t border-gray-200 py-4 px-4 sm:px-8 gap-4 bg-white">
+          <div>
+            <h3 className="text-base font-medium mb-1">¿Tienes preguntas?</h3>
+            <span className="text-sm text-gray-500">
+              Puedes encontrar preguntas frecuentes en nuestra página de servicio al cliente.
+            </span>
+          </div>
           <UnderlineLink href="/customer-service">
             Servicio al Cliente
           </UnderlineLink>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   )
 }

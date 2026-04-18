@@ -1,31 +1,56 @@
 "use client"
 
 import { Popover, PopoverPanel, Transition } from "@headlessui/react"
-import { ArrowRightMini, XMark } from "@medusajs/icons"
-import { Text, clx, useToggleState } from "@medusajs/ui"
+import { XMark } from "@medusajs/icons"
 import { Fragment } from "react"
-
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import CountrySelect from "@modules/layout/components/country-select/"
 import { HttpTypes } from "@medusajs/types"
 
-const OfficeSideMenuItems = {
-  "< Volver a la tienda": "/",
-  Dashboard: "/office",
-  "Genealogía Binaria": "/office/binary-genealogy",
-  "Genealogía Unilevel": "/office/unilevel-genealogy",
-  "Matriz": "/office/matrix",
-  "Comisiones": "/office/commissions",
-  "Órdenes & Autoenvío": "/office/orders-autoship",
-  "Materiales de Marketing": "/office/marketing-materials",
-  "Centro de Formación": "/office/training-center",
-  "Soporte & Cumplimiento": "/office/support-compliance",
-  "Mi cuenta": "/account",
-}
+const navGroups = [
+  {
+    items: [
+      { name: "← Volver a la tienda", href: "/" },
+      { name: "Dashboard", href: "/office" },
+    ],
+  },
+  {
+    label: "Red",
+    items: [
+      { name: "Genealogía Binaria", href: "/office/binary-genealogy" },
+      { name: "Genealogía Unilevel", href: "/office/unilevel-genealogy" },
+      { name: "Matriz", href: "/office/matrix" },
+    ],
+  },
+  {
+    label: "Finanzas",
+    items: [
+      { name: "Comisiones", href: "/office/commissions" },
+      { name: "Wallet", href: "/office/wallet" },
+    ],
+  },
+  {
+    label: "Pedidos",
+    items: [
+      { name: "Órdenes & Autoenvío", href: "/office/orders-autoship" },
+    ],
+  },
+  {
+    label: "Recursos",
+    items: [
+      { name: "Materiales de Marketing", href: "/office/marketing-materials" },
+      { name: "Centro de Formación", href: "/office/training-center" },
+      { name: "Soporte & Cumplimiento", href: "/office/support-compliance" },
+    ],
+  },
+  {
+    label: "Cuenta",
+    items: [
+      { name: "Mi Perfil", href: "/account" },
+    ],
+  },
+]
 
 const OfficeSideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
-  const toggleState = useToggleState()
-
   return (
     <div className="h-full">
       <div className="flex items-center h-full">
@@ -35,76 +60,73 @@ const OfficeSideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }
               <div className="relative flex h-full">
                 <Popover.Button
                   data-testid="nav-menu-button"
-                  className="relative h-full flex items-center transition-all ease-out duration-200 focus:outline-none hover:text-ui-fg-base text-sm sm:text-base font-medium"
+                  className="relative h-full flex items-center text-white/70 hover:text-white transition-colors focus:outline-none"
                 >
-                  Menu
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                  </svg>
                 </Popover.Button>
               </div>
 
               <Transition
                 show={open}
                 as={Fragment}
-                enter="transition ease-out duration-150"
-                enterFrom="opacity-0"
-                enterTo="opacity-100 backdrop-blur-2xl"
+                enter="transition ease-out duration-200"
+                enterFrom="-translate-x-full opacity-0"
+                enterTo="translate-x-0 opacity-100"
                 leave="transition ease-in duration-150"
-                leaveFrom="opacity-100 backdrop-blur-2xl"
-                leaveTo="opacity-0"
+                leaveFrom="translate-x-0 opacity-100"
+                leaveTo="-translate-x-full opacity-0"
               >
-                <PopoverPanel className="flex flex-col absolute w-full pr-4 sm:pr-0 sm:w-1/3 2xl:w-1/4 sm:min-w-min h-[calc(100vh-1rem)] z-30 inset-x-0 text-sm text-ui-fg-on-color m-2 backdrop-blur-2xl">
-                  <div
-                    data-testid="nav-menu-popup"
-                    className="flex flex-col h-full bg-[rgba(39,38,90,0.5)] rounded-rounded justify-between p-4 sm:p-6"
-                  >
-                    <div className="flex justify-end" id="xmark">
-                      <button 
-                        data-testid="close-menu-button" 
-                        onClick={close}
-                        className="p-1 hover:bg-white/10 rounded transition-colors"
-                      >
-                        <XMark className="w-5 h-5 sm:w-6 sm:h-6" />
-                      </button>
+                <PopoverPanel className="fixed inset-y-0 left-0 z-50 w-64 flex flex-col bg-brand-dark text-white shadow-xl">
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 flex-shrink-0">
+                    <div>
+                      <span className="font-display text-base tracking-widest text-brand-magenta leading-none">
+                        WE NOW
+                      </span>
+                      <p className="text-[9px] text-white/30 tracking-widest uppercase mt-0.5">
+                        Oficina Virtual
+                      </p>
                     </div>
-                    <ul className="flex flex-col gap-3 sm:gap-4 items-start justify-start">
-                      {Object.entries(OfficeSideMenuItems).map(([name, href]) => {
-                        return (
-                          <li key={name} className="w-full">
-                            <LocalizedClientLink
-                              href={href}
-                              className="text-base sm:text-lg hover:text-ui-fg-disabled block w-full py-2 px-1 rounded transition-colors hover:bg-white/10"
-                              onClick={close}
-                              data-testid={`${name.toLowerCase()}-link`}
-                            >
-                              {name}
-                            </LocalizedClientLink>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                    <div className="flex flex-col gap-y-4 sm:gap-y-6">
-                      <div
-                        className="flex justify-between items-center"
-                        onMouseEnter={toggleState.open}
-                        onMouseLeave={toggleState.close}
-                      >
-                        {regions && (
-                          <CountrySelect
-                            toggleState={toggleState}
-                            regions={regions}
-                          />
+                    <button
+                      data-testid="close-menu-button"
+                      onClick={close}
+                      className="p-1.5 text-white/50 hover:text-white transition-colors"
+                    >
+                      <XMark className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Nav */}
+                  <nav className="flex-1 px-3 py-4 overflow-y-auto flex flex-col gap-y-5">
+                    {navGroups.map((group, i) => (
+                      <div key={i} className="flex flex-col gap-y-0.5">
+                        {group.label && (
+                          <p className="px-3 text-[10px] tracking-widest uppercase text-white/30 mb-1">
+                            {group.label}
+                          </p>
                         )}
-                        <ArrowRightMini
-                          className={clx(
-                            "transition-transform duration-150 w-4 h-4 sm:w-5 sm:h-5",
-                            toggleState.state ? "-rotate-90" : ""
-                          )}
-                        />
+                        {group.items.map((item) => (
+                          <LocalizedClientLink
+                            key={item.href}
+                            href={item.href}
+                            onClick={close}
+                            className="flex items-center px-3 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/8 transition-colors"
+                            data-testid={`${item.name.toLowerCase()}-link`}
+                          >
+                            {item.name}
+                          </LocalizedClientLink>
+                        ))}
                       </div>
-                      <Text className="flex justify-between txt-compact-small text-xs sm:text-sm">
-                        © {new Date().getFullYear()} We Now. Todos los derechos
-                        reservados.
-                      </Text>
-                    </div>
+                    ))}
+                  </nav>
+
+                  {/* Footer */}
+                  <div className="px-5 py-4 border-t border-white/10 flex-shrink-0">
+                    <p className="text-[10px] text-white/20 tracking-widest">
+                      © {new Date().getFullYear()} We Now
+                    </p>
                   </div>
                 </PopoverPanel>
               </Transition>

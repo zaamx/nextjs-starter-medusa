@@ -18,9 +18,12 @@ export default function CheckoutLayout({
   return (
     <OfficeProvider>
       <MystoreProvider>
-        <OfficeNav />
-        {children}
-        <Footer />
+        <div className="flex flex-col h-screen overflow-hidden">
+          <OfficeNav />
+          <div className="flex flex-1 overflow-hidden">
+            {children}
+          </div>
+        </div>
       </MystoreProvider>
     </OfficeProvider>
   )
