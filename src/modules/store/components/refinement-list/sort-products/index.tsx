@@ -1,4 +1,5 @@
 "use client"
+
 import { useState } from "react"
 
 export type SortOptions = "price_asc" | "price_desc" | "created_at" | "default"
@@ -12,8 +13,8 @@ type SortProductsProps = {
 const sortOptions = [
   { value: "default", label: "Ordenar por" },
   { value: "created_at", label: "Últimos Arribos" },
-  { value: "price_asc", label: "Precio: Menor -> Mayor" },
-  { value: "price_desc", label: "Precio: Mayor -> Menor" },
+  { value: "price_asc", label: "Precio: Menor → Mayor" },
+  { value: "price_desc", label: "Precio: Mayor → Menor" },
 ]
 
 const SortProducts = ({ "data-testid": dataTestId, setQueryParams }: SortProductsProps) => {
@@ -22,26 +23,24 @@ const SortProducts = ({ "data-testid": dataTestId, setQueryParams }: SortProduct
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value as SortOptions
-
-    // Si se selecciona "default" NO hacemos nada
     if (value === "default") {
       setActiveSortBy("default")
       return
     }
-
-    // Una vez que selecciona otra opción, bloqueamos la default
     setDisableDefault(true)
     setActiveSortBy(value)
     setQueryParams("sortBy", value)
   }
 
   return (
-    <div className="flex gap-2 items-center" data-testid={dataTestId}>
+    <div className="flex items-center gap-2" data-testid={dataTestId}>
+      <span className="text-xs tracking-widest uppercase text-grey-50 hidden small:block">
+        Ordenar
+      </span>
       <select
-        id="sort-by"
         onChange={handleChange}
         value={activeSortBy}
-        className="text-sm p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="text-xs border border-grey-20 bg-white text-grey-70 px-3 py-2 focus:outline-none focus:border-brand-magenta transition-colors cursor-pointer"
       >
         {sortOptions.map((option) => (
           <option
