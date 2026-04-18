@@ -26,74 +26,69 @@ const ForgotPassword = ({ setCurrentView }: Props) => {
 
   return (
     <div
-      className="max-w-sm w-full flex flex-col items-center"
+      className="w-full max-w-sm flex flex-col"
       data-testid="forgot-password-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">Recuperar contraseña</h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-8">
-        Ingresa tu email y te enviaremos instrucciones para restablecer tu contraseña.
-      </p>
-      
+      <div className="mb-10">
+        <p className="text-xs tracking-widest uppercase text-brand-magenta mb-3">
+          Acceso
+        </p>
+        <h1 className="font-display text-4xl text-grey-90 leading-none mb-2">
+          RECUPERAR CONTRASEÑA
+        </h1>
+        <p className="text-sm text-grey-50">
+          Ingresa tu email y te enviaremos instrucciones para restablecer tu contraseña.
+        </p>
+      </div>
+
       {isSuccess ? (
-        <div className="w-full">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-green-800">
-                  Email enviado
-                </h3>
-                <div className="mt-2 text-sm text-green-700">
-                  <p>Si existe una cuenta con el email especificado, recibirá instrucciones para restablecer la contraseña.</p>
-                </div>
-              </div>
-            </div>
+        <div className="flex flex-col gap-y-6">
+          <div className="border-l-2 border-green-500 pl-4 py-2 bg-green-50">
+            <p className="text-sm font-medium text-green-800">Email enviado</p>
+            <p className="text-xs text-green-700 mt-1">
+              Si existe una cuenta con ese email, recibirás instrucciones para restablecer tu contraseña.
+            </p>
           </div>
           <button
             onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
-            className="w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="w-full h-12 bg-brand-magenta text-white text-xs tracking-widest uppercase font-display hover:opacity-90 transition-opacity"
           >
-            Volver al inicio de sesión
+            VOLVER AL INICIO DE SESIÓN
           </button>
         </div>
       ) : (
         <form className="w-full" action={formAction}>
-          <div className="flex flex-col w-full gap-y-2">
+          <div className="flex flex-col w-full gap-y-3">
             <Input
               label="Correo electrónico"
               name="email"
               type="email"
-                              title="Ingresa una dirección de email válida."
+              title="Ingresa una dirección de email válida."
               autoComplete="email"
               required
               data-testid="email-input"
             />
           </div>
           <ErrorMessage error={message} data-testid="forgot-password-error-message" />
-          <SubmitButton 
-            data-testid="request-reset-button" 
-            className="w-full mt-6"
+          <SubmitButton
+            data-testid="request-reset-button"
+            className="w-full mt-6 !bg-brand-magenta !border-brand-magenta hover:opacity-90 !rounded-none font-display tracking-widest !text-sm h-12"
           >
-            Enviar instrucciones
+            ENVIAR INSTRUCCIONES
           </SubmitButton>
         </form>
       )}
-      
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
-        ¿Recordaste tu contraseña?{" "}
+
+      <div className="mt-8 pt-8 border-t border-grey-20 text-center">
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
-          className="underline"
+          className="text-xs text-grey-50 hover:text-brand-magenta transition-colors tracking-wide"
         >
-          Inicia sesión
+          ← Volver al inicio de sesión
         </button>
-      </span>
+      </div>
     </div>
   )
 }
 
-export default ForgotPassword 
+export default ForgotPassword

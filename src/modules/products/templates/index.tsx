@@ -35,36 +35,46 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       region={region}
       countryCode={countryCode}
     >
-      <div
-        className="content-container flex flex-col small:flex-row small:items-start py-6 relative"
-        data-testid="product-container"
-      >
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-6">
-          <ProductInfo product={product} />
-          <ProductTabs product={product} />
-        </div>
-        <div className="block w-full relative">
-          <ImageGallery images={product?.images || []} />
-        </div>
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
-          <ProductOnboardingCta />
-          <Suspense
-            fallback={
-              <ProductActions
-                disabled={true}
-                product={product}
-                region={region}
-              />
-            }
-          >
-            <ActivationGate product={product} countryCode={countryCode}>
-              <BundleAwareActions product={product} region={region} 
-                countryCode={countryCode}
-              />
-            </ActivationGate>
-          </Suspense>
+      {/* Main product section — 2 column layout */}
+      <div className="content-container py-12" data-testid="product-container">
+        <div className="grid grid-cols-1 small:grid-cols-2 gap-x-16 gap-y-8 items-start">
+
+          {/* Left — Gallery (sticky on desktop) */}
+          <div className="small:sticky small:top-24">
+            <ImageGallery images={product?.images || []} />
+          </div>
+
+          {/* Right — Title → Price+Actions → Description → Tabs */}
+          <div className="flex flex-col gap-y-8">
+            {/* Nombre arriba del todo */}
+            <ProductInfo product={product} />
+            <ProductOnboardingCta />
+            {/* Precio + opciones de compra */}
+            <Suspense
+              fallback={
+                <ProductActions
+                  disabled={true}
+                  product={product}
+                  region={region}
+                />
+              }
+            >
+              <ActivationGate product={product} countryCode={countryCode}>
+                <BundleAwareActions
+                  product={product}
+                  region={region}
+                  countryCode={countryCode}
+                />
+              </ActivationGate>
+            </Suspense>
+            {/* Descripción debajo de las acciones */}
+            <ProductInfo product={product} descriptionOnly />
+            <ProductTabs product={product} />
+          </div>
         </div>
       </div>
+
+      {/* Related products */}
       <div
         className="content-container my-16 small:my-32"
         data-testid="related-products-container"

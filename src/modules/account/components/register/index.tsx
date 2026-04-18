@@ -50,91 +50,91 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
     console.log('=== REGISTER SPONSOR ID CHANGE ===', { sponsorId })
   }, [sponsorId])
 
-  // If user doesn't have required product, show message
+  // If user doesn't have required product, show gating message
   if (!hasRequiredProduct) {
     return (
       <div
-        className="max-w-sm flex flex-col items-center"
+        className="w-full max-w-sm flex flex-col"
         data-testid="register-page"
       >
-        <h1 className="text-large-semi uppercase mb-6">
-          Become a We Now Member
-        </h1>
-        <div className="w-full bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-amber-800">
-                Registration Package Required
-              </h3>
-              <div className="mt-2 text-sm text-amber-700">
-                <p>
-                  To become a We Now Member, you need to purchase the "Paquete de Inscripción" 
-                  (Registration Package) first. This package is required for all new members.
-                </p>
-              </div>
-              <div className="mt-4">
-                <LocalizedClientLink
-                  href={productUrl}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
-                >
-                  Add Registration Package to Cart
-                </LocalizedClientLink>
-              </div>
-            </div>
-          </div>
+        <div className="mb-10">
+          <p className="text-xs tracking-widest uppercase text-brand-magenta mb-3">
+            Registro
+          </p>
+          <h1 className="font-display text-4xl text-grey-90 leading-none mb-2">
+            ÚNETE A WE NOW
+          </h1>
+          <p className="text-sm text-grey-50">
+            Para convertirte en miembro necesitas completar un paso previo.
+          </p>
         </div>
-        <span className="text-center text-ui-fg-base text-small-regular mt-6">
-          ¿Ya eres miembro?{" "}
+
+        <div className="border-l-2 border-brand-magenta pl-4 py-3 bg-brand-cream mb-8">
+          <p className="text-sm font-medium text-grey-90">Paquete de inscripción requerido</p>
+          <p className="text-xs text-grey-50 mt-1 leading-relaxed">
+            Para registrarte como Miembro de We Now, primero debes adquirir el{" "}
+            <strong>Paquete de Inscripción</strong>. Este paquete es obligatorio para todos los nuevos miembros.
+          </p>
+          <LocalizedClientLink
+            href={productUrl}
+            className="inline-block mt-4 h-10 px-6 bg-brand-magenta text-white text-xs tracking-widest uppercase font-display leading-10 hover:opacity-90 transition-opacity"
+          >
+            VER PAQUETE DE INSCRIPCIÓN
+          </LocalizedClientLink>
+        </div>
+
+        <div className="pt-6 border-t border-grey-20 text-center">
+          <p className="text-xs text-grey-50 mb-4">¿Ya eres miembro?</p>
           <button
             onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
-            className="underline"
+            className="text-xs text-brand-magenta hover:opacity-70 transition-opacity tracking-wide"
           >
-            Iniciar sesión
+            Iniciar sesión →
           </button>
-          .
-        </span>
+        </div>
       </div>
     )
   }
 
   return (
     <div
-      className="max-w-sm flex flex-col items-center"
+      className="w-full max-w-sm flex flex-col"
       data-testid="register-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">
-        Conviértete en Miembro de We Now
-      </h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-4">
-        Crea tu perfil de Miembro de We Now y accede a una experiencia de compra mejorada.
-      </p>
-      <form 
-        ref={formRef} 
-        className="w-full flex flex-col" 
+      <div className="mb-8">
+        <p className="text-xs tracking-widest uppercase text-brand-magenta mb-3">
+          Registro
+        </p>
+        <h1 className="font-display text-4xl text-grey-90 leading-none mb-2">
+          CONVIÉRTETE EN MIEMBRO
+        </h1>
+        <p className="text-sm text-grey-50">
+          Crea tu perfil y accede a todos los beneficios de la comunidad We Now.
+        </p>
+      </div>
+
+      <form
+        ref={formRef}
+        className="w-full flex flex-col"
         action={formAction}
         onSubmit={(e) => {
           console.log('=== FORM SUBMISSION ===')
           console.log('Form submitted')
           console.log('Current sponsorId state:', sponsorId)
-          
+
           // Client-side validation for sponsor ID
           if (!sponsorId || sponsorId.trim() === "") {
             e.preventDefault()
             alert("Por favor selecciona un patrocinador antes de enviar el formulario.")
             return
           }
-          
+
           if (!/^\d+$/.test(sponsorId.trim())) {
             e.preventDefault()
             alert("Formato de ID de patrocinador inválido. Por favor selecciona un patrocinador usando la función de búsqueda.")
             return
           }
-          
+
           console.log('Form elements:')
           const formData = new FormData(e.currentTarget)
           Array.from(formData.entries()).forEach(([key, value]) => {
@@ -142,7 +142,7 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
           })
         }}
       >
-        <div className="flex flex-col w-full gap-y-2">
+        <div className="flex flex-col w-full gap-y-3">
           {/* Standard Fields */}
           <Input
             label="Nombre"
@@ -207,7 +207,7 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
           <input type="hidden" name="tax_id" value="DEMO-TAX-123" />
 
           {/* Original fields - HIDDEN FOR NOW */}
-          {/* 
+          {/*
           <Input
             label="Profile Type ID"
             name="profile_types_id"
@@ -215,7 +215,7 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
             defaultValue="1"
             data-testid="profile-types-id-input"
           />
-          
+
           <div className="flex flex-col gap-y-1">
             <label className="text-sm font-medium">Gender<span className="text-rose-500">*</span></label>
             <div className="flex gap-x-4">
@@ -234,7 +234,7 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
             required
             data-testid="personal-id-input"
           />
-          
+
           <Input
             label="Birth Date"
             name="birth_date"
@@ -277,53 +277,74 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
           */}
 
           {/* Binary Position Preference */}
-          <div className="flex flex-col gap-y-1">
-            <label className="text-sm font-medium">Lado Binario Preferido<span className="text-rose-500">*</span></label>
+          <div className="flex flex-col gap-y-2 pt-1">
+            <span className="text-xs tracking-widest uppercase text-grey-50">
+              Lado Binario Preferido <span className="text-brand-magenta">*</span>
+            </span>
             <div className="flex gap-x-4">
-              <label className="flex items-center gap-x-1">
-                <input type="radio" name="preferred_side" value="0" required data-testid="preferred-side-left" /> Izquierda (0)
+              <label className="flex items-center gap-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="preferred_side"
+                  value="0"
+                  required
+                  data-testid="preferred-side-left"
+                  className="accent-brand-magenta"
+                />
+                <span className="text-sm text-grey-70">Izquierda (0)</span>
               </label>
-              <label className="flex items-center gap-x-1">
-                <input type="radio" name="preferred_side" value="1" required data-testid="preferred-side-right" /> Derecha (1)
+              <label className="flex items-center gap-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="preferred_side"
+                  value="1"
+                  required
+                  data-testid="preferred-side-right"
+                  className="accent-brand-magenta"
+                />
+                <span className="text-sm text-grey-70">Derecha (1)</span>
               </label>
-              {/* <label className="flex items-center gap-x-1">
-                <input type="radio" name="preferred_side" value="" data-testid="preferred-side-auto" /> Auto-assign
-              </label> */}
             </div>
           </div>
         </div>
+
         <ErrorMessage error={message} data-testid="register-error" />
-        <span className="text-center text-ui-fg-base text-small-regular mt-6">
+
+        <p className="text-xs text-grey-40 leading-relaxed mt-6">
           Al crear una cuenta, aceptas las{" "}
           <LocalizedClientLink
             href="/content/privacy-policy"
-            className="underline"
+            className="text-brand-magenta hover:opacity-70 transition-opacity"
           >
             Políticas de Privacidad
           </LocalizedClientLink>{" "}
           y los{" "}
           <LocalizedClientLink
             href="/content/terms-of-use"
-            className="underline"
+            className="text-brand-magenta hover:opacity-70 transition-opacity"
           >
             Términos de Uso
           </LocalizedClientLink>{" "}
           de We Now.
-        </span>
-        <SubmitButton className="w-full mt-6" data-testid="register-button">
-          Unirse
+        </p>
+
+        <SubmitButton
+          className="w-full mt-4 !bg-brand-magenta !border-brand-magenta hover:opacity-90 !rounded-none font-display tracking-widest !text-sm h-12"
+          data-testid="register-button"
+        >
+          CREAR MI CUENTA
         </SubmitButton>
       </form>
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
-        ¿Ya eres miembro?{" "}
+
+      <div className="mt-8 pt-8 border-t border-grey-20 text-center">
+        <p className="text-xs text-grey-50 mb-4">¿Ya eres miembro?</p>
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
-          className="underline"
+          className="w-full h-11 border border-grey-90 text-grey-90 text-xs tracking-widest uppercase font-display hover:bg-grey-90 hover:text-white transition-colors"
         >
-          Iniciar sesión
+          INICIAR SESIÓN
         </button>
-        .
-      </span>
+      </div>
     </div>
   )
 }

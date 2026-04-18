@@ -15,15 +15,24 @@ const Login = ({ setCurrentView }: Props) => {
 
   return (
     <div
-      className="max-w-sm w-full flex flex-col items-center"
+      className="w-full max-w-sm flex flex-col"
       data-testid="login-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">Bienvenido de nuevo</h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-8">
-        Inicia sesión para acceder a una experiencia de compra mejorada.
-      </p>
+      {/* Heading */}
+      <div className="mb-10">
+        <p className="text-xs tracking-widest uppercase text-brand-magenta mb-3">
+          Tu cuenta
+        </p>
+        <h1 className="font-display text-4xl text-grey-90 leading-none mb-2">
+          BIENVENIDO DE VUELTA
+        </h1>
+        <p className="text-sm text-grey-50">
+          Inicia sesión para acceder a tu perfil y pedidos.
+        </p>
+      </div>
+
       <form className="w-full" action={formAction}>
-        <div className="flex flex-col w-full gap-y-2">
+        <div className="flex flex-col w-full gap-y-3">
           <Input
             label="Correo electrónico"
             name="email"
@@ -42,28 +51,36 @@ const Login = ({ setCurrentView }: Props) => {
             data-testid="password-input"
           />
         </div>
-        <div className="flex justify-end mt-2">
+
+        <div className="flex justify-end mt-3">
           <button
             type="button"
             onClick={() => setCurrentView(LOGIN_VIEW.FORGOT_PASSWORD)}
-            className="text-sm text-indigo-600 hover:text-indigo-500 underline"
+            className="text-xs text-grey-50 hover:text-brand-magenta transition-colors tracking-wide"
           >
             ¿Olvidaste tu contraseña?
           </button>
         </div>
+
         <ErrorMessage error={message} data-testid="login-error-message" />
-        <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
-          Iniciar sesión
+
+        <SubmitButton
+          data-testid="sign-in-button"
+          className="w-full mt-6 !bg-brand-magenta !border-brand-magenta hover:opacity-90 !rounded-none font-display tracking-widest !text-sm h-12"
+        >
+          INICIAR SESIÓN
         </SubmitButton>
       </form>
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
-        No eres miembro?{" "} <br />
-        <button 
-        onClick={() => setCurrentView(LOGIN_VIEW.REGISTER)}
-        className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          Únete a nosotros
+
+      <div className="mt-8 pt-8 border-t border-grey-20 text-center">
+        <p className="text-xs text-grey-50 mb-4">¿Aún no eres miembro?</p>
+        <button
+          onClick={() => setCurrentView(LOGIN_VIEW.REGISTER)}
+          className="w-full h-11 border border-grey-90 text-grey-90 text-xs tracking-widest uppercase font-display hover:bg-grey-90 hover:text-white transition-colors"
+        >
+          ÚNETE A WE NOW
         </button>
-      </span>
+      </div>
     </div>
   )
 }

@@ -1,38 +1,40 @@
 import { HttpTypes } from "@medusajs/types"
-import { Heading, Text } from "@medusajs/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 type ProductInfoProps = {
   product: HttpTypes.StoreProduct
 }
 
-const ProductInfo = ({ product }: ProductInfoProps) => {
-  return (
-    <div id="product-info">
-      <div className="flex flex-col gap-y-4 lg:max-w-[500px] mx-auto">
-        {product.collection && (
-          <LocalizedClientLink
-            href={`/collections/${product.collection.handle}`}
-            className="text-medium text-ui-fg-muted hover:text-ui-fg-subtle"
-          >
-            {product.collection.title}
-          </LocalizedClientLink>
-        )}
-        <Heading
-          level="h2"
-          className="text-3xl leading-10 text-ui-fg-base"
-          data-testid="product-title"
-        >
-          {product.title}
-        </Heading>
+const ProductInfo = ({ product, descriptionOnly }: ProductInfoProps & { descriptionOnly?: boolean }) => {
+  if (descriptionOnly) {
+    return product.description ? (
+      <p
+        className="text-sm text-grey-50 leading-relaxed whitespace-pre-line"
+        data-testid="product-description"
+      >
+        {product.description}
+      </p>
+    ) : null
+  }
 
-        <Text
-          className="text-medium text-ui-fg-subtle whitespace-pre-line"
-          data-testid="product-description"
+  return (
+    <div id="product-info" className="flex flex-col gap-y-3">
+      {product.collection && (
+        <LocalizedClientLink
+          href={`/collections/${product.collection.handle}`}
+          className="text-xs tracking-[0.2em] uppercase text-brand-magenta hover:text-brand-magenta/70 transition-colors"
         >
-          {product.description}
-        </Text>
-      </div>
+          {product.collection.title}
+        </LocalizedClientLink>
+      )}
+
+      <h1
+        className="font-display text-grey-90 leading-none"
+        style={{ fontSize: "clamp(32px, 4vw, 52px)" }}
+        data-testid="product-title"
+      >
+        {product.title?.toUpperCase()}
+      </h1>
     </div>
   )
 }

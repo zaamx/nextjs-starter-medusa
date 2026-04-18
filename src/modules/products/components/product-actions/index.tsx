@@ -124,30 +124,42 @@ export default function ProductActions({
 
   return (
     <>
-      <div className="flex flex-col gap-y-2" ref={actionsRef}>
-        <div>
-          {(product.variants?.length ?? 0) > 1 && (
-            <div className="flex flex-col gap-y-4">
-              {(product.options || []).map((option) => {
-                return (
-                  <div key={option.id}>
-                    <OptionSelect
-                      option={option}
-                      current={options[option.id]}
-                      updateOption={setOptionValue}
-                      title={option.title ?? ""}
-                      data-testid="product-options"
-                      disabled={!!disabled || isAdding}
-                    />
-                  </div>
-                )
-              })}
-              <Divider />
-            </div>
-          )}
+      <div className="flex flex-col gap-y-6" ref={actionsRef}>
+
+        {/* Purchase type toggle — subscription hidden until ready */}
+        <div className="flex border border-grey-20 overflow-hidden">
+          <button className="flex-1 py-2.5 text-xs tracking-widest font-medium bg-grey-90 text-white transition-colors">
+            UNA SOLA COMPRA
+          </button>
+          {/* Subscription tab — hidden until functionality is ready */}
+          <button className="hidden flex-1 py-2.5 text-xs tracking-widest text-grey-50 bg-white hover:bg-grey-5 transition-colors">
+            SUSCRIPCIÓN · 25% OFF
+          </button>
         </div>
 
+        {/* Variant options */}
+        {(product.variants?.length ?? 0) > 1 && (
+          <div className="flex flex-col gap-y-4">
+            {(product.options || []).map((option) => (
+              <div key={option.id}>
+                <OptionSelect
+                  option={option}
+                  current={options[option.id]}
+                  updateOption={setOptionValue}
+                  title={option.title ?? ""}
+                  data-testid="product-options"
+                  disabled={!!disabled || isAdding}
+                />
+              </div>
+            ))}
+            <Divider />
+          </div>
+        )}
+
+        {/* Price */}
         <ProductPrice product={product} variant={selectedVariant} />
+
+        {/* Add to cart */}
         <Button
           onClick={handleAddToCart}
           disabled={
@@ -159,31 +171,37 @@ export default function ProductActions({
             !hasValidPrice
           }
           variant="primary"
-          className="w-full h-10"
+          className="w-full h-12 !bg-brand-magenta hover:!bg-brand-magenta/90 !border-brand-magenta font-display tracking-widest !text-sm !rounded-none"
           isLoading={isAdding}
           data-testid="add-product-button"
         >
-                      {!selectedVariant && !options
-              ? "Seleccionar variante"
+          {!selectedVariant && !options
+            ? "SELECCIONAR VARIANTE"
             : !hasValidPrice
-                            ? "Precio no disponible"
+            ? "PRECIO NO DISPONIBLE"
             : !inStock || !isValidVariant
-                          ? "Agotado"
-              : "Agregar al carrito"}
+            ? "AGOTADO"
+            : "AGREGAR AL CARRITO"}
         </Button>
-        <MobileActions
-          product={product}
-          variant={selectedVariant}
-          options={options}
-          updateOptions={setOptionValue}
-          inStock={inStock}
-          hasValidPrice={hasValidPrice}
-          handleAddToCart={handleAddToCart}
-          isAdding={isAdding}
-          show={!inView}
-          optionsDisabled={!!disabled || isAdding}
-        />
+
+        {/* Trust line */}
+        <p className="text-center text-xs text-grey-40 tracking-wide">
+          Garantía de satisfacción 30 días · Envío gratis
+        </p>
       </div>
+
+      <MobileActions
+        product={product}
+        variant={selectedVariant}
+        options={options}
+        updateOptions={setOptionValue}
+        inStock={inStock}
+        hasValidPrice={hasValidPrice}
+        handleAddToCart={handleAddToCart}
+        isAdding={isAdding}
+        show={!inView}
+        optionsDisabled={!!disabled || isAdding}
+      />
     </>
   )
 }

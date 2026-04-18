@@ -276,92 +276,72 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
     Array.isArray(bundleData.bundle.child_products?.data)
 
   if (isActuallyBundle) {
+    const progressPct = Math.min((totalSelectedQuantity / totalMaxQuantity) * 100, 100)
+
     return (
-      <div className="space-y-6">
-        {/* Bundle Header */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-blue-800 mb-2">
-            Productos del paquete
-          </h3>
-          <p className="text-blue-700 text-sm">
-            {bundleMeta.bundle_description || `Crea tu paquete personalizado con ${bundleData.bundle.child_products.data.length} productos disponibles.`}
-          </p>
+      <div className="flex flex-col gap-y-6">
+
+        {/* Price + description */}
+        <div className="border-l-2 border-brand-magenta pl-4">
           <ProductPrice product={product} variant={bundleVariant} />
+          <p className="text-xs text-grey-50 mt-1">
+            {bundleMeta.bundle_description ||
+              `Elige ${totalMaxQuantity} productos de los disponibles en el paquete.`}
+          </p>
         </div>
 
-        {/* Bundle Validation Status */}
-        <div className="space-y-3">
+        {/* Progress */}
+        <div className="flex flex-col gap-y-2">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-medium text-gray-900">Requisitos del paquete</h4>
-            <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-              isValidSelection 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-yellow-100 text-yellow-800'
+            <span className="text-xs tracking-widest uppercase text-grey-50">
+              Selección del paquete
+            </span>
+            <span className={`text-xs font-display tracking-widest px-2 py-0.5 ${
+              isValidSelection
+                ? "bg-green-100 text-green-800"
+                : "bg-grey-10 text-grey-50"
             }`}>
-              {isValidSelection ? "Completo" : "Incompleto"}
+              {totalSelectedQuantity} / {totalMaxQuantity}
             </span>
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-700">Total de productos seleccionados</span>
-              <span className="font-medium">
-                {totalSelectedQuantity} / {totalMaxQuantity}
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  totalSelectedQuantity === totalMaxQuantity 
-                    ? 'bg-green-500' 
-                    : totalSelectedQuantity > totalMaxQuantity 
-                      ? 'bg-red-500' 
-                      : 'bg-blue-500'
-                }`}
-                style={{ width: `${Math.min((totalSelectedQuantity / totalMaxQuantity) * 100, 100)}%` }}
-              />
-            </div>
+
+          {/* Bar */}
+          <div className="w-full bg-grey-20 h-1">
+            <div
+              className="h-1 transition-all duration-300"
+              style={{
+                width: `${progressPct}%`,
+                backgroundColor: totalSelectedQuantity > totalMaxQuantity
+                  ? "#ef4444"
+                  : totalSelectedQuantity === totalMaxQuantity
+                  ? "#22c55e"
+                  : "#A31C5A",
+              }}
+            />
           </div>
+
           {!isValidSelection && (
-            <div className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
-              {totalSelectedQuantity < totalMaxQuantity && (
-                <p>• Selecciona {totalMaxQuantity - totalSelectedQuantity} más producto(s)</p>
-              )}
-              {totalSelectedQuantity > totalMaxQuantity && (
-                <p>• Elimina {totalSelectedQuantity - totalMaxQuantity} producto(s)</p>
-              )}
-            </div>
+            <p className="text-xs text-grey-50 border-l border-grey-20 pl-3">
+              {totalSelectedQuantity < totalMaxQuantity
+                ? `Selecciona ${totalMaxQuantity - totalSelectedQuantity} producto(s) más`
+                : `Elimina ${totalSelectedQuantity - totalMaxQuantity} producto(s)`}
+            </p>
           )}
         </div>
 
-        {/* Bundle Quantity Selector */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+        {/* Quantity display */}
+        <div className="flex items-center justify-between border-b border-grey-20 pb-4">
+          <span className="text-xs tracking-widest uppercase text-grey-50">
             Cantidad de paquetes
-          </label>
-          <div className="flex items-center space-x-2">
-            {/* <Button
-              variant="secondary"
-              size="small"
-              onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-              disabled={quantity <= 1}
-            >
-              -
-            </Button> */}
-            <span className="w-12 text-center font-medium">{quantity}</span>
-            {/* <Button
-              variant="secondary"
-              size="small"
-              onClick={() => setQuantity(prev => prev + 1)}
-              disabled={quantity >= parseInt(bundleMeta.total_max_quantity || '5')}
-            >
-              +
-            </Button> */}
-          </div>
+          </span>
+          <span className="font-display text-lg text-grey-90">{quantity}</span>
         </div>
 
-        {/* Bundle Products */}
-        <div className="space-y-4">
-          <h4 className="font-medium text-gray-900">Selecciona tus productos</h4>
+        {/* Child products */}
+        <div className="flex flex-col gap-y-3">
+          <span className="text-xs tracking-widest uppercase text-grey-50">
+            Selecciona tus productos
+          </span>
           {bundleData.bundle.child_products.data.map((childProduct: any) => (
             <BundleProductItem
               key={childProduct.id}
@@ -376,16 +356,22 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
           ))}
         </div>
 
-        {/* Add to Cart Button */}
+        {/* Add to cart */}
         <Button
           onClick={handleAddBundleToCart}
           disabled={!isValidSelection || isAdding}
           variant="primary"
-          className="w-full h-10"
+          className="w-full h-12 !bg-brand-magenta hover:!bg-brand-magenta/90 !border-brand-magenta font-display tracking-widest !text-sm !rounded-none"
           isLoading={isAdding}
         >
-          {!isValidSelection ? "Completa la selección de tu paquete" : "Agregar paquete al carrito"}
+          {!isValidSelection
+            ? "COMPLETA LA SELECCIÓN"
+            : "AGREGAR PAQUETE AL CARRITO"}
         </Button>
+
+        <p className="text-center text-xs text-grey-40 tracking-wide">
+          Garantía de satisfacción 30 días · Envío gratis
+        </p>
       </div>
     )
   }
