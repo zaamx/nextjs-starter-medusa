@@ -7,18 +7,23 @@ import RegionSelectNav from "@modules/layout/components/region-select-nav"
 import CartDrawer from "@modules/layout/components/cart-drawer"
 import { HttpTypes } from "@medusajs/types"
 
-const NAV_LINKS = [
+const BASE_LINKS = [
   { label: "INICIO", href: "/" },
   { label: "TIENDA", href: "/store" },
+]
+
+const AUTH_LINKS = [
   { label: "OFICINA", href: "/office" },
 ]
 
 type NavClientProps = {
   regions: HttpTypes.StoreRegion[]
   cart: HttpTypes.StoreCart | null
+  isAuthenticated: boolean
 }
 
-export default function NavClient({ regions, cart }: NavClientProps) {
+export default function NavClient({ regions, cart, isAuthenticated }: NavClientProps) {
+  const NAV_LINKS = isAuthenticated ? [...BASE_LINKS, ...AUTH_LINKS] : BASE_LINKS
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
@@ -53,16 +58,36 @@ export default function NavClient({ regions, cart }: NavClientProps) {
             </div>
 
             {/* Account — desktop */}
-            <LocalizedClientLink
-              href="/account"
-              className="hidden small:flex items-center text-gray-700 hover:text-brand-magenta transition-colors"
-              data-testid="nav-account-link"
-              aria-label="Tu cuenta"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-              </svg>
-            </LocalizedClientLink>
+            {isAuthenticated ? (
+              <LocalizedClientLink
+                href="/account"
+                className="hidden small:flex items-center text-gray-700 hover:text-brand-magenta transition-colors"
+                data-testid="nav-account-link"
+                aria-label="Tu cuenta"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+              </LocalizedClientLink>
+            ) : (
+              <div className="hidden small:flex items-center gap-x-2">
+                <LocalizedClientLink
+                  href="/account"
+                  className="font-display text-xs tracking-widest text-gray-700 hover:text-brand-magenta transition-colors"
+                  data-testid="nav-login-link"
+                >
+                  INICIA SESIÓN
+                </LocalizedClientLink>
+                <span className="text-gray-300">|</span>
+                <LocalizedClientLink
+                  href="/account"
+                  className="font-display text-xs tracking-widest text-white bg-brand-magenta px-3 py-1.5 hover:opacity-90 transition-opacity"
+                  data-testid="nav-register-link"
+                >
+                  REGÍSTRATE
+                </LocalizedClientLink>
+              </div>
+            )}
 
             {/* Cart */}
             <CartDrawer cart={cart} />
@@ -134,13 +159,32 @@ export default function NavClient({ regions, cart }: NavClientProps) {
                     {link.label}
                   </LocalizedClientLink>
                 ))}
-                <LocalizedClientLink
-                  href="/account"
-                  onClick={() => setMobileOpen(false)}
-                  className="font-display text-2xl text-gray-900 hover:text-brand-magenta transition-colors"
-                >
-                  MI CUENTA
-                </LocalizedClientLink>
+                {isAuthenticated ? (
+                  <LocalizedClientLink
+                    href="/account"
+                    onClick={() => setMobileOpen(false)}
+                    className="font-display text-2xl text-gray-900 hover:text-brand-magenta transition-colors"
+                  >
+                    MI CUENTA
+                  </LocalizedClientLink>
+                ) : (
+                  <>
+                    <LocalizedClientLink
+                      href="/account"
+                      onClick={() => setMobileOpen(false)}
+                      className="font-display text-2xl text-gray-900 hover:text-brand-magenta transition-colors"
+                    >
+                      INICIA SESIÓN
+                    </LocalizedClientLink>
+                    <LocalizedClientLink
+                      href="/account"
+                      onClick={() => setMobileOpen(false)}
+                      className="font-display text-2xl text-brand-magenta hover:opacity-70 transition-opacity"
+                    >
+                      REGÍSTRATE
+                    </LocalizedClientLink>
+                  </>
+                )}
               </nav>
 
               {/* Footer: region */}
