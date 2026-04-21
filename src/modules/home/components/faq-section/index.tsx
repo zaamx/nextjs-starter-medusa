@@ -3,10 +3,10 @@
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
 
 const faqs = [
-  {
-    q: "¿Cómo sé qué fórmula es la correcta para mí?",
-    a: "Cada fórmula WeNow está diseñada para una etapa de vida específica. ESSENTIALS PRIMARIO es para mujeres de 18–45, ESSENTIALS MEDIANA EDAD para perimenopausia (40–55), y ESSENTIALS POSMENOPAUSIA para mujeres posmenopáusicas.",
-  },
+  // {
+  //   q: "¿Cómo sé qué fórmula es la correcta para mí?",
+  //   a: "Cada fórmula WeNow está diseñada para una etapa de vida específica. ESSENTIALS PRIMARIO es para mujeres de 18–45, ESSENTIALS MEDIANA EDAD para perimenopausia (40–55), y ESSENTIALS POSMENOPAUSIA para mujeres posmenopáusicas.",
+  // },
   {
     q: "¿Sus suplementos son probados por terceros?",
     a: "Sí. Todas las fórmulas WeNow son analizadas por laboratorios independientes para pureza, potencia y seguridad. Los certificados de análisis están disponibles a petición.",
@@ -17,16 +17,12 @@ const faqs = [
   },
   {
     q: "¿Qué es la opción Suscríbete y Ahorra?",
-    a: "Suscríbete y Ahorra te permite recibir tu fórmula de forma recurrente con 25% de descuento. Puedes pausar, saltar o cancelar en cualquier momento.",
+    a: "Suscríbete y Ahorra te permite recibir tu fórmula de forma recurrente con descuento. Puedes pausar, saltar o cancelar en cualquier momento.",
   },
   {
     q: "¿Hay efectos secundarios?",
     a: "Los suplementos WeNow están formulados con ingredientes generalmente bien tolerados. Recomendamos consultar a tu médico si estás embarazada, en lactancia o tomando medicamentos.",
-  },
-  {
-    q: "¿Cuál es su política de devolución?",
-    a: "Ofrecemos una garantía de satisfacción de 30 días. Si no estás satisfecha por cualquier razón, contáctanos para un reembolso completo — sin preguntas.",
-  },
+  }
 ]
 
 export default function FaqSection() {

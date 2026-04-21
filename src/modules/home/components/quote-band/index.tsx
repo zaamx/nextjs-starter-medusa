@@ -1,4 +1,4 @@
-const pressLogos = ["MOMMY", "TUSC", "FITTInsider", "WELLNESS"]
+const pressLogos = ["Bienestar", "Negocios", "Experiencias"]
 
 export default function QuoteBand() {
   return (

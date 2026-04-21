@@ -49,10 +49,10 @@ export default function ComparisonTable() {
                 WeNow
               </th>
               <th className="text-center text-xs tracking-widest uppercase text-white/40 py-3 font-normal">
-                Marca A
+                Marca HW
               </th>
               <th className="text-center text-xs tracking-widest uppercase text-white/40 py-3 font-normal">
-                Marca B
+                Marca VH
               </th>
             </tr>
           </thead>

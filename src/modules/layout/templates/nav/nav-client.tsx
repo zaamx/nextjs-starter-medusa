@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, Fragment } from "react"
+import { useState, useEffect, Fragment } from "react"
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import RegionSelectNav from "@modules/layout/components/region-select-nav"
@@ -23,8 +23,13 @@ type NavClientProps = {
 }
 
 export default function NavClient({ regions, cart, isAuthenticated }: NavClientProps) {
-  const NAV_LINKS = isAuthenticated ? [...BASE_LINKS, ...AUTH_LINKS] : BASE_LINKS
   const [mobileOpen, setMobileOpen] = useState(false)
+  // Avoid hydration mismatch: render neutral state on server, update after mount
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
+  const auth = mounted ? isAuthenticated : false
+  const NAV_LINKS = auth ? [...BASE_LINKS, ...AUTH_LINKS] : BASE_LINKS
 
   return (
     <>
@@ -58,7 +63,7 @@ export default function NavClient({ regions, cart, isAuthenticated }: NavClientP
             </div>
 
             {/* Account — desktop */}
-            {isAuthenticated ? (
+            {auth ? (
               <LocalizedClientLink
                 href="/account"
                 className="hidden small:flex items-center text-gray-700 hover:text-brand-magenta transition-colors"
@@ -159,7 +164,7 @@ export default function NavClient({ regions, cart, isAuthenticated }: NavClientP
                     {link.label}
                   </LocalizedClientLink>
                 ))}
-                {isAuthenticated ? (
+                {auth ? (
                   <LocalizedClientLink
                     href="/account"
                     onClick={() => setMobileOpen(false)}
