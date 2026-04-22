@@ -1,6 +1,5 @@
-"use client"
 import React, { useState } from "react"
-import { Table } from "@medusajs/ui"
+import { Table, Select, Button, clx } from "@medusajs/ui"
 
 interface NetworkOrder {
   profiles_id: number
@@ -11,204 +10,199 @@ interface NetworkOrder {
   is_first_sale: boolean
   is_subscription: boolean | null
   cv: number
-  qv: number; // ADDED: Se agregó la propiedad qv.
-  profile_id: string; // ADDED: Se agregó la propiedad profile_id.
-  sponsor_id: string; // ADDED: Se agregó la propiedad sponsor_id.
+  qv: number
+  profile_id: string
+  sponsor_id: string
   transaction_date: string
   depth: number
   position: number
 }
 
-interface OrdersTableProps {
-  networkOrdersData: NetworkOrder[]
-  error: string | null
+interface NetworkActivity {
+  period_id: number
+  period_name: string
+  new_orders: number
+  reorders: number
+  autoship_orders: number
+  autoship_pct: string
+  avg_ticket_cv: string
 }
 
-const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) => {
+interface OrdersTableProps {
+  networkOrdersData: NetworkOrder[]
+  networkActivity?: NetworkActivity | undefined
+  error: string | null
+  activityError?: string | null
+}
+
+const OrdersTable: React.FC<OrdersTableProps> = ({ 
+  networkOrdersData, 
+  networkActivity,
+  error,
+  activityError 
+}) => {
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 10
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   // Calculate pagination
-  const totalPages = Math.ceil(networkOrdersData.length / itemsPerPage)
+  const totalItems = networkOrdersData.length
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const currentOrders = networkOrdersData.slice(startIndex, endIndex)
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page)
+    }
   }
 
-  const PaginationControls = () => {
-    if (totalPages <= 1) return null
-
-    const getPageNumbers = () => {
-      const pages = []
-      const maxVisiblePages = 5
-
-      if (totalPages <= maxVisiblePages) {
-        for (let i = 1; i <= totalPages; i++) {
-          pages.push(i)
-        }
-      } else {
-        if (currentPage <= 3) {
-          for (let i = 1; i <= 4; i++) {
-            pages.push(i)
-          }
-          pages.push('...')
-          pages.push(totalPages)
-        } else if (currentPage >= totalPages - 2) {
-          pages.push(1)
-          pages.push('...')
-          for (let i = totalPages - 3; i <= totalPages; i++) {
-            pages.push(i)
-          }
-        } else {
-          pages.push(1)
-          pages.push('...')
-          for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-            pages.push(i)
-          }
-          pages.push('...')
-          pages.push(totalPages)
-        }
-      }
-
-      return pages
-    }
-
-    return (
-      <div className="flex items-center justify-between mt-4">
-        <div className="text-sm text-gray-700">
-          Mostrando {startIndex + 1} a {Math.min(endIndex, networkOrdersData.length)} de {networkOrdersData.length} órdenes
-        </div>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-          >
-            Anterior
-          </button>
-
-          {getPageNumbers().map((page, index) => (
-            <button
-              key={index}
-              onClick={() => typeof page === 'number' && handlePageChange(page)}
-              disabled={page === '...'}
-              className={`px-3 py-1 text-sm border rounded-md ${page === currentPage
-                ? 'bg-blue-500 text-white border-blue-500'
-                : page === '...'
-                  ? 'border-transparent cursor-default'
-                  : 'hover:bg-gray-50'
-                }`}
-            >
-              {page}
-            </button>
-          ))}
-
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-          >
-            Siguiente
-          </button>
-        </div>
-      </div>
-    )
+  const handleItemsPerPageChange = (val: string) => {
+    setItemsPerPage(Number(val))
+    setCurrentPage(1)
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow p-4">
-      <div className="flex items-center justify-between mb-3">
-        <div className="font-bold text-gray-900">Órdenes del Periodo</div>
-        <span className="text-xs text-gray-500">{networkOrdersData.length} órdenes</span>
+    <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="font-bold text-gray-900 text-lg">Órdenes del Periodo</h2>
+        <span className="text-xs font-medium text-gray-400">{totalItems} órdenes</span>
       </div>
-      {error ? (
-        <div className="text-center py-4 text-red-600">
-          <div className="font-medium">Error cargando órdenes</div>
-          <div className="text-sm mt-1">{error}</div>
-        </div>
-      ) : networkOrdersData.length > 0 ? (
-        <div className="overflow-x-auto">
-          {/* Mobile Card View */}
-          <div className="lg:hidden space-y-2">
-            {currentOrders.map((order, idx) => (
-              <div key={startIndex + idx} className="bg-gray-50 rounded-lg p-3 border">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium text-sm">#{order.order_display}</span>
-                  <span className="text-xs font-bold">{(order.cv || 0).toLocaleString()} CV / {(order.qv || 0).toLocaleString()} QV</span>
-                </div>
-                <div className="text-xs text-gray-600 mb-2">
-                  <span className="mr-2">Profundidad: {order.depth}</span>
-                  <span>Posición: {order.position === 0 ? 'Izquierda' : 'Derecha'}</span>
-                </div>
-                <div className="text-xs text-gray-600 mb-2">
-                  <span className="mr-2">Profile ID: {order.profile_id}</span>
-                  <span>Patrocinador: {order.sponsor_id}</span>
-                </div>
-                <div className="flex gap-2">
-                  <span className={`px-2 py-1 rounded-full text-xs ${order.is_first_sale ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {order.is_first_sale ? 'Primera Venta' : 'Re-orden'}
-                  </span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${order.is_subscription ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {order.is_subscription ? 'Autoenvío' : 'Manual'}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
 
-          {/* Desktop Table View */}
-          <div className="hidden lg:block">
-            <Table>
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell className="text-xs">Orden</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">ID</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Patrocinador</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Profundidad</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Posición</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Primera Venta</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Autoenvío</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">CV</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">QV</Table.HeaderCell>
+      {/* Activity Summary Cards */}
+      {(networkActivity || activityError) && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+          <div className="bg-blue-50/50 rounded-2xl p-4 text-center border border-blue-50">
+            <div className="text-xs font-bold text-blue-500 uppercase mb-1">Nuevas Inscripciones</div>
+            <div className="text-lg font-bold text-blue-700 leading-none">
+              {networkActivity?.new_orders ?? '0'}
+            </div>
+          </div>
+          <div className="bg-green-50/50 rounded-2xl p-4 text-center border border-green-50">
+            <div className="text-xs font-bold text-green-500 uppercase mb-1">Re-órdenes</div>
+            <div className="text-lg font-bold text-green-700 leading-none">
+              {networkActivity?.reorders ?? '0'}
+            </div>
+          </div>
+          <div className="bg-purple-50/50 rounded-2xl p-4 text-center border border-purple-50">
+            <div className="text-xs font-bold text-purple-500 uppercase mb-1">
+              Autoenvío ({networkActivity?.autoship_pct ?? '0'}%)
+            </div>
+            <div className="text-lg font-bold text-purple-700 leading-none">
+              {networkActivity?.autoship_orders ?? '0'}
+            </div>
+          </div>
+          <div className="bg-orange-50/50 rounded-2xl p-4 text-center border border-orange-50">
+            <div className="text-xs font-bold text-orange-500 uppercase mb-1">Ticket Promedio</div>
+            <div className="text-lg font-bold text-orange-700 leading-none">
+              {networkActivity?.avg_ticket_cv ?? '0'} <span className="text-sm font-bold text-gray-400 ml-0.5">CV</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {error ? (
+        <div className="text-center py-10 text-red-500">
+          <div className="font-bold mb-1">Error cargando órdenes</div>
+          <div className="text-sm opacity-75">{error}</div>
+        </div>
+      ) : totalItems > 0 ? (
+        <div className="overflow-hidden">
+          {/* Table Container */}
+          <div className="overflow-x-auto -mx-1 px-1">
+            <Table className="min-w-full">
+              <Table.Header className="bg-gray-50/50 rounded-lg">
+                <Table.Row className="border-none">
+                  <Table.HeaderCell className="text-xs font-bold text-gray-900 uppercase py-4 pl-4">Orden</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs font-bold text-gray-900 uppercase py-4">ID</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs font-bold text-gray-900 uppercase py-4">Patrocinador</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs font-bold text-gray-900 uppercase py-4">Profundidad</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs font-bold text-gray-900 uppercase py-4">Posición</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs font-bold text-gray-900 uppercase py-4">Primera Venta</Table.HeaderCell>
+                  <Table.HeaderCell className="text-xs font-bold text-gray-900 uppercase py-4 pr-4">Autoenvío</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                 {currentOrders.map((order, idx) => (
-                  <Table.Row key={startIndex + idx} className="hover:bg-gray-50">
-                    <Table.Cell className="text-xs font-medium">#{order.order_display}</Table.Cell>
-                    <Table.Cell className="text-xs">{order.buyer_profile}</Table.Cell>
-                    <Table.Cell className="text-xs">{order.unilevel_sponsor_id}</Table.Cell>
-                    <Table.Cell className="text-xs">{order.depth}</Table.Cell>
-                    <Table.Cell className="text-xs">
-                      <span className={`px-2 py-1 rounded-full text-xs ${order.position === 0 ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
+                  <Table.Row key={idx} className="hover:bg-gray-50/50 transition-colors border-b border-gray-50">
+                    <Table.Cell className="text-xs font-bold text-gray-900 py-4 pl-4">#{order.order_display}</Table.Cell>
+                    <Table.Cell className="text-xs font-medium text-gray-600 py-4">{order.buyer_profile}</Table.Cell>
+                    <Table.Cell className="text-xs font-medium text-gray-600 py-4">{order.unilevel_sponsor_id}</Table.Cell>
+                    <Table.Cell className="text-xs font-medium text-gray-600 py-4">{order.depth}</Table.Cell>
+                    <Table.Cell className="py-4">
+                      <span className={clx(
+                        "inline-flex px-3 py-1 rounded-xl text-xs font-semibold",
+                        order.position === 0 ? "bg-blue-50 text-blue-600" : "bg-orange-50 text-orange-600"
+                      )}>
                         {order.position === 0 ? 'Izquierda' : 'Derecha'}
                       </span>
                     </Table.Cell>
-                    <Table.Cell className="text-xs">
-                      <span className={`px-2 py-1 rounded-full text-xs ${order.is_first_sale ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                    <Table.Cell className="py-4">
+                      <span className={clx(
+                        "inline-flex px-3 py-1 rounded-xl text-xs font-semibold",
+                        order.is_first_sale ? "bg-green-50 text-green-600" : "bg-gray-50 text-gray-400"
+                      )}>
                         {order.is_first_sale ? 'Sí' : 'No'}
                       </span>
                     </Table.Cell>
-                    <Table.Cell className="text-xs">
-                      <span className={`px-2 py-1 rounded-full text-xs ${order.is_subscription ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
+                    <Table.Cell className="py-4 pr-4">
+                      <span className={clx(
+                        "inline-flex px-3 py-1 rounded-xl text-xs font-semibold",
+                        order.is_subscription ? "bg-purple-50 text-purple-600" : "bg-gray-50 text-gray-400"
+                      )}>
                         {order.is_subscription ? 'Sí' : 'No'}
                       </span>
                     </Table.Cell>
-                    <Table.Cell className="text-xs font-bold">{(order.cv || 0).toLocaleString()}</Table.Cell>
-                    <Table.Cell className="text-xs font-bold">{(order.qv || 0).toLocaleString()}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
             </Table>
           </div>
 
-          <PaginationControls />
+          {/* New Pagination */}
+          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[13px] text-gray-600 px-1">
+            <div className="flex items-center gap-6">
+              <div className="font-medium text-gray-400">
+                Página <span className="text-gray-900 font-bold">{currentPage}</span> de <span className="text-gray-900 font-bold">{totalPages}</span>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-gray-400">Mostrar:</span>
+                <Select value={String(itemsPerPage)} onValueChange={handleItemsPerPageChange}>
+                  <Select.Trigger className="w-20 h-8 rounded-lg border-gray-100 font-bold text-gray-900">
+                    <Select.Value />
+                  </Select.Trigger>
+                  <Select.Content>
+                    {[10, 25, 50].map((val) => (
+                      <Select.Item key={val} value={String(val)}>
+                        {val}
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1 font-bold text-gray-400 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                ‹ Anterior
+              </button>
+              <button 
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-1 font-bold text-gray-400 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                Siguiente ›
+              </button>
+            </div>
+          </div>
         </div>
       ) : (
-        <div className="text-center py-4 text-gray-500">
+        <div className="text-center py-10 text-gray-400">
           No hay órdenes en este periodo
         </div>
       )}

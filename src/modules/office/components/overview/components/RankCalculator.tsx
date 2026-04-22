@@ -1,6 +1,4 @@
-"use client"
-import React from "react"
-import { FaBell } from "react-icons/fa"
+import { FaTrophy } from "react-icons/fa"
 
 interface RankProgress {
   current_rank: string
@@ -21,17 +19,14 @@ interface RankCalculatorProps {
   rankData: RankProgress[]
   error: string | null
   onShowModal: () => void
+  onShowRanks: () => void
 }
 
-const RankCalculator: React.FC<RankCalculatorProps> = ({ rankData, error, onShowModal }) => {
-  // Calculate rank progress percentage with error handling
+const RankCalculator: React.FC<RankCalculatorProps> = ({ rankData, error, onShowModal, onShowRanks }) => {
+  // Calculate rank progress percentage
   const getRankProgress = () => {
-    if (error) {
-      return { percent: 0, missing: "Error cargando datos de rango" }
-    }
-    
-    if (!rankData || rankData.length === 0) {
-      return { percent: 0, missing: "Cargando datos..." }
+    if (error || !rankData || rankData.length === 0) {
+      return { percent: 0, missing: "" }
     }
 
     const currentRank = rankData[0]
@@ -40,29 +35,15 @@ const RankCalculator: React.FC<RankCalculatorProps> = ({ rankData, error, onShow
     const completed = totalNeeded - totalMissing
     const percent = totalNeeded > 0 ? Math.round((completed / totalNeeded) * 100) : 0
 
-    let missingText = ""
-    if (currentRank.qv_missing > 0) {
-      missingText += `Te faltan ${(currentRank.qv_missing || 0).toLocaleString()} QV`
-    }
-    if (currentRank.act_left_missing > 0) {
-      missingText += missingText ? ` y ${currentRank.act_left_missing} directo izquierdo` : `Te faltan ${currentRank.act_left_missing} directo izquierdo`
-    }
-    if (currentRank.act_right_missing > 0) {
-      missingText += missingText ? ` y ${currentRank.act_right_missing} directo derecho` : `Te faltan ${currentRank.act_right_missing} directo derecho`
-    }
-
-    return { percent, missing: missingText || "¡Completaste todos los requisitos!" }
+    return { percent, missing: `Te faltan ${(currentRank.qv_missing || 0).toLocaleString()} QV` }
   }
 
   const rankProgress = getRankProgress()
 
   if (error) {
     return (
-      <div className="rounded-2xl p-4 sm:p-6 shadow-lg bg-red-100 border border-red-300 text-red-800">
-        <div className="flex items-center gap-2">
-          <FaBell className="text-red-600" />
-          <div className="font-bold">Error cargando calculadora de avance</div>
-        </div>
+      <div className="rounded-2xl p-6 shadow-lg bg-red-50 border border-red-200 text-red-800">
+        <div className="font-bold">Error cargando calculadora</div>
         <div className="text-sm mt-2">{error}</div>
       </div>
     )
@@ -70,35 +51,63 @@ const RankCalculator: React.FC<RankCalculatorProps> = ({ rankData, error, onShow
 
   if (!rankData || rankData.length === 0) {
     return (
-      <div className="rounded-2xl p-4 sm:p-6 shadow-lg bg-gray-100 border border-gray-300 text-gray-600">
-        <div className="font-bold">Calculadora de Avance</div>
-        <div className="text-sm mt-2">Cargando datos...</div>
+      <div className="rounded-2xl p-6 shadow-lg bg-gray-50 border border-gray-100 text-gray-500 animate-pulse text-center font-bold">
+        Cargando calculadora...
       </div>
     )
   }
 
+  const { current_rank, next_rank } = rankData[0]
+
   return (
-    <div className="rounded-2xl p-4 sm:p-6 shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white relative overflow-hidden">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
+    <div className="rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-gradient-to-br from-[#4e81ff] via-[#855aff] to-[#e85aff] text-white relative overflow-hidden min-h-[220px] flex flex-col justify-between">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 relative z-10">
         <div>
-          <div className="text-base sm:text-lg font-bold">Calculadora de Avance</div>
-          <div className="text-xs font-medium">
-            Rango actual: <span className="font-bold">{rankData[0].current_rank}</span> &rarr; Meta: <span className="font-bold">{rankData[0].next_rank}</span>
+          <h2 className="text-lg sm:text-lg font-bold tracking-tight mb-1">Calculadora de Avance</h2>
+          <div className="text-xs sm:text-xs font-semibold opacity-90">
+            Rango actual: <span className="underline decoration-2 underline-offset-4">{current_rank}</span> &rarr; Meta: <span className="underline decoration-2 underline-offset-4">{next_rank}</span>
           </div>
         </div>
-        <button 
-          onClick={onShowModal} 
-          className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow self-start sm:self-auto"
-        >
-          Ver requisitos
-        </button>
+        
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={onShowRanks}
+            className="flex items-center gap-2 bg-gradient-to-r from-green-400 to-blue-500 hover:opacity-90 transition-opacity text-white px-5 py-2.5 rounded-2xl text-xs font-bold shadow-lg"
+          >
+            <FaTrophy className="text-xs" />
+            <span>Ver Rangos</span>
+          </button>
+          <button 
+            onClick={onShowModal}
+            className="bg-white/20 hover:bg-white/30 transition-colors text-white px-4 py-2 rounded-2xl text-xs font-bold backdrop-blur-sm"
+          >
+            Ver requisitos
+          </button>
+        </div>
       </div>
-      <div className="w-full bg-white/30 rounded-full h-3 mt-2 mb-1">
-        <div className="bg-white h-3 rounded-full transition-all duration-500" style={{ width: `${rankProgress.percent}%` }} />
+
+      {/* Progress Section */}
+      <div className="space-y-3 relative z-10">
+        <div className="w-full bg-white/20 rounded-full h-4 relative overflow-hidden">
+          <div 
+            className="bg-white h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(255,255,255,0.5)]" 
+            style={{ width: `${rankProgress.percent}%` }} 
+          />
+        </div>
+        
+        <div className="space-y-1">
+          <div className="text-sm font-bold tracking-wide">{rankProgress.percent}% para el siguiente rango</div>
+          <div className="text-lg font-bold">{rankProgress.missing}</div>
+          <div className="text-xs font-medium opacity-80 leading-snug">
+            Al menos un 70% del volumen debe provenir de la Construcción, y máximo un 30% de la Línea de Poder.
+          </div>
+        </div>
       </div>
-      <div className="text-xs font-semibold mt-1">{rankProgress.percent}% para el siguiente rango</div>
-      <div className="text-sm mt-2 font-medium">{rankProgress.missing}</div>
-      <div className="text-xs text-white">Al menos un 70% del volumen debe provenir de la Construcción, y máximo un 30% de la Línea de Poder.</div>
+
+      {/* Decorative Blur Elements */}
+      <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-20%] left-[-10%] w-48 h-48 bg-purple-400/20 rounded-full blur-3xl pointer-events-none" />
     </div>
   )
 }

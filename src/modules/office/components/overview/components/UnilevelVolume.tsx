@@ -1,5 +1,4 @@
-"use client"
-import React from "react"
+import { FaQuestionCircle } from "react-icons/fa"
 
 interface UnilevelLevelVolume {
   level: number
@@ -35,76 +34,89 @@ const UnilevelVolume: React.FC<UnilevelVolumeProps> = ({ unilevelData, error }) 
     )
   }
 
+  // Summary data calculations
+  const totalCV = unilevelData.reduce((sum, level) => sum + (level.cv_total || 0), 0)
+  const totalQualifiedCV = unilevelData.reduce((sum, level) => sum + (level.cv_qualified || 0), 0)
+  const totalUSDPaid = unilevelData.reduce((sum, level) => sum + parseFloat(level.usd_paid || '0'), 0)
+  const totalUSDExpected = unilevelData.reduce((sum, level) => sum + parseFloat(level.usd_expected_lvl || '0'), 0)
+
+  // Level percentages (constants based on business logic usually)
+  const getLevelPercentage = (level: number) => {
+    switch (level) {
+      case 1: return "5%";
+      case 2: return "25%";
+      case 3: return "10%";
+      case 4: return "5%";
+      case 5: return "5%";
+      default: return "";
+    }
+  }
+
   return (
-    <div className="bg-white rounded-2xl shadow p-4">
-      <div className="font-bold text-gray-900 mb-4">Volumen Unilevel</div>
-      
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-        <div className="text-center bg-blue-50 rounded-lg p-3">
-          <div className="text-xs text-blue-600 font-medium">CV Total</div>
-          <div className="text-lg font-bold text-blue-900">
-            {unilevelData.reduce((sum, level) => sum + (level.cv_total || 0), 0).toLocaleString()}
-          </div>
+    <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">
+      <div className="flex items-center gap-2 mb-6">
+        <h2 className="font-bold text-gray-900 text-lg">Volumen Unilevel</h2>
+        <FaQuestionCircle className="text-gray-300 w-4 h-4 cursor-help" />
+      </div>
+
+      {/* Summary Row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        <div className="bg-blue-50/50 rounded-2xl p-4 text-center border border-blue-50">
+          <div className="text-xs font-bold text-blue-500 uppercase mb-1">CV Total</div>
+          <div className="text-lg font-bold text-blue-700 leading-none">{totalCV.toLocaleString()}</div>
         </div>
-        <div className="text-center bg-green-50 rounded-lg p-3">
-          <div className="text-xs text-green-600 font-medium">CV Calificado</div>
-          <div className="text-lg font-bold text-green-900">
-            {unilevelData.reduce((sum, level) => sum + (level.cv_qualified || 0), 0).toLocaleString()}
-          </div>
+        <div className="bg-green-50/50 rounded-2xl p-4 text-center border border-green-50">
+          <div className="text-xs font-bold text-green-500 uppercase mb-1">CV Calificado</div>
+          <div className="text-lg font-bold text-green-700 leading-none">{totalQualifiedCV.toLocaleString()}</div>
         </div>
-        <div className="text-center bg-purple-50 rounded-lg p-3">
-          <div className="text-xs text-purple-600 font-medium">USD Pagado</div>
-          <div className="text-lg font-bold text-purple-900">
-            ${unilevelData.reduce((sum, level) => sum + parseFloat(level.usd_paid || '0'), 0).toFixed(2)}
-          </div>
+        <div className="bg-purple-50/50 rounded-2xl p-4 text-center border border-purple-50">
+          <div className="text-xs font-bold text-purple-500 uppercase mb-1">USD Pagado</div>
+          <div className="text-lg font-bold text-purple-700 leading-none">${totalUSDPaid.toFixed(2)}</div>
         </div>
-        <div className="text-center bg-orange-50 rounded-lg p-3">
-          <div className="text-xs text-orange-600 font-medium">USD Esperado</div>
-          <div className="text-lg font-bold text-orange-900">
-            ${unilevelData.reduce((sum, level) => sum + parseFloat(level.usd_expected_lvl || '0'), 0).toFixed(2)}
-          </div>
+        <div className="bg-orange-50/50 rounded-2xl p-4 text-center border border-orange-50">
+          <div className="text-xs font-bold text-orange-500 uppercase mb-1">USD Estimado</div>
+          <div className="text-lg font-bold text-orange-700 leading-none">${totalUSDExpected.toFixed(2)}</div>
         </div>
       </div>
 
-      {/* Level Details */}
-      <div className="space-y-3">
-        <div className="text-sm font-semibold text-gray-700 mb-2">Detalles por Nivel</div>
-        {unilevelData.slice(0, 5).map((level, idx) => {
+      {/* Details List */}
+      <div className="space-y-4">
+        <h3 className="font-bold text-gray-900 text-sm mb-4">Detalles por Nivel</h3>
+        
+        {unilevelData.slice(0, 5).map((level) => {
           const usdPaid = parseFloat(level.usd_paid || '0')
           const usdExpected = parseFloat(level.usd_expected_lvl || '0')
           const efficiency = usdExpected > 0 ? (usdPaid / usdExpected * 100) : 0
           
           return (
-            <div key={idx} className="bg-gray-50 rounded-lg p-3">
-              <div className="flex justify-between items-center mb-2">
-                <div className="font-semibold text-gray-900">Nivel {level.level}</div>
-                <div className="text-sm text-gray-600">
-                  Eficiencia: <span className={`font-semibold ${efficiency >= 80 ? 'text-green-600' : efficiency >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
-                    {efficiency.toFixed(1)}%
-                  </span>
+            <div key={level.level} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)]">
+              <div className="flex justify-between items-start mb-4">
+                <div className="font-bold text-gray-900 text-sm leading-none">
+                  Nivel {level.level} <span className="text-gray-300 font-bold ml-1">({getLevelPercentage(level.level)})</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs font-bold text-gray-900 uppercase">Eficiencia: <span className="text-red-500">{efficiency.toFixed(1)}%</span></div>
                 </div>
               </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+
+              <div className="grid grid-cols-4 gap-2">
                 <div>
-                  <div className="text-gray-500">CV Total</div>
-                  <div className="font-semibold text-gray-900">{(level.cv_total || 0).toLocaleString()}</div>
+                  <div className="text-xs font-bold text-gray-400 uppercase mb-0.5">CV Total</div>
+                  <div className="text-sm font-bold text-gray-900">{(level.cv_total || 0).toLocaleString()}</div>
                 </div>
                 <div>
-                  <div className="text-gray-500">CV Calificado</div>
-                  <div className="font-semibold text-gray-900">{(level.cv_qualified || 0).toLocaleString()}</div>
+                  <div className="text-xs font-bold text-gray-400 uppercase mb-0.5">CV Calificado</div>
+                  <div className="text-sm font-bold text-gray-900">{(level.cv_qualified || 0).toLocaleString()}</div>
                 </div>
                 <div>
-                  <div className="text-gray-500">Miembros</div>
-                  <div className="font-semibold text-gray-900">
-                    {(level.actives || 0) + (level.inactives || 0)}
-                    <span className="text-green-600 ml-1">({level.actives || 0}A)</span>
+                  <div className="text-xs font-bold text-gray-400 uppercase mb-0.5">Miembros</div>
+                  <div className="text-sm font-bold text-gray-900">
+                    {(level.actives || 0) + (level.inactives || 0)} <span className="text-green-500 font-bold">({level.actives || 0}A)</span>
                   </div>
                 </div>
                 <div>
-                  <div className="text-gray-500">USD Pagado</div>
-                  <div className="font-semibold text-gray-900">${usdPaid.toFixed(2)}</div>
+                  <div className="text-xs font-bold text-orange-500 uppercase mb-0.5">USD Est.</div>
+                  <div className="text-sm font-bold text-gray-900">${usdExpected.toFixed(2)}</div>
                 </div>
               </div>
             </div>

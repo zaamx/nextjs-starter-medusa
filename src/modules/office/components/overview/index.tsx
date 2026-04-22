@@ -23,7 +23,7 @@ import KPIBar from "./components/KPIBar"
 import RankCalculator from "./components/RankCalculator"
 import BinaryVolume from "./components/BinaryVolume"
 import UnilevelVolume from "./components/UnilevelVolume"
-import SpilloverVsBuildComponent from "./components/SpilloverVsBuild"
+import MatrixVolume from "./components/MatrixVolume"
 import NetworkActivityComponent from "./components/NetworkActivity"
 import OrdersTable from "./components/OrdersTable"
 import Alerts from "./components/Alerts"
@@ -543,6 +543,7 @@ const Overview = ({ customer }: OverviewProps) => {
               rankData={rankData}
               error={componentErrors.rank || null}
               onShowModal={handleShowTargetModal}
+              onShowRanks={handleShowRanksModal}
             />
 
             {/* Alerts */}
@@ -551,6 +552,7 @@ const Overview = ({ customer }: OverviewProps) => {
             {/* Binary Volume */}
             <BinaryVolume
               binaryData={binaryData}
+              spilloverData={spilloverData}
               error={componentErrors.binary || null}
             />
 
@@ -563,16 +565,17 @@ const Overview = ({ customer }: OverviewProps) => {
 
           {/* Right Column */}
           <div className="space-y-4">
-            {/* Spillover vs Build */}
-            <SpilloverVsBuildComponent
-              spilloverData={spilloverData}
-              error={componentErrors.spillover || null}
-            />
 
             {/* Network Activity */}
             <NetworkActivityComponent
               currentPeriodActivity={currentPeriodActivity}
               error={componentErrors.networkActivity || null}
+            />
+
+            {/* Matrix Volume */}
+            <MatrixVolume
+              matrixData={[]}
+              error={null}
             />
 
             {/* Orders Table */}
