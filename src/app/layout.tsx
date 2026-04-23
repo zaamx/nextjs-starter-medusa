@@ -17,12 +17,21 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout(props: { children: React.ReactNode }) {
-  // Fix for Next.js dev overlay crash when global.localStorage is improperly mocked as {}
+  // Attempt to clear potentially broken global.localStorage on server-side to prevent
+  // issues with libraries that check for its existence during SSR.
   if (typeof window === 'undefined' && typeof global !== 'undefined') {
-    // @ts-ignore
-    if (typeof global.localStorage !== 'undefined' && typeof global.localStorage.getItem !== 'function') {
-      // @ts-ignore
-      delete global.localStorage
+    try {
+      // @ts-ignore - Avoid accessing it directly if possible to not trigger Node 22 warnings
+      const descriptor = Object.getOwnPropertyDescriptor(global, 'localStorage');
+      if (descriptor) {
+        // @ts-ignore
+        if (typeof global.localStorage !== 'undefined' && typeof global.localStorage.getItem !== 'function') {
+          // @ts-ignore
+          delete global.localStorage
+        }
+      }
+    } catch (e) {
+      // Silently ignore errors from accessing experimental global properties
     }
   }
 

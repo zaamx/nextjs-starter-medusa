@@ -10,5 +10,8 @@ if (process.env.MEDUSA_BACKEND_URL) {
 export const sdk = new Medusa({
   baseUrl: MEDUSA_BACKEND_URL,
   debug: process.env.NODE_ENV === "development",
-  publishableKey: 'pk_cc5b2ba1531c2322b06dcdebd1c1e8944d9e86ea5abc6c1382ecd7c13cf5340a'
+  publishableKey: 'pk_cc5b2ba1531c2322b06dcdebd1c1e8944d9e86ea5abc6c1382ecd7c13cf5340a',
+  auth: {
+    jwtTokenStorageMethod: typeof window !== "undefined" ? "local" : "memory"
+  }
 })
