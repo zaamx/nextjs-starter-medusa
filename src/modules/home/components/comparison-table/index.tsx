@@ -4,7 +4,7 @@ const rows = [
   { feature: "Fórmulas específicas por etapa de vida", wenow: true, a: false, b: false },
   { feature: "Probado por terceros", wenow: true, a: true, b: false },
   { feature: "Sin rellenos artificiales", wenow: true, a: false, b: false },
-  { feature: "Opción de suscripción con descuento", wenow: true, a: true, b: true },
+  { feature: "Armonizados con frecuencia cuántica 432 hz", wenow: true, a: true, b: true },
 ]
 
 function CheckIcon({ colored }: { colored?: boolean }) {

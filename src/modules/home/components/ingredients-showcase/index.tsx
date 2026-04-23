@@ -1,7 +1,7 @@
 const stats = [
-  { value: "18%", label: "Reducción en marcadores de fatiga" },
-  { value: "6%", label: "Aumento en niveles de energía" },
-  { value: "14%", label: "Mejora en calidad del sueño" },
+  { value: "75%", label: "Reducción en marcadores de fatiga" },
+  { value: "65%", label: "Aumento en niveles de energía" },
+  { value: "63%", label: "Mejora en calidad del sueño" },
   { value: "31%", label: "Mejor función cognitiva" },
 ]
 
@@ -28,7 +28,7 @@ export default function IngredientsShowcase() {
               FORMULADO CON PROPÓSITO. RESPALDADO POR CIENCIA.
             </h2>
             <p className="text-grey-50 leading-relaxed mb-8">
-              Cada fórmula WeNow combina ingredientes clínicamente estudiados en dosis efectivas. Sin rellenos, sin mezclas propietarias — solo formulación transparente diseñada para lo que tu cuerpo necesita.
+              Cada fórmula WeNow combina ingredientes cuidadosamente estudiados en dosis efectivas. Sin rellenos, sin mezclas propietarias — sólo formulación transparente diseñada para lo que tu cuerpo necesita.
             </p>
             <ul className="space-y-3">
               {points.map((item) => (

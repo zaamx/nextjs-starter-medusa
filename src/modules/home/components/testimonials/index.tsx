@@ -39,7 +39,7 @@ export default function Testimonials() {
             className="font-display text-grey-90"
             style={{ fontSize: "clamp(36px, 4vw, 60px)" }}
           >
-            LO QUE DICEN NUESTRAS CLIENTAS
+            LO QUE DICEN NUESTROS CLIENTES
           </h2>
         </div>
         <div className="grid grid-cols-1 medium:grid-cols-3 gap-8">
