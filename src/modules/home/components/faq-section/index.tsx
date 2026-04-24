@@ -9,7 +9,7 @@ const faqs = [
   // },
   {
     q: "¿Sus suplementos son probados por terceros?",
-    a: "Sí. Todas las fórmulas WeNow son analizadas por laboratorios independientes para pureza, potencia y seguridad. Los certificados de análisis están disponibles a petición.",
+    a: "Sí. Todas las fórmulas WeNow son analizadas por laboratorios independientes para pureza, potencia y seguridad.",
   },
   {
     q: "¿Cuánto tiempo hasta ver resultados?",
@@ -17,7 +17,7 @@ const faqs = [
   },
   {
     q: "¿Qué es la opción Suscríbete y Ahorra?",
-    a: "Suscríbete y Ahorra te permite recibir tu fórmula de forma recurrente con descuento. Puedes pausar, saltar o cancelar en cualquier momento.",
+    a: "Suscríbete y Ahorra es una opción que estará disponible muy pronto.",
   },
   {
     q: "¿Hay efectos secundarios?",
