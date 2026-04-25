@@ -111,7 +111,7 @@ export default async function FeaturedProducts({ collections, region }: Featured
                     href={`/products/${product.handle}`}
                     className="block text-center text-xs tracking-widest text-grey-50 hover:text-brand-magenta transition-colors"
                   >
-                    SUSCRÍBETE Y AHORRA 25%
+                    SUSCRÍBETE Y AHORRA 30%
                   </LocalizedClientLink>
                 </div>
               </article>

@@ -168,7 +168,7 @@ const CartDrawer = ({ cart: cartState }: { cart?: HttpTypes.StoreCart | null }) 
                   {/* Footer */}
                   <div className="px-6 py-4 border-t border-gray-200 space-y-4">
                     <p className="text-xs text-center text-gray-500 bg-gray-50 rounded px-3 py-2">
-                      Suscríbete y ahorra 25% en cada pedido
+                      Suscríbete y ahorra 30% en cada pedido
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-base-semi text-gray-900">
