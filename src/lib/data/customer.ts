@@ -3,7 +3,7 @@
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
 import { HttpTypes } from "@medusajs/types"
-import { revalidateTag } from "next/cache"
+import { revalidateTag, revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import {
   getAuthHeaders,
@@ -43,7 +43,9 @@ export const retrieveCustomer =
   async (): Promise<HttpTypes.StoreCustomer | null> => {
     const authHeaders = await getAuthHeaders()
 
-    if (!authHeaders) return null
+    // getAuthHeaders returns {} when there is no token — {} is truthy, so
+    // we must check for the actual authorization key, not just truthiness.
+    if (!authHeaders || !("authorization" in authHeaders)) return null
 
     const headers = {
       ...authHeaders,
@@ -61,7 +63,9 @@ export const retrieveCustomer =
         },
         headers,
         next,
-        cache: "force-cache",
+        // no-store ensures the session check is always fresh — tag-based
+        // revalidation (revalidateTag) handles post-login/logout invalidation.
+        cache: "no-store",
       })
       .then(({ customer }) => customer)
       .catch(() => null)
@@ -234,6 +238,10 @@ export async function signout(countryCode: string) {
 
   const cartCacheTag = await getCacheTag("carts")
   revalidateTag(cartCacheTag)
+
+  // Purge the server-side Full Route Cache and the client Router Cache for
+  // the entire tree so no stale office/account RSC payloads survive logout.
+  revalidatePath("/", "layout")
 
   redirect(`/${countryCode}/account`)
 }

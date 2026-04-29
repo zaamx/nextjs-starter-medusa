@@ -136,7 +136,16 @@ export async function middleware(request: NextRequest) {
       countryCode && request.nextUrl.pathname.split("/")[1].includes(countryCode)
 
     if (urlHasCountryCode && cacheIdCookie) {
-      //  cacheIdCookie: NextResponse.next()")
+      // Guard /office routes: redirect to /account if no JWT cookie present
+      const isOfficeRoute = request.nextUrl.pathname.includes("/office")
+      if (isOfficeRoute) {
+        const jwt = request.cookies.get("_medusa_jwt")?.value
+        if (!jwt) {
+          return NextResponse.redirect(
+            new URL(`/${countryCode}/account`, request.nextUrl.origin)
+          )
+        }
+      }
       return NextResponse.next()
     }
 
