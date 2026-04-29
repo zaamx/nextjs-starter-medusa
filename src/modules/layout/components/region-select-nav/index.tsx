@@ -21,9 +21,10 @@ type CountryOption = {
 
 type Props = {
   regions: HttpTypes.StoreRegion[]
+  dropdownPosition?: "down" | "up"
 }
 
-export default function RegionSelectNav({ regions }: Props) {
+export default function RegionSelectNav({ regions, dropdownPosition = "down" }: Props) {
   const { countryCode } = useParams()
   const currentPath = usePathname().split(`/${countryCode}`)[1]
 
@@ -80,7 +81,7 @@ export default function RegionSelectNav({ regions }: Props) {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <ListboxOptions className="absolute right-0 mt-1 max-h-60 w-48 overflow-y-auto bg-white border border-gray-200 shadow-lg rounded z-50 text-xs no-scrollbar focus:outline-none">
+            <ListboxOptions className={`absolute right-0 max-h-60 w-48 overflow-y-auto bg-white border border-gray-200 shadow-lg z-50 text-xs focus:outline-none ${dropdownPosition === "up" ? "bottom-full mb-1" : "top-full mt-1"}`}>
               {options.map((o) => (
                 <ListboxOption
                   key={o.country}

@@ -192,9 +192,9 @@ export default function NavClient({ regions, cart, isAuthenticated }: NavClientP
                 )}
               </nav>
 
-              {/* Footer: region */}
+              {/* Footer: region — opens upward to avoid overflow */}
               <div className="px-6 py-6 border-t border-gray-200">
-                <RegionSelectNav regions={regions} />
+                <RegionSelectNav regions={regions} dropdownPosition="up" />
               </div>
             </DialogPanel>
           </TransitionChild>
