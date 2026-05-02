@@ -497,7 +497,7 @@ const Overview = ({ customer }: OverviewProps) => {
             <div className={`flex items-center gap-2 px-3 py-1.5 text-xs border ${renewalData.days_left > 0
               ? 'border-green-500/30 text-green-700 bg-green-50'
               : 'border-red-400/30 text-red-700 bg-red-50'
-            }`}>
+              }`}>
               <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${renewalData.days_left > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
               <div className="flex flex-col leading-tight">
                 <span className="font-medium whitespace-nowrap">

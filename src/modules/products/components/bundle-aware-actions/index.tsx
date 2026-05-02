@@ -47,10 +47,10 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
     if (wrapperElement) {
       const bundleState = wrapperElement.getAttribute('data-is-bundle')
       const bundleDataAttr = wrapperElement.getAttribute('data-bundle-data')
-      
+
       const newIsBundle = bundleState === 'true'
       setIsBundle(newIsBundle)
-      
+
       if (bundleDataAttr && bundleDataAttr !== '') {
         try {
           const parsedData = JSON.parse(bundleDataAttr)
@@ -67,11 +67,11 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
 
   useEffect(() => {
     checkBundleState()
-    
+
     // Set up a mutation observer to watch for changes
     const observer = new MutationObserver(checkBundleState)
     const wrapperElement = document.querySelector('[data-is-bundle]')
-    
+
     if (wrapperElement) {
       observer.observe(wrapperElement, {
         attributes: true,
@@ -85,7 +85,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
   // Parse bundle metadata
   const bundleMeta = useMemo(() => {
     if (!bundleData?.bundle?.bundle_meta?.data) return {}
-    
+
     return bundleData.bundle.bundle_meta.data.reduce((acc: Record<string, string>, meta: BundleMeta) => {
       acc[meta.key] = meta.value
       return acc
@@ -115,7 +115,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
   }, [bundleData, productSelections, totalSelectedQuantity, totalMaxQuantity]);
 
   // Handle product selection changes
-  const handleProductSelectionChange = useCallback((productId: string, selections: Array<{variantId: string, quantity: number}>, isPremium: boolean) => {
+  const handleProductSelectionChange = useCallback((productId: string, selections: Array<{ variantId: string, quantity: number }>, isPremium: boolean) => {
     setProductSelections(prev => ({
       ...prev,
       [productId]: {
@@ -134,10 +134,10 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
     if (!isValidSelection || !bundleData) return
 
     setIsAdding(true)
-    
+
     try {
       const bundleId = uuidv4()
-      
+
       // Add parent product with bundle metadata
       await addBundleToCart({
         items: [{
@@ -156,10 +156,10 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
       const cartPromises = Object.values(productSelections)
         // 1. Flatten all 'selections' arrays into one
         .flatMap(productData => productData.selections)
-        
+
         // 2. Filter to keep only selections with quantity > 0
         .filter(selection => selection.quantity > 0)
-        
+
         // 3. Create a promise for each valid selection
         .map(selection => addBundleToCart({
           items: [{
@@ -178,7 +178,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
 
       // 5. Check if all items were added successfully
       await checkAndFixMissingItems(bundleId)
-      
+
     } catch (error) {
       console.error('Failed to add bundle to cart:', error)
     } finally {
@@ -191,20 +191,20 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
     try {
       // Wait a moment for cart to update
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
       // Get current cart
       const cart = await retrieveCart()
       if (!cart?.items) return
 
       // Find bundle parent
-      const bundleParent = cart.items.find((item: HttpTypes.StoreCartLineItem) => 
+      const bundleParent = cart.items.find((item: HttpTypes.StoreCartLineItem) =>
         item.metadata?.bundle_id === bundleId
       )
-      
+
       if (!bundleParent) return
 
       // Get bundle children
-      const bundleChildren = cart.items.filter((item: HttpTypes.StoreCartLineItem) => 
+      const bundleChildren = cart.items.filter((item: HttpTypes.StoreCartLineItem) =>
         item.metadata?.bundled_by === bundleId
       )
 
@@ -235,7 +235,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
       expectedItems.forEach((expectedQty, variantId) => {
         const actualQty = actualItems.get(variantId) || 0
         const missingQty = expectedQty - actualQty
-        
+
         if (missingQty > 0) {
           missingItems.push({
             variant_id: variantId,
@@ -247,7 +247,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
       // Add missing items if any
       if (missingItems.length > 0) {
         console.log('Adding missing bundle items:', missingItems)
-        
+
         for (const item of missingItems) {
           await addBundleToCart({
             items: [{
@@ -296,11 +296,10 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
             <span className="text-xs tracking-widest uppercase text-grey-50">
               Selección del paquete
             </span>
-            <span className={`text-xs font-display tracking-widest px-2 py-0.5 ${
-              isValidSelection
+            <span className={`text-xs font-display tracking-widest px-2 py-0.5 ${isValidSelection
                 ? "bg-green-100 text-green-800"
                 : "bg-grey-10 text-grey-50"
-            }`}>
+              }`}>
               {totalSelectedQuantity} / {totalMaxQuantity}
             </span>
           </div>
@@ -314,8 +313,8 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
                 backgroundColor: totalSelectedQuantity > totalMaxQuantity
                   ? "#ef4444"
                   : totalSelectedQuantity === totalMaxQuantity
-                  ? "#22c55e"
-                  : "#A31C5A",
+                    ? "#22c55e"
+                    : "#A31C5A",
               }}
             />
           </div>
@@ -370,7 +369,7 @@ const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
         </Button>
 
         <p className="text-center text-xs text-grey-40 tracking-wide">
-          Garantía de satisfacción 30 días · Envío gratis
+          Garantía de satisfacción 30 días
         </p>
       </div>
     )

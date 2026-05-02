@@ -99,7 +99,7 @@ export default function ProductActions({
     if (!selectedVariant?.calculated_price?.calculated_amount) {
       return false
     }
-    
+
     return selectedVariant.calculated_price.calculated_amount > 0
   }, [selectedVariant])
 
@@ -178,15 +178,15 @@ export default function ProductActions({
           {!selectedVariant && !options
             ? "SELECCIONAR VARIANTE"
             : !hasValidPrice
-            ? "PRECIO NO DISPONIBLE"
-            : !inStock || !isValidVariant
-            ? "AGOTADO"
-            : "AGREGAR AL CARRITO"}
+              ? "PRECIO NO DISPONIBLE"
+              : !inStock || !isValidVariant
+                ? "AGOTADO"
+                : "AGREGAR AL CARRITO"}
         </Button>
 
         {/* Trust line */}
         <p className="text-center text-xs text-grey-40 tracking-wide">
-          Garantía de satisfacción 30 días · Envío gratis
+          Garantía de satisfacción 30 días
         </p>
       </div>
 
