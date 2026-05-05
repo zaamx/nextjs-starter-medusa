@@ -5,8 +5,7 @@ import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import { v4 as uuidv4 } from "uuid"
 import { addBundleToCart, retrieveCart } from "@lib/data/cart"
-import { useParams } from "next/navigation"
-import BundleProductItem from "@modules/products/components/bundle-aware-actions/bundle-product-item"
+import BundleProductItem, { BundleModel } from "@modules/products/components/bundle-aware-actions/bundle-product-item"
 import ProductActions from "@modules/products/components/product-actions"
 import ProductPrice from "@modules/products/components/product-price"
 
@@ -18,368 +17,354 @@ type BundleAwareActionsProps = {
 
 type ProductSelection = {
   productId: string
-  selections: Array<{
-    variantId: string
-    quantity: number
-  }>
-  isPremium: boolean
+  selections: Array<{ variantId: string; quantity: number }>
+  categoryHandle: string | null
 }
 
-type BundleMeta = {
-  key: string
-  value: string
-}
+type BundleMetaMap = Record<string, string>
+
+// ─── helpers ────────────────────────────────────────────────────────────────
+
+const parseBundleMeta = (data: Array<{ key: string; value: string }>): BundleMetaMap =>
+  data.reduce<BundleMetaMap>((acc, { key, value }) => { acc[key] = value; return acc }, {})
+
+const detectModel = (meta: BundleMetaMap): BundleModel =>
+  Object.keys(meta).some((k) => k.startsWith("max_category_")) ? "category" : "product"
+
+const parseCategoryLimits = (meta: BundleMetaMap): Record<string, number> =>
+  Object.entries(meta).reduce<Record<string, number>>((acc, [k, v]) => {
+    if (k.startsWith("max_category_")) acc[k.replace("max_category_", "")] = parseInt(v)
+    return acc
+  }, {})
+
+// ─── component ──────────────────────────────────────────────────────────────
 
 const BundleAwareActions: React.FC<BundleAwareActionsProps> = ({
   product,
   region,
-  countryCode
+  countryCode,
 }) => {
   const [isBundle, setIsBundle] = useState(false)
   const [bundleData, setBundleData] = useState<any>(null)
   const [productSelections, setProductSelections] = useState<Record<string, ProductSelection>>({})
-  const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
 
+  // ── read bundle state from DOM data-attributes (set by ProductTemplateWrapper) ──
   const checkBundleState = useCallback(() => {
-    // Find the parent wrapper element that contains bundle state
-    const wrapperElement = document.querySelector('[data-is-bundle]')
-    if (wrapperElement) {
-      const bundleState = wrapperElement.getAttribute('data-is-bundle')
-      const bundleDataAttr = wrapperElement.getAttribute('data-bundle-data')
-      
-      const newIsBundle = bundleState === 'true'
-      setIsBundle(newIsBundle)
-      
-      if (bundleDataAttr && bundleDataAttr !== '') {
-        try {
-          const parsedData = JSON.parse(bundleDataAttr)
-          setBundleData(parsedData)
-        } catch (e) {
-          console.error('Failed to parse bundle data:', e)
-          setBundleData(null)
-        }
-      } else {
-        setBundleData(null)
-      }
+    const el = document.querySelector("[data-is-bundle]")
+    if (!el) return
+    setIsBundle(el.getAttribute("data-is-bundle") === "true")
+    const raw = el.getAttribute("data-bundle-data")
+    if (raw) {
+      try { setBundleData(JSON.parse(raw)) } catch { setBundleData(null) }
+    } else {
+      setBundleData(null)
     }
   }, [])
 
   useEffect(() => {
     checkBundleState()
-    
-    // Set up a mutation observer to watch for changes
-    const observer = new MutationObserver(checkBundleState)
-    const wrapperElement = document.querySelector('[data-is-bundle]')
-    
-    if (wrapperElement) {
-      observer.observe(wrapperElement, {
-        attributes: true,
-        attributeFilter: ['data-is-bundle', 'data-bundle-data']
-      })
-    }
-
-    return () => observer.disconnect()
+    const el = document.querySelector("[data-is-bundle]")
+    if (!el) return
+    const obs = new MutationObserver(checkBundleState)
+    obs.observe(el, { attributes: true, attributeFilter: ["data-is-bundle", "data-bundle-data"] })
+    return () => obs.disconnect()
   }, [checkBundleState])
 
-  // Parse bundle metadata
-  const bundleMeta = useMemo(() => {
+  // ── derived bundle metadata ──────────────────────────────────────────────
+  const bundleMeta = useMemo<BundleMetaMap>(() => {
     if (!bundleData?.bundle?.bundle_meta?.data) return {}
-    
-    return bundleData.bundle.bundle_meta.data.reduce((acc: Record<string, string>, meta: BundleMeta) => {
-      acc[meta.key] = meta.value
-      return acc
-    }, {})
+    return parseBundleMeta(bundleData.bundle.bundle_meta.data)
   }, [bundleData])
 
-  // Use a single total max quantity for the bundle
-  const totalMaxQuantity = parseInt(bundleMeta.total_max_quantity || '0')
+  const bundleModel = useMemo<BundleModel>(() => detectModel(bundleMeta), [bundleMeta])
 
-  // Calculate total selected quantity across all child products/variants
-  const totalSelectedQuantity = useMemo(() => {
-    let total = 0;
-    Object.values(productSelections).forEach(selection => {
-      selection.selections.forEach(item => {
-        total += item.quantity;
-      });
-    });
-    return total;
-  }, [productSelections]);
+  // Modelo A: per-category limits   Modelo B: single global total
+  const categoryLimits = useMemo(() => parseCategoryLimits(bundleMeta), [bundleMeta])
 
-  // Validate bundle completeness
+  const totalBundleMax = useMemo(() => {
+    if (bundleModel === "category") {
+      return Object.values(categoryLimits).reduce((s, v) => s + v, 0)
+    }
+    return parseInt(bundleMeta.total_max_quantity ?? "0")
+  }, [bundleModel, categoryLimits, bundleMeta])
+
+  // ── aggregate quantities ─────────────────────────────────────────────────
+  const totalSelectedQuantity = useMemo(
+    () =>
+      Object.values(productSelections).reduce(
+        (s, p) => s + p.selections.reduce((ps, v) => ps + v.quantity, 0),
+        0
+      ),
+    [productSelections]
+  )
+
+  // Per-category totals (Modelo A)
+  const categoryQuantities = useMemo<Record<string, number>>(() => {
+    if (bundleModel !== "category") return {}
+    const result: Record<string, number> = {}
+    for (const ps of Object.values(productSelections)) {
+      if (!ps.categoryHandle) continue
+      const qty = ps.selections.reduce((s, v) => s + v.quantity, 0)
+      result[ps.categoryHandle] = (result[ps.categoryHandle] ?? 0) + qty
+    }
+    return result
+  }, [productSelections, bundleModel])
+
+  // ── validation ───────────────────────────────────────────────────────────
   const isValidSelection = useMemo(() => {
-    if (!bundleData?.bundle?.child_products?.data?.length) return false;
-    if (Object.keys(productSelections).length === 0) return false;
-    if (totalSelectedQuantity !== totalMaxQuantity) return false;
-    return true;
-  }, [bundleData, productSelections, totalSelectedQuantity, totalMaxQuantity]);
+    if (!bundleData?.bundle?.child_products?.data?.length) return false
+    if (Object.keys(productSelections).length === 0) return false
 
-  // Handle product selection changes
-  const handleProductSelectionChange = useCallback((productId: string, selections: Array<{variantId: string, quantity: number}>, isPremium: boolean) => {
-    setProductSelections(prev => ({
-      ...prev,
-      [productId]: {
-        productId,
-        selections,
-        isPremium
-      }
-    }))
-  }, [])
+    if (bundleModel === "category") {
+      return Object.entries(categoryLimits).every(
+        ([handle, limit]) => (categoryQuantities[handle] ?? 0) === limit
+      )
+    }
 
-  // Always use the only variant for the bundle parent
-  const bundleVariant = product.variants?.[0];
+    // Modelo B
+    return totalSelectedQuantity === totalBundleMax
+  }, [bundleData, productSelections, bundleModel, categoryLimits, categoryQuantities, totalSelectedQuantity, totalBundleMax])
 
-  // Add bundle to cart
+  // ── child product callbacks ──────────────────────────────────────────────
+  const handleProductSelectionChange = useCallback(
+    (
+      productId: string,
+      selections: Array<{ variantId: string; quantity: number }>,
+      categoryHandle: string | null
+    ) => {
+      setProductSelections((prev) => ({
+        ...prev,
+        [productId]: { productId, selections, categoryHandle },
+      }))
+    },
+    []
+  )
+
+  // ── cart submission ──────────────────────────────────────────────────────
+  const bundleVariant = product.variants?.[0]
+
   const handleAddBundleToCart = async () => {
     if (!isValidSelection || !bundleData) return
-
     setIsAdding(true)
-    
+
     try {
       const bundleId = uuidv4()
-      
-      // Add parent product with bundle metadata
+
       await addBundleToCart({
         items: [{
-          variant_id: bundleVariant?.id || '',
-          quantity,
+          variant_id: bundleVariant?.id ?? "",
+          quantity: 1,
           metadata: {
             bundle_id: bundleId,
-            bundle_type: 'parent',
-            bundle_meta: JSON.stringify(bundleMeta)
-          }
+            bundle_type: "parent",
+            bundle_meta: JSON.stringify(bundleMeta),
+          },
         }],
-        countryCode
+        countryCode,
       })
 
-      // Create promises for all child products
-      const cartPromises = Object.values(productSelections)
-        // 1. Flatten all 'selections' arrays into one
-        .flatMap(productData => productData.selections)
-        
-        // 2. Filter to keep only selections with quantity > 0
-        .filter(selection => selection.quantity > 0)
-        
-        // 3. Create a promise for each valid selection
-        .map(selection => addBundleToCart({
-          items: [{
-            variant_id: selection.variantId,
-            quantity: selection.quantity * quantity,
-            metadata: {
-              bundled_by: bundleId,
-              bundle_type: 'child'
-            }
-          }],
-          countryCode
-        }))
+      const childItems = Object.values(productSelections)
+        .flatMap((p) => p.selections)
+        .filter((s) => s.quantity > 0)
 
-      // 4. Wait for all promises to resolve
-      await Promise.all(cartPromises)
+      await Promise.all(
+        childItems.map((s) =>
+          addBundleToCart({
+            items: [{
+              variant_id: s.variantId,
+              quantity: s.quantity,
+              metadata: { bundled_by: bundleId, bundle_type: "child" },
+            }],
+            countryCode,
+          })
+        )
+      )
 
-      // 5. Check if all items were added successfully
       await checkAndFixMissingItems(bundleId)
-      
-    } catch (error) {
-      console.error('Failed to add bundle to cart:', error)
+    } catch (err) {
+      console.error("Failed to add bundle to cart:", err)
     } finally {
       setIsAdding(false)
     }
   }
 
-  // Check for missing items and add them
   const checkAndFixMissingItems = async (bundleId: string) => {
     try {
-      // Wait a moment for cart to update
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Get current cart
+      await new Promise((r) => setTimeout(r, 1000))
       const cart = await retrieveCart()
       if (!cart?.items) return
 
-      // Find bundle parent
-      const bundleParent = cart.items.find((item: HttpTypes.StoreCartLineItem) => 
-        item.metadata?.bundle_id === bundleId
-      )
-      
-      if (!bundleParent) return
-
-      // Get bundle children
-      const bundleChildren = cart.items.filter((item: HttpTypes.StoreCartLineItem) => 
-        item.metadata?.bundled_by === bundleId
+      const children = cart.items.filter(
+        (i: HttpTypes.StoreCartLineItem) => i.metadata?.bundled_by === bundleId
       )
 
-      // Create expected items map from productSelections
-      const expectedItems = new Map<string, number>()
-      Object.values(productSelections).forEach(productData => {
-        productData.selections.forEach(selection => {
-          if (selection.quantity > 0) {
-            const key = selection.variantId
-            const expectedQty = selection.quantity * quantity
-            expectedItems.set(key, expectedQty)
-          }
+      const expected = new Map<string, number>()
+      Object.values(productSelections).forEach((p) =>
+        p.selections.forEach((s) => {
+          if (s.quantity > 0) expected.set(s.variantId, s.quantity)
         })
+      )
+
+      const actual = new Map<string, number>()
+      children.forEach((c: HttpTypes.StoreCartLineItem) => {
+        if (c.variant_id)
+          actual.set(c.variant_id, (actual.get(c.variant_id) ?? 0) + c.quantity)
       })
 
-      // Create actual items map from cart
-      const actualItems = new Map<string, number>()
-      bundleChildren.forEach((child: HttpTypes.StoreCartLineItem) => {
-        const variantId = child.variant_id
-        if (variantId) {
-          const currentQty = actualItems.get(variantId) || 0
-          actualItems.set(variantId, currentQty + child.quantity)
-        }
-      })
-
-      // Find missing items
-      const missingItems: Array<{ variant_id: string, quantity: number }> = []
-      expectedItems.forEach((expectedQty, variantId) => {
-        const actualQty = actualItems.get(variantId) || 0
-        const missingQty = expectedQty - actualQty
-        
-        if (missingQty > 0) {
-          missingItems.push({
-            variant_id: variantId,
-            quantity: missingQty
-          })
-        }
-      })
-
-      // Add missing items if any
-      if (missingItems.length > 0) {
-        console.log('Adding missing bundle items:', missingItems)
-        
-        for (const item of missingItems) {
+      for (const [variantId, expectedQty] of expected) {
+        const missing = expectedQty - (actual.get(variantId) ?? 0)
+        if (missing > 0) {
           await addBundleToCart({
             items: [{
-              variant_id: item.variant_id,
-              quantity: item.quantity,
-              metadata: {
-                bundled_by: bundleId,
-                bundle_type: 'child'
-              }
+              variant_id: variantId,
+              quantity: missing,
+              metadata: { bundled_by: bundleId, bundle_type: "child" },
             }],
-            countryCode
+            countryCode,
           })
         }
       }
-    } catch (error) {
-      console.error('Failed to check and fix missing items:', error)
+    } catch (err) {
+      console.error("Failed to check and fix missing items:", err)
     }
   }
 
-  // Only show the bundle interface if the API response confirms it is a bundle
+  // ── guard ────────────────────────────────────────────────────────────────
   const isActuallyBundle =
     isBundle &&
-    bundleData &&
-    bundleData.bundle &&
-    bundleData.bundle.is_bundle === true &&
-    Array.isArray(bundleData.bundle.child_products?.data)
+    bundleData?.bundle?.is_bundle === true &&
+    Array.isArray(bundleData?.bundle?.child_products?.data)
 
-  if (isActuallyBundle) {
-    const progressPct = Math.min((totalSelectedQuantity / totalMaxQuantity) * 100, 100)
-
-    return (
-      <div className="flex flex-col gap-y-6">
-
-        {/* Price + description */}
-        <div className="border-l-2 border-brand-magenta pl-4">
-          <ProductPrice product={product} variant={bundleVariant} />
-          <p className="text-xs text-grey-50 mt-1">
-            {bundleMeta.bundle_description ||
-              `Elige ${totalMaxQuantity} productos de los disponibles en el paquete.`}
-          </p>
-        </div>
-
-        {/* Progress */}
-        <div className="flex flex-col gap-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs tracking-widest uppercase text-grey-50">
-              Selección del paquete
-            </span>
-            <span className={`text-xs font-display tracking-widest px-2 py-0.5 ${
-              isValidSelection
-                ? "bg-green-100 text-green-800"
-                : "bg-grey-10 text-grey-50"
-            }`}>
-              {totalSelectedQuantity} / {totalMaxQuantity}
-            </span>
-          </div>
-
-          {/* Bar */}
-          <div className="w-full bg-grey-20 h-1">
-            <div
-              className="h-1 transition-all duration-300"
-              style={{
-                width: `${progressPct}%`,
-                backgroundColor: totalSelectedQuantity > totalMaxQuantity
-                  ? "#ef4444"
-                  : totalSelectedQuantity === totalMaxQuantity
-                  ? "#22c55e"
-                  : "#A31C5A",
-              }}
-            />
-          </div>
-
-          {!isValidSelection && (
-            <p className="text-xs text-grey-50 border-l border-grey-20 pl-3">
-              {totalSelectedQuantity < totalMaxQuantity
-                ? `Selecciona ${totalMaxQuantity - totalSelectedQuantity} producto(s) más`
-                : `Elimina ${totalSelectedQuantity - totalMaxQuantity} producto(s)`}
-            </p>
-          )}
-        </div>
-
-        {/* Quantity display */}
-        <div className="flex items-center justify-between border-b border-grey-20 pb-4">
-          <span className="text-xs tracking-widest uppercase text-grey-50">
-            Cantidad de paquetes
-          </span>
-          <span className="font-display text-lg text-grey-90">{quantity}</span>
-        </div>
-
-        {/* Child products */}
-        <div className="flex flex-col gap-y-3">
-          <span className="text-xs tracking-widest uppercase text-grey-50">
-            Selecciona tus productos
-          </span>
-          {bundleData.bundle.child_products.data.map((childProduct: any) => (
-            <BundleProductItem
-              key={childProduct.id}
-              productId={childProduct.id}
-              maxQuantity={childProduct.max_quantity || 10}
-              onSelectionChange={handleProductSelectionChange}
-              totalMaxQuantity={totalMaxQuantity}
-              totalSelectedQuantity={totalSelectedQuantity}
-              regionId={region.id}
-              countryCode={countryCode}
-            />
-          ))}
-        </div>
-
-        {/* Add to cart */}
-        <Button
-          onClick={handleAddBundleToCart}
-          disabled={!isValidSelection || isAdding}
-          variant="primary"
-          className="w-full h-12 !bg-brand-magenta hover:!bg-brand-magenta/90 !border-brand-magenta font-display tracking-widest !text-sm !rounded-none"
-          isLoading={isAdding}
-        >
-          {!isValidSelection
-            ? "COMPLETA LA SELECCIÓN"
-            : "AGREGAR PAQUETE AL CARRITO"}
-        </Button>
-
-        <p className="text-center text-xs text-grey-40 tracking-wide">
-          Garantía de satisfacción 30 días · Envío gratis
-        </p>
-      </div>
-    )
+  if (!isActuallyBundle) {
+    return <ProductActions product={product} region={region} />
   }
 
-  // Fallback to regular product actions
+  const progressPct = Math.min((totalSelectedQuantity / totalBundleMax) * 100, 100)
+  const childProducts: any[] = bundleData.bundle.child_products.data
+
   return (
-    <ProductActions product={product} region={region} />
+    <div className="flex flex-col gap-y-6">
+
+      {/* Price + description */}
+      <div className="border-l-2 border-brand-magenta pl-4">
+        <ProductPrice product={product} variant={bundleVariant} />
+        <p className="text-xs text-grey-50 mt-1">
+          {bundleMeta.bundle_description ??
+            (bundleModel === "category"
+              ? "Elige tus productos por categoría para completar el paquete."
+              : `Elige ${totalBundleMax} productos de los disponibles en el paquete.`)}
+        </p>
+      </div>
+
+      {/* Progress section */}
+      <div className="flex flex-col gap-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs tracking-widest uppercase text-grey-50">
+            Selección del paquete
+          </span>
+          <span className={`text-xs font-display tracking-widest px-2 py-0.5 ${
+            isValidSelection ? "bg-green-100 text-green-800" : "bg-grey-10 text-grey-50"
+          }`}>
+            {totalSelectedQuantity} / {totalBundleMax}
+          </span>
+        </div>
+
+        {/* Global progress bar */}
+        <div className="w-full bg-grey-20 h-1">
+          <div
+            className="h-1 transition-all duration-300"
+            style={{
+              width: `${progressPct}%`,
+              backgroundColor:
+                totalSelectedQuantity > totalBundleMax
+                  ? "#ef4444"
+                  : isValidSelection
+                  ? "#22c55e"
+                  : "#A31C5A",
+            }}
+          />
+        </div>
+
+        {/* Per-category badges (Modelo A only) */}
+        {bundleModel === "category" && Object.keys(categoryLimits).length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {Object.entries(categoryLimits).map(([handle, limit]) => {
+              const used = categoryQuantities[handle] ?? 0
+              const full = used === limit
+              return (
+                <span
+                  key={handle}
+                  className={`text-[10px] font-display tracking-widest px-2 py-0.5 border ${
+                    full
+                      ? "bg-green-50 border-green-300 text-green-800"
+                      : "bg-grey-5 border-grey-20 text-grey-50"
+                  }`}
+                >
+                  {handle}: {used} / {limit}{full ? " ✓" : ""}
+                </span>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Hint */}
+        {!isValidSelection && (
+          <p className="text-xs text-grey-50 border-l border-grey-20 pl-3">
+            {bundleModel === "category"
+              ? Object.entries(categoryLimits)
+                  .filter(([h, l]) => (categoryQuantities[h] ?? 0) < l)
+                  .map(([h, l]) => `${h}: ${l - (categoryQuantities[h] ?? 0)} restante(s)`)
+                  .join(" · ")
+              : totalSelectedQuantity < totalBundleMax
+              ? `Selecciona ${totalBundleMax - totalSelectedQuantity} producto(s) más`
+              : `Elimina ${totalSelectedQuantity - totalBundleMax} producto(s)`}
+          </p>
+        )}
+      </div>
+
+      {/* Child products */}
+      <div className="flex flex-col gap-y-3">
+        <span className="text-xs tracking-widest uppercase text-grey-50">
+          Selecciona tus productos
+        </span>
+        {childProducts.map((child: any) => (
+          <BundleProductItem
+            key={child.id}
+            productId={child.id}
+            constraints={{
+              min_quantity: child.min_quantity ?? 0,
+              max_quantity: child.max_quantity ?? 10,
+              default_quantity: child.default_quantity ?? 0,
+            }}
+            bundleModel={bundleModel}
+            categoryLimits={categoryLimits}
+            categoryQuantities={categoryQuantities}
+            totalMaxQuantity={totalBundleMax}
+            totalSelectedQuantity={totalSelectedQuantity}
+            onSelectionChange={handleProductSelectionChange}
+            regionId={region.id}
+            countryCode={countryCode}
+          />
+        ))}
+      </div>
+
+      {/* CTA */}
+      <Button
+        onClick={handleAddBundleToCart}
+        disabled={!isValidSelection || isAdding}
+        variant="primary"
+        className="w-full h-12 !bg-brand-magenta hover:!bg-brand-magenta/90 !border-brand-magenta font-display tracking-widest !text-sm !rounded-none"
+        isLoading={isAdding}
+      >
+        {isValidSelection ? "AGREGAR PAQUETE AL CARRITO" : "COMPLETA LA SELECCIÓN"}
+      </Button>
+
+      <p className="text-center text-xs text-grey-40 tracking-wide">
+        Garantía de satisfacción 30 días · Envío gratis
+      </p>
+    </div>
   )
 }
 
-export default BundleAwareActions 
+export default BundleAwareActions
