@@ -72,14 +72,14 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
         <div className="border-l-2 border-brand-magenta pl-4 py-3 bg-brand-cream mb-8">
           <p className="text-sm font-medium text-grey-90">Paquete de inscripción requerido</p>
           <p className="text-xs text-grey-50 mt-1 leading-relaxed">
-            Para registrarte como Miembro de We Now, primero debes adquirir el{" "}
-            <strong>Paquete de Inscripción</strong>. Este paquete es obligatorio para todos los nuevos miembros.
+            Para registrarte como Miembro de We Now, primero debes adquirir uno de los{" "}
+            <strong>Paquetes de Inscripción</strong>. Elige entre Zafiro, Esmeralda o el paquete estándar.
           </p>
           <LocalizedClientLink
             href={productUrl}
             className="inline-block mt-4 h-10 px-6 bg-brand-magenta text-white text-xs tracking-widest uppercase font-display leading-10 hover:opacity-90 transition-opacity"
           >
-            VER PAQUETE DE INSCRIPCIÓN
+            VER PAQUETES DE INSCRIPCIÓN
           </LocalizedClientLink>
         </div>
 
