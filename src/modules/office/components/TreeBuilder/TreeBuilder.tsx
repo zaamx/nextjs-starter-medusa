@@ -1,128 +1,113 @@
-import React, { useState } from 'react'
+'use client'
+import React, { useState, useRef, useCallback, useLayoutEffect, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import renderCustomNode from '../binary/CustomBinaryNode'
 
 const Tree = dynamic(() => import('react-d3-tree').then(mod => mod.default), { ssr: false })
 
+// Top padding for root node: card starts at CY=-35 above anchor, so topY >= |CY| + padding
+const TOP_Y = 60
+
 export default function TreeBuilder({ treeData }: { treeData: any }) {
   const [zoom, setZoom] = useState(1)
-  const [translate, setTranslate] = useState({ x: 0, y: 0 })
+  const [translate, setTranslate] = useState({ x: 0, y: TOP_Y })
   const [localTreeData, setLocalTreeData] = useState<any>(treeData)
-  const containerRef = React.useRef<HTMLDivElement>(null)
+  const [initialDepth, setInitialDepth] = useState<number | undefined>(0)
+  // Incrementing key forces Tree remount — the only reliable way to reset
+  // D3's internal zoom/pan state or re-apply initialDepth
+  const [treeKey, setTreeKey] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  // Collapse/expand helpers
-  function setAllCollapsed(node: any, collapsed: boolean) {
-    if (!node) return
-    node.__rd3t = { ...node.__rd3t, collapsed }
-    if (node.children && node.children.length > 0) {
-      node.children.forEach((child: any) => setAllCollapsed(child, collapsed))
-    }
-  }
+  const centerTree = useCallback(() => {
+    const el = containerRef.current
+    if (!el) return
+    const w = el.offsetWidth
+    if (w > 0) setTranslate({ x: w / 2, y: TOP_Y })
+  }, [])
 
-  // Collapse all nodes 
-  const handleCollapseAll = () => {
-    if (localTreeData) {
-      const newTree = JSON.parse(JSON.stringify(localTreeData))
-      setAllCollapsed(newTree, true)
-      setLocalTreeData(newTree)
-    }
-  }
-  // Expand all nodes
-  const handleExpandAll = () => {
-    if (localTreeData) {
-      const newTree = JSON.parse(JSON.stringify(localTreeData))
-      setAllCollapsed(newTree, false)
-      setLocalTreeData(newTree)
-    }
-  }
-  // Center the tree when data changes
-  React.useEffect(() => {
-    if (localTreeData && containerRef.current) {
-      const container = containerRef.current
-      const containerWidth = container.offsetWidth
-      
-      // Center horizontally, 20px from top vertically
-      const centerX = containerWidth / 2
-      const topY = 40
-      
-      setTranslate({ x: centerX, y: topY })
-    }
-  }, [localTreeData])
+  // Calculate position before first paint + on resize (orientation changes)
+  useLayoutEffect(() => {
+    centerTree()
+    const el = containerRef.current
+    if (!el) return
+    const ro = new ResizeObserver(centerTree)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [centerTree])
 
-  // Zoom controls
-  const handleZoomIn = () => setZoom(z => Math.min(z + 0.2, 2))
-  const handleZoomOut = () => setZoom(z => Math.max(z - 0.2, 0.2))
-  const handleCenter = () => {
-    if (containerRef.current) {
-      const container = containerRef.current
-      const centerX = container.offsetWidth / 2
-      const topY = 40
-      setTranslate({ x: centerX, y: topY })
-    }
-  }
-
-  // Sync localTreeData with prop changes
-  React.useEffect(() => {
+  // Sync when parent provides new data
+  useEffect(() => {
     setLocalTreeData(treeData)
   }, [treeData])
+
+  const handleCollapseAll = () => {
+    setInitialDepth(0)
+    setTreeKey(k => k + 1)
+  }
+
+  const handleExpandAll = () => {
+    setInitialDepth(undefined) // undefined = all nodes visible
+    setTreeKey(k => k + 1)
+  }
+
+  const handleZoomIn  = () => setZoom(z => Math.min(z + 0.2, 3))
+  const handleZoomOut = () => setZoom(z => Math.max(z - 0.2, 0.1))
+
+  const handleCenter = () => {
+    centerTree()
+    setZoom(1)
+  }
 
   if (!localTreeData) return <div>No hay datos de red.</div>
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      id="tree-container" 
-      style={{ position: 'relative', width: '100%', height: 'calc(100vh - 63px)', minHeight: '600px' }}
+      style={{ position: 'relative', width: '100%', height: 'calc(100svh - 63px)', minHeight: '400px' }}
     >
-      {/* Controls: right side vertical stack */}
-      {/* <div style={{
-        position: 'fixed',
-        top: '50%',
-        right: 24,
-        transform: 'translateY(-50%)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 12,
-        zIndex: 10,
+      {/* Zoom / nav controls — bottom-right, 44px touch targets */}
+      <div style={{
+        position: 'absolute', bottom: 20, right: 16,
+        display: 'flex', flexDirection: 'column', gap: 8, zIndex: 10,
       }}>
-                    <button onClick={handleCollapseAll} title="Contraer Todo" style={iconButtonStyle}>−</button>
-            <button onClick={handleExpandAll} title="Expandir Todo" style={iconButtonStyle}>+</button>
-            <button onClick={handleZoomIn} title="Acercar" style={iconButtonStyle}>🔍+</button>
-            <button onClick={handleZoomOut} title="Alejar" style={iconButtonStyle}>🔍−</button>
-            <button onClick={handleCenter} title="Centrar" style={iconButtonStyle}>🎯</button>
-      </div> */}
-      {/* Main Tree */}
+        <button onClick={handleExpandAll}   title="Expandir todo"  style={btnStyle}>⊕</button>
+        <button onClick={handleCollapseAll} title="Contraer todo"  style={btnStyle}>⊖</button>
+        <button onClick={handleZoomIn}      title="Acercar"        style={btnStyle}>+</button>
+        <button onClick={handleZoomOut}     title="Alejar"         style={btnStyle}>−</button>
+        <button onClick={handleCenter}      title="Centrar"        style={btnStyle}>◎</button>
+      </div>
+
       <div style={{ width: '100%', height: '100%', background: 'linear-gradient(120deg, #e7eafc 0%, #dbeafe 100%)' }}>
         <Tree
+          key={treeKey}
           data={localTreeData}
           orientation="vertical"
           pathFunc="elbow"
-          collapsible={true}
+          collapsible
           translate={translate}
           zoom={zoom}
-          nodeSize={{ x: 200, y: 120 }}
+          nodeSize={{ x: 200, y: 130 }}
           separation={{ siblings: 1, nonSiblings: 2 }}
           renderCustomNodeElement={renderCustomNode}
-          initialDepth={0} // All nodes collapsed by default
+          initialDepth={initialDepth}
+          enableLegacyTransitions={false}
         />
       </div>
     </div>
   )
 }
 
-// Simple icon button style
-const iconButtonStyle: React.CSSProperties = {
-  width: 40,
-  height: 40,
+const btnStyle: React.CSSProperties = {
+  width: 44, height: 44,
   borderRadius: '50%',
   border: 'none',
   background: '#fff',
-  boxShadow: '0 2px 8px #0001',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
   fontSize: 20,
   color: '#4682c7',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  transition: 'background 0.2s',
-}; 
+  WebkitTapHighlightColor: 'transparent',
+}
