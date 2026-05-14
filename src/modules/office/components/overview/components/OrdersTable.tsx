@@ -11,24 +11,36 @@ interface NetworkOrder {
   is_first_sale: boolean
   is_subscription: boolean | null
   cv: number
-  qv: number; // ADDED: Se agregó la propiedad qv.
-  profile_id: string; // ADDED: Se agregó la propiedad profile_id.
-  sponsor_id: string; // ADDED: Se agregó la propiedad sponsor_id.
+  qv: number;
+  profile_id: string;
+  sponsor_id: string;
   transaction_date: string
   depth: number
   position: number
 }
 
+interface NetworkActivity {
+  period_id: number
+  period_name: string
+  new_orders: number
+  reorders: number
+  autoship_orders: number
+  autoship_pct: string
+  avg_ticket_cv: string
+}
+
 interface OrdersTableProps {
   networkOrdersData: NetworkOrder[]
+  networkActivityData?: NetworkActivity
   error: string | null
 }
 
-const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) => {
+const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, networkActivityData, error }) => {
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 10
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const isDark = false
 
-  // Calculate pagination
+  // Lógica de paginación
   const totalPages = Math.ceil(networkOrdersData.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
@@ -40,78 +52,39 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
 
   const PaginationControls = () => {
     if (totalPages <= 1) return null
-
-    const getPageNumbers = () => {
-      const pages = []
-      const maxVisiblePages = 5
-
-      if (totalPages <= maxVisiblePages) {
-        for (let i = 1; i <= totalPages; i++) {
-          pages.push(i)
-        }
-      } else {
-        if (currentPage <= 3) {
-          for (let i = 1; i <= 4; i++) {
-            pages.push(i)
-          }
-          pages.push('...')
-          pages.push(totalPages)
-        } else if (currentPage >= totalPages - 2) {
-          pages.push(1)
-          pages.push('...')
-          for (let i = totalPages - 3; i <= totalPages; i++) {
-            pages.push(i)
-          }
-        } else {
-          pages.push(1)
-          pages.push('...')
-          for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-            pages.push(i)
-          }
-          pages.push('...')
-          pages.push(totalPages)
-        }
-      }
-
-      return pages
-    }
-
     return (
-      <div className="flex items-center justify-between mt-4">
-        <div className="text-sm text-gray-700">
-          Mostrando {startIndex + 1} a {Math.min(endIndex, networkOrdersData.length)} de {networkOrdersData.length} órdenes
+      <div className={`flex items-center border-t ${isDark ? 'border-stone-800' : ''} pt-3 mt-2 text-sm ${isDark ? 'text-stone-400' : 'text-gray-600'}`}>
+        {/* Left: page info + rows selector */}
+        <div className="flex items-center gap-2 flex-1">
+          <span className="text-xs">Página {currentPage} de {totalPages}</span>
+          <span className={`${isDark ? 'text-stone-700' : 'text-gray-300'} select-none`}>|</span>
+          <span className="text-xs">Mostrar:</span>
+          <select
+            value={itemsPerPage}
+            onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1) }}
+            className={`text-xs border ${isDark ? 'border-stone-700 bg-stone-900 text-stone-300' : 'border-gray-200 bg-white'} rounded px-1.5 py-0.5 focus:outline-none cursor-pointer`}
+          >
+            {[10, 25, 50].map((n) => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
         </div>
-        <div className="flex items-center space-x-2">
+
+        {/* Right: Anterior / Siguiente */}
+        <div className="flex justify-end gap-3">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className={`text-xs flex items-center gap-0.5 disabled:opacity-40 disabled:cursor-not-allowed ${isDark ? 'hover:text-stone-200' : 'hover:text-gray-900'}`}
           >
-            Anterior
+            ‹ Anterior
           </button>
-
-          {getPageNumbers().map((page, index) => (
-            <button
-              key={index}
-              onClick={() => typeof page === 'number' && handlePageChange(page)}
-              disabled={page === '...'}
-              className={`px-3 py-1 text-sm border rounded-md ${page === currentPage
-                ? 'bg-blue-500 text-white border-blue-500'
-                : page === '...'
-                  ? 'border-transparent cursor-default'
-                  : 'hover:bg-gray-50'
-                }`}
-            >
-              {page}
-            </button>
-          ))}
-
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className={`text-xs flex items-center gap-0.5 disabled:opacity-40 disabled:cursor-not-allowed ${isDark ? 'hover:text-stone-200' : 'hover:text-gray-900'}`}
           >
-            Siguiente
+            Siguiente ›
           </button>
         </div>
       </div>
@@ -119,97 +92,93 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ networkOrdersData, error }) =
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow p-4">
+    <div className={`${isDark ? 'bg-stone-800/40 border-stone-800/50 border' : 'bg-white'} rounded-2xl shadow p-4`}>
       <div className="flex items-center justify-between mb-3">
-        <div className="font-bold text-gray-900">Órdenes del Periodo</div>
-        <span className="text-xs text-gray-500">{networkOrdersData.length} órdenes</span>
+        <div className={`font-bold ${isDark ? 'text-stone-200' : 'text-gray-900'}`}>Órdenes del Periodo</div>
+        <span className={`text-xs ${isDark ? 'text-stone-500' : 'text-gray-400'}`}>{networkOrdersData.length} órdenes</span>
       </div>
+
+      {/* Summary Cards */}
+      {networkActivityData && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+          <div className={`rounded-xl p-3 text-center ${isDark ? 'bg-[#181C2B]' : 'bg-blue-50'}`}>
+            <div className={`text-xs font-semibold leading-tight mb-1 ${isDark ? 'text-[#4F8DDB]' : 'text-blue-500'}`}>Nuevas<br />Inscripciones</div>
+            <div className={`text-xl font-bold ${isDark ? 'text-white' : 'text-blue-800'}`}>{networkActivityData.new_orders}</div>
+          </div>
+          <div className={`rounded-xl p-3 text-center ${isDark ? 'bg-[#132219]' : 'bg-green-50'}`}>
+            <div className={`text-xs font-semibold leading-tight mb-1 ${isDark ? 'text-[#27B151]' : 'text-green-500'}`}>Re-órdenes<br />&nbsp;</div>
+            <div className={`text-xl font-bold ${isDark ? 'text-white' : 'text-green-800'}`}>{networkActivityData.reorders}</div>
+          </div>
+          <div className={`rounded-xl p-3 text-center ${isDark ? 'bg-[#28183A]' : 'bg-purple-50'}`}>
+            <div className={`text-xs font-semibold leading-tight mb-1 ${isDark ? 'text-[#B66BD8]' : 'text-purple-500'}`}>Autoenvío<br />({networkActivityData.autoship_pct}%)</div>
+            <div className={`text-xl font-bold ${isDark ? 'text-white' : 'text-purple-800'}`}>{networkActivityData.autoship_orders}</div>
+          </div>
+          <div className={`rounded-xl p-3 text-center ${isDark ? 'bg-[#311E15]' : 'bg-orange-50'}`}>
+            <div className={`text-xs font-semibold leading-tight mb-1 ${isDark ? 'text-[#E78229]' : 'text-orange-500'}`}>Ticket<br />Promedio</div>
+            <div className={`text-xl font-bold ${isDark ? 'text-white' : 'text-orange-800'}`}>
+              {networkActivityData.avg_ticket_cv}
+              <span className={`text-sm font-normal ml-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>CV</span>
+            </div>
+          </div>
+        </div>
+      )}
       {error ? (
-        <div className="text-center py-4 text-red-600">
+        <div className={`text-center py-4 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
           <div className="font-medium">Error cargando órdenes</div>
           <div className="text-sm mt-1">{error}</div>
         </div>
-      ) : networkOrdersData.length > 0 ? (
+      ) : networkOrdersData.length === 0 ? (
+        <div className={`text-center py-6 text-sm ${isDark ? 'text-stone-500' : 'text-gray-500'}`}>
+          No hay órdenes para este periodo
+        </div>
+      ) : (
         <div className="overflow-x-auto">
-          {/* Mobile Card View */}
-          <div className="lg:hidden space-y-2">
-            {currentOrders.map((order, idx) => (
-              <div key={startIndex + idx} className="bg-gray-50 rounded-lg p-3 border">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium text-sm">#{order.order_display}</span>
-                  <span className="text-xs font-bold">{(order.cv || 0).toLocaleString()} CV / {(order.qv || 0).toLocaleString()} QV</span>
-                </div>
-                <div className="text-xs text-gray-600 mb-2">
-                  <span className="mr-2">Profundidad: {order.depth}</span>
-                  <span>Posición: {order.position === 0 ? 'Izquierda' : 'Derecha'}</span>
-                </div>
-                <div className="text-xs text-gray-600 mb-2">
-                  <span className="mr-2">Profile ID: {order.profile_id}</span>
-                  <span>Patrocinador: {order.sponsor_id}</span>
-                </div>
-                <div className="flex gap-2">
-                  <span className={`px-2 py-1 rounded-full text-xs ${order.is_first_sale ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {order.is_first_sale ? 'Primera Venta' : 'Re-orden'}
-                  </span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${order.is_subscription ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {order.is_subscription ? 'Autoenvío' : 'Manual'}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Desktop Table View */}
-          <div className="hidden lg:block">
+          {/* Desktop/Mobile Table View */}
+          <div className="min-w-max">
             <Table>
               <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell className="text-xs">Orden</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">ID</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Patrocinador</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Profundidad</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Posición</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Primera Venta</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">Autoenvío</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">CV</Table.HeaderCell>
-                  <Table.HeaderCell className="text-xs">QV</Table.HeaderCell>
+                <Table.Row className={isDark ? 'border-stone-800' : ''}>
+                  <Table.HeaderCell className={`text-xs ${isDark ? 'text-stone-400' : ''}`}>Orden</Table.HeaderCell>
+                  <Table.HeaderCell className={`text-xs ${isDark ? 'text-stone-400' : ''}`}>ID</Table.HeaderCell>
+                  <Table.HeaderCell className={`text-xs ${isDark ? 'text-stone-400' : ''}`}>Patrocinador</Table.HeaderCell>
+                  <Table.HeaderCell className={`text-xs ${isDark ? 'text-stone-400' : ''}`}>Profundidad</Table.HeaderCell>
+                  <Table.HeaderCell className={`text-xs ${isDark ? 'text-stone-400' : ''}`}>Posición</Table.HeaderCell>
+                  <Table.HeaderCell className={`text-xs ${isDark ? 'text-stone-400' : ''}`}>Primera Venta</Table.HeaderCell>
+                  <Table.HeaderCell className={`text-xs ${isDark ? 'text-stone-400' : ''}`}>Autoenvío</Table.HeaderCell>
+                  <Table.HeaderCell className={`text-xs ${isDark ? 'text-stone-400' : ''}`}>CV</Table.HeaderCell>
+                  <Table.HeaderCell className={`text-xs ${isDark ? 'text-stone-400' : ''}`}>QV</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                 {currentOrders.map((order, idx) => (
-                  <Table.Row key={startIndex + idx} className="hover:bg-gray-50">
-                    <Table.Cell className="text-xs font-medium">#{order.order_display}</Table.Cell>
-                    <Table.Cell className="text-xs">{order.buyer_profile}</Table.Cell>
-                    <Table.Cell className="text-xs">{order.unilevel_sponsor_id}</Table.Cell>
-                    <Table.Cell className="text-xs">{order.depth}</Table.Cell>
+                  <Table.Row key={idx} className={`${isDark ? 'hover:bg-stone-800/30 border-stone-800/50' : 'hover:bg-gray-50'}`}>
+                    <Table.Cell className={`text-xs font-medium ${isDark ? 'text-stone-300' : ''}`}>#{order.order_display}</Table.Cell>
+                    <Table.Cell className={`text-xs ${isDark ? 'text-stone-300' : ''}`}>{order.buyer_profile}</Table.Cell>
+                    <Table.Cell className={`text-xs ${isDark ? 'text-stone-300' : ''}`}>{order.unilevel_sponsor_id}</Table.Cell>
+                    <Table.Cell className={`text-xs ${isDark ? 'text-stone-300' : ''}`}>{order.depth}</Table.Cell>
                     <Table.Cell className="text-xs">
-                      <span className={`px-2 py-1 rounded-full text-xs ${order.position === 0 ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs ${order.position === 0 ? (isDark ? 'bg-blue-900/30 text-blue-400 border border-blue-900/50' : 'bg-blue-100 text-blue-800') : (isDark ? 'bg-orange-900/30 text-orange-400 border border-orange-900/50' : 'bg-orange-100 text-orange-800')}`}>
                         {order.position === 0 ? 'Izquierda' : 'Derecha'}
                       </span>
                     </Table.Cell>
                     <Table.Cell className="text-xs">
-                      <span className={`px-2 py-1 rounded-full text-xs ${order.is_first_sale ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs ${order.is_first_sale ? (isDark ? 'bg-green-900/30 text-green-400 border border-green-900/50' : 'bg-green-100 text-green-800') : (isDark ? 'bg-stone-800 border-stone-700 text-stone-300 border' : 'bg-gray-100 text-gray-800')}`}>
                         {order.is_first_sale ? 'Sí' : 'No'}
                       </span>
                     </Table.Cell>
                     <Table.Cell className="text-xs">
-                      <span className={`px-2 py-1 rounded-full text-xs ${order.is_subscription ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs ${order.is_subscription ? (isDark ? 'bg-purple-900/30 text-purple-400 border border-purple-900/50' : 'bg-purple-100 text-purple-800') : (isDark ? 'bg-stone-800 border-stone-700 text-stone-300 border' : 'bg-gray-100 text-gray-800')}`}>
                         {order.is_subscription ? 'Sí' : 'No'}
                       </span>
                     </Table.Cell>
-                    <Table.Cell className="text-xs font-bold">{(order.cv || 0).toLocaleString()}</Table.Cell>
-                    <Table.Cell className="text-xs font-bold">{(order.qv || 0).toLocaleString()}</Table.Cell>
+                    <Table.Cell className={`text-xs font-bold ${isDark ? 'text-stone-200' : ''}`}>{(order.cv || 0).toLocaleString()}</Table.Cell>
+                    <Table.Cell className={`text-xs font-bold ${isDark ? 'text-stone-200' : ''}`}>{(order.qv || 0).toLocaleString()}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
             </Table>
           </div>
-
           <PaginationControls />
-        </div>
-      ) : (
-        <div className="text-center py-4 text-gray-500">
-          No hay órdenes en este periodo
         </div>
       )}
     </div>

@@ -636,6 +636,7 @@ const Overview = ({ customer }: OverviewProps) => {
             {/* Orders Table */}
             <OrdersTable
               networkOrdersData={networkOrdersData}
+              networkActivityData={networkActivityData[0] || undefined}
               error={componentErrors.networkOrders || null}
             />
           </div>
