@@ -72,26 +72,24 @@ export default function TreeBuilder({ treeData }: { treeData: any }) {
     <div 
       ref={containerRef}
       id="tree-container" 
-      style={{ position: 'relative', width: '100%', height: 'calc(100vh - 63px)', minHeight: '600px' }}
+      style={{ position: 'relative', width: '100%', height: 'calc(100dvh - 63px)', minHeight: '600px', touchAction: 'none' }}
     >
-      {/* Controls: right side vertical stack */}
-      {/* <div style={{
-        position: 'fixed',
-        top: '50%',
+      {/* Controls: bottom right corner for easier mobile reach */}
+      <div style={{
+        position: 'absolute',
+        bottom: 24,
         right: 24,
-        transform: 'translateY(-50%)',
         display: 'flex',
         flexDirection: 'column',
         gap: 12,
         zIndex: 10,
       }}>
-                    <button onClick={handleCollapseAll} title="Contraer Todo" style={iconButtonStyle}>−</button>
+            <button onClick={handleCollapseAll} title="Contraer Todo" style={iconButtonStyle}>−</button>
             <button onClick={handleExpandAll} title="Expandir Todo" style={iconButtonStyle}>+</button>
             <button onClick={handleZoomIn} title="Acercar" style={iconButtonStyle}>🔍+</button>
             <button onClick={handleZoomOut} title="Alejar" style={iconButtonStyle}>🔍−</button>
             <button onClick={handleCenter} title="Centrar" style={iconButtonStyle}>🎯</button>
-      </div> */}
-      {/* Main Tree */}
+      </div>
       <div style={{ width: '100%', height: '100%', background: 'linear-gradient(120deg, #e7eafc 0%, #dbeafe 100%)' }}>
         <Tree
           data={localTreeData}
@@ -112,8 +110,8 @@ export default function TreeBuilder({ treeData }: { treeData: any }) {
 
 // Simple icon button style
 const iconButtonStyle: React.CSSProperties = {
-  width: 40,
-  height: 40,
+  width: 44,
+  height: 44,
   borderRadius: '50%',
   border: 'none',
   background: '#fff',

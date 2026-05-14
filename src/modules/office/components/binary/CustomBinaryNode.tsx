@@ -10,6 +10,7 @@ const renderCustomNode: RenderCustomNodeElementFn = ({ nodeDatum, toggleNode }) 
   return (
     <foreignObject width={180} height={100} x={-90} y={-35}>
               <div
+          {...{ xmlns: "http://www.w3.org/1999/xhtml" } as any}
           style={{
             width: 180,
             height: 95,
