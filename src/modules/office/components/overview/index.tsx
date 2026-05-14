@@ -599,7 +599,9 @@ const Overview = ({ customer }: OverviewProps) => {
             {/* Binary Volume */}
             <BinaryVolume
               binaryData={binaryData}
+              spilloverData={spilloverData}
               error={componentErrors.binary || null}
+              spilloverError={componentErrors.spillover || null}
             />
 
             {/* Unilevel Volume */}
