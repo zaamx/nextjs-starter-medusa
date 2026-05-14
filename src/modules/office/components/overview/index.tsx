@@ -19,12 +19,10 @@ import {
 } from "@lib/data/netme_network"
 
 // Import subcomponents
-import KPIBar from "./components/KPIBar"
 import RankCalculator from "./components/RankCalculator"
 import BinaryVolume from "./components/BinaryVolume"
 import UnilevelVolume from "./components/UnilevelVolume"
 import SpilloverVsBuildComponent from "./components/SpilloverVsBuild"
-import NetworkActivityComponent from "./components/NetworkActivity"
 import OrdersTable from "./components/OrdersTable"
 import Alerts from "./components/Alerts"
 
@@ -138,6 +136,7 @@ interface NetworkOrder {
   transaction_date: string
   depth: number
   position: number
+  unilevel_sponsor_id: number
 }
 
 interface RenewalStatus {
@@ -526,8 +525,68 @@ const Overview = ({ customer }: OverviewProps) => {
       {/* Responsive Grid Layout */}
       <div className="p-3 sm:p-4 space-y-4">
 
-        {/* KPI Bar */}
-        <KPIBar kpis={kpis} />
+        {/* Actividad de la Red - Full Width Module */}
+        <div className="bg-white border-gray-200 rounded-2xl shadow-sm border p-4 sm:p-5 mb-4 md:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-5 gap-3">
+            <div className="text-lg font-bold text-gray-900">
+              Actividad de la Red
+            </div>
+          </div>
+          {/* All KPIs Container */}
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+            {/* 0. Renewal Status KPI (First Block) */}
+            {renewalData && renewalData.renewal_period_name && (
+              <div className={`rounded-xl p-4 text-center flex flex-col justify-center min-h-[100px] ${renewalData.days_left > 0 ? 'bg-[#E8F8F0]' : 'bg-[#FEEBF0]'}`}>
+                <div className={`text-[11px] font-black uppercase tracking-wider mb-2 ${renewalData.days_left > 0 ? 'text-[#059669]' : 'text-[#E11D48]'}`}>
+                  {renewalData.days_left > 0 ? 'Estátus Activo' : 'Estátus Inactivo'}
+                </div>
+                <div>
+                  <div className={`text-2xl font-black leading-none mb-2 ${renewalData.days_left > 0 ? 'text-[#064E3B]' : 'text-[#881337]'}`}>
+                    {renewalData.renewal_period_name.replace(/\d+$/, (match) => String(parseInt(match) - 1))}
+                  </div>
+                  <div className="text-[10px] font-bold text-[#059669]">
+                    Renovar en {renewalData.renewal_period_name}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Top 5 KPIs */}
+            {kpis.map((kpi, index) => {
+              const colorSets = [
+                { bgLight: 'bg-[#EEF2FF]', textLight: 'text-[#3B82F6]', valueLight: 'text-[#1E3A8A]' }, // Blue
+                { bgLight: 'bg-[#F0FDF4]', textLight: 'text-[#22C55E]', valueLight: 'text-[#166534]' }, // Green
+                { bgLight: 'bg-[#FAF5FF]', textLight: 'text-[#A855F7]', valueLight: 'text-[#581C87]' }, // Purple
+                { bgLight: 'bg-[#FFF7ED]', textLight: 'text-[#F97316]', valueLight: 'text-[#7C2D12]' }, // Orange
+                { bgLight: 'bg-[#FFF1F2]', textLight: 'text-[#F43F5E]', valueLight: 'text-[#881337]' }, // Pink
+              ];
+              const colors = colorSets[index % colorSets.length];
+
+              return (
+                <div key={index} className={`rounded-xl p-4 text-center flex flex-col justify-center min-h-[100px] ${colors.bgLight}`}>
+                  <div className={`text-[11px] font-black uppercase tracking-wider mb-2 ${colors.textLight}`}>
+                    {kpi.label}
+                  </div>
+                  <div className={`text-2xl font-black ${colors.valueLight}`}>
+                    {(kpi.label === "Directos Activos" || kpi.label === "Activos Unilevel") && kpi.value.includes(" / ") ? (
+                      <>
+                        {kpi.value.split(" / ")[0]}
+                        <span className="text-lg font-bold ml-1 opacity-40">
+                          / {kpi.value.split(" / ")[1]}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        {kpi.value.replace(/activos|CV/g, '').trim()}
+                        {kpi.value.includes('CV') && <span className="text-sm font-bold ml-1 opacity-60">CV</span>}
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Main Content Grid - Responsive */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -565,11 +624,6 @@ const Overview = ({ customer }: OverviewProps) => {
               error={componentErrors.spillover || null}
             />
 
-            {/* Network Activity */}
-            <NetworkActivityComponent
-              currentPeriodActivity={currentPeriodActivity}
-              error={componentErrors.networkActivity || null}
-            />
 
             {/* Orders Table */}
             <OrdersTable
@@ -584,6 +638,7 @@ const Overview = ({ customer }: OverviewProps) => {
               </a>
             </div>
             {/* Responsive Office Navigation */}
+            {/* 
             <div className="px-3 sm:px-4 pb-20 sm:pb-24">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                 <a href="/us/office/commissions" className="flex flex-col items-center justify-center bg-white rounded-2xl shadow p-3 sm:p-4 hover:bg-blue-50 transition border border-gray-100">
@@ -608,12 +663,10 @@ const Overview = ({ customer }: OverviewProps) => {
                 </a>
               </div>
             </div>
+            */}
           </div>
         </div>
       </div>
-
-
-
       {/* Responsive Target Modal */}
       {showTargetModal && rankData.length > 0 && (
         <div className="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center p-4">
