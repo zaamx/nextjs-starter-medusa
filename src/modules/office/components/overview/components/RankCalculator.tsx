@@ -82,24 +82,24 @@ const RankCalculator: React.FC<RankCalculatorProps> = ({ rankData, error, onShow
 
   return (
     <div className={`rounded-2xl p-4 sm:p-6 shadow-lg ${isDark ? 'bg-gradient-to-r from-blue-900/60 to-purple-900/60 border border-blue-900/30' : 'bg-gradient-to-r from-blue-500 to-purple-500'} text-white relative overflow-hidden`}>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
-        <div>
-          <div className="text-base sm:text-lg font-bold">Calculadora de Avance</div>
-          <div className="text-xs font-medium">
+      <div className="flex flex-row items-start sm:items-center justify-between mb-2 gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="text-base sm:text-lg font-bold truncate">Calculadora de Avance</div>
+          <div className="text-[11px] sm:text-xs font-medium leading-tight">
             Rango actual: <span className="font-bold">{rankData[0].current_rank}</span> &rarr; Meta: <span className="font-bold">{rankData[0].next_rank}</span>
           </div>
         </div>
-        <div className="flex gap-2 self-start sm:self-auto">
+        <div className="flex flex-row gap-1.5 sm:gap-2 shrink-0 items-center">
           {onShowRanksModal && (
-            <button onClick={onShowRanksModal} className="flex items-center gap-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow transition-colors">
+            <button onClick={onShowRanksModal} className="flex items-center gap-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-2.5 sm:px-3 py-1 rounded-lg text-xs font-semibold shadow transition-colors whitespace-nowrap">
               <FaTrophy className="mr-1 text-xs" />Rangos
             </button>
           )}
           <button
             onClick={onShowModal}
-            className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow"
+            className="bg-white/20 hover:bg-white/30 text-white px-2.5 sm:px-3 py-1 rounded-lg text-xs font-semibold shadow whitespace-nowrap"
           >
-            Ver requisitos
+            Requisitos
           </button>
         </div>
       </div>

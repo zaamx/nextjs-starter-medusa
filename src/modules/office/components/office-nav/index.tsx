@@ -113,7 +113,7 @@ export default function OfficeNav() {
               className="text-xs bg-white/8 border border-white/15 text-white px-2 py-1.5 focus:outline-none focus:border-brand-magenta min-w-[90px] sm:min-w-[120px] rounded-none appearance-none cursor-pointer"
               style={{ backgroundColor: "rgba(255,255,255,0.07)" }}
             >
-              {periods.map((period) => (
+              {periods.slice(0, 8).map((period) => (
                 <option key={period.id} value={period.id} className="bg-gray-900 text-white">
                   {period.name}
                 </option>

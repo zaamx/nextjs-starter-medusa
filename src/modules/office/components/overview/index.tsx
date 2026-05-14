@@ -676,11 +676,15 @@ const Overview = ({ customer }: OverviewProps) => {
         </div>
       </div>
       {/* Responsive Target Modal */}
-      {showTargetModal && rankData.length > 0 && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-md w-full relative max-h-[90vh] overflow-y-auto">
-            <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-xl" onClick={() => setShowTargetModal(false)}>&times;</button>
-            <div className="font-bold text-lg mb-4 text-blue-700">Requisitos para rango {rankData[0].next_rank}</div>
+      {showTargetModal && rankData && rankData.length > 0 && (
+        <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-lg max-w-md w-full relative flex flex-col max-h-[90vh]">
+            <div className="p-4 sm:p-6 pb-2 border-b flex-shrink-0 relative">
+              <button className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl leading-none" onClick={() => setShowTargetModal(false)}>&times;</button>
+              <div className="font-bold text-lg text-blue-700 pr-6">Requisitos para rango {rankData[0].next_rank}</div>
+            </div>
+            
+            <div className="p-4 sm:p-6 pt-4 overflow-y-auto">
 
             {/* Basic Requirements */}
             <div className="mb-4">
@@ -802,16 +806,21 @@ const Overview = ({ customer }: OverviewProps) => {
                 <strong>Nota:</strong> Al menos un 70% del volumen debe provenir de la construcción, y máximo un 30% de la Línea de Poder.
               </div>
             </div>
+            </div>
           </div>
         </div>
       )}
 
       {/* Ranks Catalog Modal */}
       {showRanksModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-4xl w-full relative max-h-[90vh] overflow-y-auto">
-            <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-xl" onClick={() => setShowRanksModal(false)}>&times;</button>
-            <div className="font-bold text-xl mb-6 text-blue-700">Catálogo de Rangos</div>
+        <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-lg max-w-4xl w-full relative flex flex-col max-h-[90vh]">
+            <div className="p-4 sm:p-6 pb-2 border-b flex-shrink-0 relative">
+              <button className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl leading-none" onClick={() => setShowRanksModal(false)}>&times;</button>
+              <div className="font-bold text-xl text-blue-700 pr-6">Catálogo de Rangos</div>
+            </div>
+            
+            <div className="p-4 sm:p-6 pt-4 overflow-y-auto">
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {ranksData.map((rank) => {
@@ -852,6 +861,7 @@ const Overview = ({ customer }: OverviewProps) => {
                 Cargando catálogo de rangos...
               </div>
             )}
+            </div>
           </div>
         </div>
       )}
