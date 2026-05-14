@@ -17,13 +17,16 @@
     scrollbar-width: none; /* Firefox */
   }
 
-  input:focus ~ label,
-  input:not(:placeholder-shown) ~ label {
-    @apply -translate-y-2 text-xsmall-regular;
+  /* Robust Floating Label Styles */
+  .floating-input:focus ~ .floating-label,
+  .floating-input:not(:placeholder-shown) ~ .floating-label,
+  .floating-input:-webkit-autofill ~ .floating-label {
+    @apply -translate-y-1.5 scale-75 text-brand-magenta;
   }
 
-  input:focus ~ label {
-    @apply left-0;
+  /* Default Label State */
+  .floating-label {
+    @apply translate-y-0 scale-100;
   }
 
   input:-webkit-autofill,
