@@ -15,6 +15,7 @@ import {
   fetchNetworkActivityMemberOrders,
   fetchRenewalStatus,
   fetchProfileRankSummary,
+  fetchMatrixData,
   ApiResponse
 } from "@lib/data/netme_network"
 
@@ -22,6 +23,7 @@ import {
 import RankCalculator from "./components/RankCalculator"
 import BinaryVolume from "./components/BinaryVolume"
 import UnilevelVolume from "./components/UnilevelVolume"
+import MatrixVolume from "./components/MatrixVolume"
 import OrdersTable from "./components/OrdersTable"
 import Alerts from "./components/Alerts"
 
@@ -170,6 +172,7 @@ const Overview = ({ customer }: OverviewProps) => {
   const [networkActivityData, setNetworkActivityData] = useState<NetworkActivity[]>([])
   const [networkOrdersData, setNetworkOrdersData] = useState<NetworkOrder[]>([])
   const [renewalData, setRenewalData] = useState<RenewalStatus | null>(null)
+  const [matrixData, setMatrixData] = useState<any[]>([])
   const [rankSummaryData, setRankSummaryData] = useState<ProfileRankSummary | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -252,7 +255,7 @@ const Overview = ({ customer }: OverviewProps) => {
         setError(null)
 
         // Fetch all reports in parallel with proper error handling
-        const [binaryResult, unilevelResult, rankResult, spilloverResult, networkActivityResult, networkOrdersResult, renewalResult, rankSummaryResult] = await Promise.all([
+        const [binaryResult, unilevelResult, rankResult, spilloverResult, networkActivityResult, networkOrdersResult, renewalResult, rankSummaryResult, matrixResult] = await Promise.all([
           fetchBinaryLegVolume(Number(netmeProfileId), selectedPeriod.id),
           fetchUnilevelLevelVolume(Number(netmeProfileId), selectedPeriod.id, 5),
           fetchRankProgress(Number(netmeProfileId), selectedPeriod.id),
@@ -260,7 +263,8 @@ const Overview = ({ customer }: OverviewProps) => {
           fetchNetworkActivityMember(Number(netmeProfileId)),
           fetchNetworkActivityMemberOrders(Number(netmeProfileId), selectedPeriod.id),
           currentPeriod ? fetchRenewalStatus(Number(netmeProfileId), currentPeriod.id) : Promise.resolve({ success: true, data: null, error: null }),
-          fetchProfileRankSummary(Number(netmeProfileId), selectedPeriod.id)
+          fetchProfileRankSummary(Number(netmeProfileId), selectedPeriod.id),
+          fetchMatrixData(Number(netmeProfileId))
         ])
 
         // Handle binary data
@@ -281,6 +285,16 @@ const Overview = ({ customer }: OverviewProps) => {
           console.error('Error loading unilevel data:', unilevelResult.error)
           setComponentErrors(prev => ({ ...prev, unilevel: unilevelResult.error || 'Error loading unilevel data' }))
           setUnilevelData([])
+        }
+
+        // Handle matrix data
+        if (matrixResult.success) {
+          setMatrixData(matrixResult.data || [])
+          setComponentErrors(prev => ({ ...prev, matrix: '' }))
+        } else {
+          console.error('Error loading matrix data:', matrixResult.error)
+          setComponentErrors(prev => ({ ...prev, matrix: matrixResult.error || 'Error loading matrix data' }))
+          setMatrixData([])
         }
 
         // Handle rank data
@@ -612,6 +626,12 @@ const Overview = ({ customer }: OverviewProps) => {
 
           {/* Right Column */}
           <div className="space-y-4">
+            {/* Matrix Volume */}
+            <MatrixVolume
+              matrixData={matrixData}
+              networkOrdersData={networkOrdersData}
+              error={componentErrors.matrix || null}
+            />
 
             {/* Orders Table */}
             <OrdersTable
