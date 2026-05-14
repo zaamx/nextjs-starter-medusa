@@ -22,7 +22,6 @@ import {
 import RankCalculator from "./components/RankCalculator"
 import BinaryVolume from "./components/BinaryVolume"
 import UnilevelVolume from "./components/UnilevelVolume"
-import SpilloverVsBuildComponent from "./components/SpilloverVsBuild"
 import OrdersTable from "./components/OrdersTable"
 import Alerts from "./components/Alerts"
 
@@ -613,12 +612,6 @@ const Overview = ({ customer }: OverviewProps) => {
 
           {/* Right Column */}
           <div className="space-y-4">
-            {/* Spillover vs Build */}
-            <SpilloverVsBuildComponent
-              spilloverData={spilloverData}
-              error={componentErrors.spillover || null}
-            />
-
 
             {/* Orders Table */}
             <OrdersTable
