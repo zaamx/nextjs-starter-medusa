@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { FaChartLine, FaCalendarAlt } from "react-icons/fa";
 import { HttpTypes } from "@medusajs/types";
 import { useOffice } from "@lib/context/office-context";
 import {
@@ -44,6 +45,32 @@ interface CommissionSummaryTotal {
   total_bruto: string;
 }
 
+// Helper: get all ISO week period names for a given year (e.g. "2026-W01" … "2026-W52")
+function getWeeksForYear(year: number): string[] {
+  const weeks: string[] = []
+  // ISO week 1 of the year: the week containing the first Thursday
+  // We iterate week numbers 1–53 and keep those whose ISO year equals `year`
+  for (let w = 1; w <= 53; w++) {
+    // Find the date of the Monday of ISO week w of year `year`
+    // Jan 4 is always in ISO week 1
+    const jan4 = new Date(year, 0, 4)
+    const dayOfWeek = jan4.getDay() || 7 // 1=Mon … 7=Sun
+    const week1Monday = new Date(jan4)
+    week1Monday.setDate(jan4.getDate() - (dayOfWeek - 1))
+    const monday = new Date(week1Monday)
+    monday.setDate(week1Monday.getDate() + (w - 1) * 7)
+
+    // Determine the ISO year of this monday
+    const thu = new Date(monday)
+    thu.setDate(monday.getDate() + 3)
+    if (thu.getFullYear() !== year) continue
+
+    const pad = (n: number) => String(n).padStart(2, '0')
+    weeks.push(`${year}-W${pad(w)}`)
+  }
+  return weeks
+}
+
 export default function CommissionsPage() {
   const { periods, selectedPeriod, setSelectedPeriodById } = useOffice();
   const [customer, setCustomer] = useState<HttpTypes.StoreCustomer | null>(null);
@@ -57,6 +84,7 @@ export default function CommissionsPage() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedBonusType, setSelectedBonusType] = useState<string>("");
   const [selectedPeriodName, setSelectedPeriodName] = useState<string>("");
+  const [selectedHistoryYear, setSelectedHistoryYear] = useState<number>(new Date().getFullYear());
 
   const netmeProfileId = customer?.metadata?.netme_profile_id;
 
@@ -90,8 +118,8 @@ export default function CommissionsPage() {
         setLoading(true);
         setError(null);
 
-        // Fetch commission summary for last 12 periods
-        const summaryResponse = await fetchCommissionSummary(Number(netmeProfileId), 20);
+        // Fetch commission summary for enough periods to cover multiple years (104 = ~2 years)
+        const summaryResponse = await fetchCommissionSummary(Number(netmeProfileId), 104);
 
         if (!summaryResponse.success) {
           throw new Error(summaryResponse.error || 'Error fetching commission summary');
@@ -174,14 +202,13 @@ export default function CommissionsPage() {
     })()
     : null;
 
-  // Get bonus type colors
   const getBonusTypeColor = (type: string) => {
     const colors = {
-      binary: { color: "bg-blue-500", bgColor: "bg-blue-50", borderColor: "border-blue-200" },
-      unilevel: { color: "bg-green-500", bgColor: "bg-green-50", borderColor: "border-green-200" },
-      fast_start: { color: "bg-purple-500", bgColor: "bg-purple-50", borderColor: "border-purple-200" },
-      leadership: { color: "bg-orange-500", bgColor: "bg-orange-50", borderColor: "border-orange-200" },
-      matching: { color: "bg-red-500", bgColor: "bg-red-50", borderColor: "border-red-200" }
+      binary: { color: "bg-blue-500", bgColor: "bg-blue-50", borderColor: "border-blue-200", textColor: "text-blue-600" },
+      unilevel: { color: "bg-green-500", bgColor: "bg-green-50", borderColor: "border-green-200", textColor: "text-green-600" },
+      fast_start: { color: "bg-purple-500", bgColor: "bg-purple-50", borderColor: "border-purple-200", textColor: "text-purple-600" },
+      leadership: { color: "bg-orange-500", bgColor: "bg-orange-50", borderColor: "border-orange-200", textColor: "text-orange-600" },
+      matching: { color: "bg-red-500", bgColor: "bg-red-50", borderColor: "border-red-200", textColor: "text-red-600" }
     };
     return colors[type as keyof typeof colors] || colors.binary;
   };
@@ -373,53 +400,142 @@ export default function CommissionsPage() {
 
       {/* Historical Summary */}
       {commissionSummary.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Historial de Comisiones (Últimos 12 períodos)</h2>
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Período
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Total (USD)
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Bonos
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {commissionSummary.map((summary) => {
-                    const periodTotal = summary.bonuses.reduce((sum, bonus) => sum + bonus.amount, 0);
-                    return (
-                      <tr key={summary.period_name} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {summary.period_name}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                          {formatCurrency(periodTotal)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <div className="flex gap-2">
-                            {summary.bonuses.map((bonus) => {
-                              const colors = getBonusTypeColor(bonus.type);
-                              return (
-                                <span key={bonus.type} className={`px-2 py-1 rounded-full text-xs ${colors.bgColor} ${colors.borderColor} border`}>
-                                  {formatBonusType(bonus.type)}: {formatCurrency(bonus.amount)}
-                                </span>
-                              );
-                            })}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+        <div className="mt-8 bg-white rounded-lg shadow overflow-hidden p-6">
+          <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
+            <div className="flex items-center gap-2 flex-wrap">
+              <FaChartLine className="h-5 w-5 text-gray-700" />
+              <h2 className="text-xl font-bold text-gray-900">Historial de Comisiones</h2>
+              {/* Compact total pill */}
+              {(() => {
+                const dataMap = new Map(commissionSummary.map(s => [s.period_name, s]))
+                const weeksWithData = getWeeksForYear(selectedHistoryYear).filter(wk => {
+                  const s = dataMap.get(wk)
+                  return !!s && s.bonuses.reduce((sum, b) => sum + b.amount, 0) > 0
+                })
+                const yearTotal = weeksWithData.reduce((acc, wk) => {
+                  const s = dataMap.get(wk)!
+                  return acc + s.bonuses.reduce((sum, b) => sum + b.amount, 0)
+                }, 0)
+                if (weeksWithData.length === 0) return null
+                return (
+                  <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs border bg-blue-50 border-blue-200 text-blue-700">
+                    <span className="font-medium">{weeksWithData.length} semanas</span>
+                    <span className="font-bold text-blue-800">
+                      {formatCurrency(yearTotal)}
+                    </span>
+                  </span>
+                )
+              })()}
             </div>
+            
+            {/* Year Badge Selector */}
+            {(() => {
+              const yearsWithData = [...new Set(
+                commissionSummary
+                  .map(s => s.period_name.split('-')[0])
+                  .filter(Boolean)
+              )].map(Number).sort((a, b) => a - b)
+
+              if (yearsWithData.length === 0) return null
+
+              // Auto-select the latest year if current selection has no data
+              const validYear = yearsWithData.includes(selectedHistoryYear)
+                ? selectedHistoryYear
+                : yearsWithData[yearsWithData.length - 1]
+
+              if (validYear !== selectedHistoryYear) {
+                setTimeout(() => setSelectedHistoryYear(validYear), 0)
+              }
+
+              return (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <FaCalendarAlt className="h-4 w-4 text-gray-400 shrink-0" />
+                  {yearsWithData.map((year) => {
+                    const isActive = year === selectedHistoryYear
+                    return (
+                      <button
+                        key={year}
+                        onClick={() => setSelectedHistoryYear(year)}
+                        className={`px-3 py-1 rounded-full text-sm font-semibold border transition-all duration-150 ${
+                          isActive
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                            : 'bg-transparent border-gray-300 text-gray-500 hover:border-blue-400 hover:text-blue-600'
+                        }`}
+                      >
+                        {year}
+                      </button>
+                    )
+                  })}
+                </div>
+              )
+            })()}
+          </div>
+
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
+            {(() => {
+              const dataMap = new Map(commissionSummary.map(s => [s.period_name, s]))
+
+              // Only weeks of the selected year that have data
+              const weeksWithData = getWeeksForYear(selectedHistoryYear).filter(wk => {
+                const s = dataMap.get(wk)
+                return !!s && s.bonuses.reduce((sum, b) => sum + b.amount, 0) > 0
+              })
+
+              if (weeksWithData.length === 0) {
+                return (
+                  <div className="text-center py-10 text-gray-500 text-sm">
+                    No hay comisiones registradas para {selectedHistoryYear}
+                  </div>
+                )
+              }
+
+              return (
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Semana
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Total (USD)
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Bonos
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {weeksWithData.map((weekName) => {
+                      const summary = dataMap.get(weekName)!
+                      const periodTotal = summary.bonuses.reduce((sum, bonus) => sum + bonus.amount, 0);
+                      
+                      return (
+                        <tr key={weekName} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {weekName}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            {formatCurrency(periodTotal)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div className="flex flex-wrap gap-2">
+                              {summary.bonuses.map((bonus) => {
+                                const colors = getBonusTypeColor(bonus.type);
+                                return (
+                                  <span key={bonus.type} className={`px-2.5 py-1 rounded-full text-xs font-semibold ${colors.bgColor} ${colors.borderColor} ${colors.textColor} border`}>
+                                    {formatBonusType(bonus.type)}: {formatCurrency(bonus.amount)}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )
+            })()}
           </div>
         </div>
       )}
