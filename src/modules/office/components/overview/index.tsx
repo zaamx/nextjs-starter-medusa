@@ -24,6 +24,7 @@ import RankCalculator from "./components/RankCalculator"
 import BinaryVolume from "./components/BinaryVolume"
 import UnilevelVolume from "./components/UnilevelVolume"
 import MatrixVolume from "./components/MatrixVolume"
+import TravelBanner from "./components/TravelBanner"
 import OrdersTable from "./components/OrdersTable"
 import Alerts from "./components/Alerts"
 
@@ -483,7 +484,7 @@ const Overview = ({ customer }: OverviewProps) => {
   return (
     <div className="relative min-h-screen bg-gray-50">
       {/* Responsive Header */}
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-3 sm:px-4 py-3 bg-white border-b border-gray-100 gap-2">
+      <header className="sticky top-0 z-50 flex flex-col sm:flex-row sm:items-center sm:justify-between px-3 sm:px-4 py-3 bg-white border-b border-gray-100 gap-2">
         {/* User info row */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           {((customer?.metadata as any)?.mlm_data as any)?.profile_picture ? (
@@ -505,6 +506,7 @@ const Overview = ({ customer }: OverviewProps) => {
 
         {/* Actions row */}
         <div className="flex items-center gap-2 flex-shrink-0">
+          {/*
           {renewalData && !componentErrors.renewal && (
             <div className={`flex items-center gap-2 px-3 py-1.5 text-xs border ${renewalData.days_left > 0
               ? 'border-green-500/30 text-green-700 bg-green-50'
@@ -524,11 +526,13 @@ const Overview = ({ customer }: OverviewProps) => {
               )}
             </div>
           )}
+          */}
         </div>
       </header>
 
       {/* Responsive Grid Layout */}
       <div className="p-3 sm:p-4 space-y-4">
+        <TravelBanner />
 
         {/* Actividad de la Red - Full Width Module */}
         <div className="bg-white border-gray-200 rounded-2xl shadow-sm border p-4 sm:p-5 mb-4 md:mb-6">
@@ -594,7 +598,7 @@ const Overview = ({ customer }: OverviewProps) => {
         </div>
 
         {/* Main Content Grid - Responsive */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 
           {/* Left Column */}
           <div className="space-y-4">
@@ -641,11 +645,6 @@ const Overview = ({ customer }: OverviewProps) => {
             />
           </div>
           <div className="space-y-4">
-            <div className="text-xs text-gray-500">
-              <a href="https://myvortex365.com/WeNow" target="_blank" rel="noopener noreferrer">
-                <img src="/viaja-wenow.jpg" alt="Viaja Wenow" className="w-full h-auto" />
-              </a>
-            </div>
             {/* Responsive Office Navigation */}
             {/* 
             <div className="px-3 sm:px-4 pb-20 sm:pb-24">
