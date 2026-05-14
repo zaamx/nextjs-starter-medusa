@@ -511,14 +511,6 @@ const Overview = ({ customer }: OverviewProps) => {
               )}
             </div>
           )}
-
-          <button
-            onClick={handleShowRanksModal}
-            className="flex items-center gap-1.5 bg-brand-magenta text-white px-3 py-1.5 text-xs font-display tracking-widest hover:opacity-90 transition-opacity whitespace-nowrap flex-shrink-0"
-          >
-            <FaTrophy className="text-xs" />
-            <span>VER RANGOS</span>
-          </button>
         </div>
       </header>
 
@@ -593,11 +585,12 @@ const Overview = ({ customer }: OverviewProps) => {
 
           {/* Left Column */}
           <div className="space-y-4">
-            {/* Rank Calculator */}
+            {/* RankCalculator */}
             <RankCalculator
               rankData={rankData}
               error={componentErrors.rank || null}
               onShowModal={handleShowTargetModal}
+              onShowRanksModal={handleShowRanksModal}
             />
 
             {/* Alerts */}
