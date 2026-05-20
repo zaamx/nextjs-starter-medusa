@@ -550,27 +550,80 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
       throw new Error("No existing cart found when setting addresses")
     }
 
-    const shippingAddress = buildAddress(formData, "shipping_address")
+    const billingAddress = buildAddress(formData, "billing_address")
 
     const data = {
-      shipping_address: shippingAddress,
+      billing_address: billingAddress,
       email: formData.get("email"),
     } as any
 
-    const sameAsBilling = formData.get("same_as_billing")
-    if (sameAsBilling === "on") {
-      data.billing_address = shippingAddress
+    const enviarAOtraDireccion = formData.get("enviar_a_otra_direccion") === "on" || formData.get("enviar_a_otra_direccion_hidden") === "on"
+    if (!enviarAOtraDireccion) {
+      // If shipping is same as billing, copy billing details to shipping
+      data.shipping_address = {
+        first_name: billingAddress.first_name,
+        last_name: billingAddress.last_name,
+        address_1: billingAddress.address_1,
+        address_2: billingAddress.address_2,
+        company: billingAddress.company,
+        postal_code: billingAddress.postal_code,
+        city: billingAddress.city,
+        country_code: billingAddress.country_code,
+        province: billingAddress.province,
+        phone: billingAddress.phone,
+        metadata: billingAddress.metadata,
+      }
     } else {
-      data.billing_address = buildAddress(formData, "billing_address")
+      data.shipping_address = buildAddress(formData, "shipping_address")
     }
 
     await updateCart(data)
+
+    const headers = {
+      ...(await getAuthHeaders()),
+    }
+    if (headers.authorization) {
+      try {
+        const { customer } = await sdk.store.customer.retrieve({}, headers)
+        if (customer) {
+          const addressToSave = data.shipping_address
+          // Evitar duplicados comparando address_1 y postal_code
+          const isDuplicate = customer.addresses?.some(
+            (addr: any) =>
+              addr.address_1?.toLowerCase() === addressToSave.address_1.toLowerCase() &&
+              addr.postal_code?.toLowerCase() === String(addressToSave.postal_code || "").toLowerCase()
+          )
+          if (!isDuplicate) {
+            await sdk.store.customer.createAddress(
+              {
+                first_name: addressToSave.first_name as string,
+                last_name: addressToSave.last_name as string,
+                company: addressToSave.company as string,
+                address_1: addressToSave.address_1,
+                address_2: addressToSave.address_2,
+                city: addressToSave.city,
+                postal_code: addressToSave.postal_code as string,
+                province: addressToSave.province as string,
+                country_code: addressToSave.country_code as string,
+                phone: addressToSave.phone as string,
+              },
+              {},
+              headers
+            )
+            const customerCacheTag = await getCacheTag("customers")
+            revalidateTag(customerCacheTag)
+          }
+        }
+      } catch (err) {
+        console.error("Error saving address to customer profile:", err)
+      }
+    }
   } catch (e: any) {
     return e.message
   }
 
   redirect(
-    `/${formData.get("shipping_address.country_code")}/checkout?step=delivery`
+    `/${formData.get("billing_address.country_code")}/checkout?step=delivery`
   )
 }
 

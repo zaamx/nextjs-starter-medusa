@@ -8,11 +8,13 @@ import { Heading, Text, useToggleState } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
 import Spinner from "@modules/common/icons/spinner"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import BillingAddress from "../billing_address"
 import ErrorMessage from "../error-message"
 import ShippingAddress from "../shipping-address"
 import { SubmitButton } from "../submit-button"
+import Checkbox from "@modules/common/components/checkbox"
+import Input from "@modules/common/components/input"
 
 const Addresses = ({
   cart,
@@ -27,10 +29,12 @@ const Addresses = ({
 
   const isOpen = searchParams.get("step") === "address"
 
-  const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
+  // enviarAOtraDireccion represents whether the user wants to ship to a different address.
+  // We default to false (which means shipping is same as billing).
+  const { state: enviarAOtraDireccion, toggle: toggleEnviarAOtraDireccion } = useToggleState(
     cart?.shipping_address && cart?.billing_address
-      ? compareAddresses(cart?.shipping_address, cart?.billing_address)
-      : true
+      ? !compareAddresses(cart?.shipping_address, cart?.billing_address)
+      : false
   )
 
   const handleEdit = () => {
@@ -46,10 +50,10 @@ const Addresses = ({
           level="h2"
           className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
         >
-          Dirección de envío
+          Datos de Facturación
           {!isOpen && <CheckCircleSolid />}
         </Heading>
-        {!isOpen && cart?.shipping_address && (
+        {!isOpen && cart?.billing_address && (
           <Text>
             <button
               onClick={handleEdit}
@@ -64,25 +68,54 @@ const Addresses = ({
       {isOpen ? (
         <form action={formAction}>
           <div className="pb-8">
-            <ShippingAddress
-              customer={customer}
-              checked={sameAsBilling}
-              onChange={toggleSameAsBilling}
-              cart={cart}
-            />
+            <BillingAddress cart={cart} />
 
-            {!sameAsBilling && (
-              <div>
+            <div className="my-8 flex flex-col gap-y-4">
+              <div className="flex flex-col">
+                <Checkbox
+                  label="Enviar a otra dirección"
+                  name="enviar_a_otra_direccion"
+                  checked={enviarAOtraDireccion}
+                  onChange={toggleEnviarAOtraDireccion}
+                  data-testid="shipping-address-checkbox"
+                />
+                <input
+                  type="hidden"
+                  name="enviar_a_otra_direccion_hidden"
+                  value={enviarAOtraDireccion ? "on" : "off"}
+                />
+              </div>
+            </div>
+
+            {enviarAOtraDireccion && (
+              <div className="border-t border-gray-100 pt-8 mt-4">
                 <Heading
                   level="h2"
-                  className="text-3xl-regular gap-x-4 pb-6 pt-8"
+                  className="text-3xl-regular gap-x-4 pb-6"
                 >
-                  Dirección de facturación
+                  Dirección de envío
                 </Heading>
 
-                <BillingAddress cart={cart} />
+                <ShippingAddress
+                  customer={customer}
+                  cart={cart}
+                />
               </div>
             )}
+
+            <div className="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-gray-100 mb-6">
+              <Input
+                label="Correo electrónico"
+                name="email"
+                type="email"
+                title="Ingresa una dirección de email válida."
+                autoComplete="email"
+                defaultValue={cart?.email || customer?.email || ""}
+                required
+                data-testid="shipping-email-input"
+              />
+            </div>
+
             <SubmitButton className="mt-6" data-testid="submit-address-button">
               Continuar a la entrega
             </SubmitButton>
@@ -92,9 +125,33 @@ const Addresses = ({
       ) : (
         <div>
           <div className="text-small-regular">
-            {cart && cart.shipping_address ? (
+            {cart && cart.billing_address ? (
               <div className="flex items-start gap-x-8">
                 <div className="flex items-start gap-x-1 w-full">
+                  <div
+                    className="flex flex-col w-1/3"
+                    data-testid="billing-address-summary"
+                  >
+                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                      Dirección de Facturación
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.billing_address.first_name}{" "}
+                      {cart.billing_address.last_name}
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.billing_address.address_1}{" "}
+                      {cart.billing_address.address_2}
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.billing_address.postal_code},{" "}
+                      {cart.billing_address.city}
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.billing_address.country_code?.toUpperCase()}
+                    </Text>
+                  </div>
+
                   <div
                     className="flex flex-col w-1/3"
                     data-testid="shipping-address-summary"
@@ -102,21 +159,30 @@ const Addresses = ({
                     <Text className="txt-medium-plus text-ui-fg-base mb-1">
                       Dirección de Envío
                     </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.first_name}{" "}
-                      {cart.shipping_address.last_name}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.address_1}{" "}
-                      {cart.shipping_address.address_2}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.postal_code},{" "}
-                      {cart.shipping_address.city}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.country_code?.toUpperCase()}
-                    </Text>
+
+                    {!enviarAOtraDireccion ? (
+                      <Text className="txt-medium text-ui-fg-subtle">
+                        Las direcciones de facturación y entrega son las mismas.
+                      </Text>
+                    ) : (
+                      <>
+                        <Text className="txt-medium text-ui-fg-subtle">
+                          {cart.shipping_address?.first_name}{" "}
+                          {cart.shipping_address?.last_name}
+                        </Text>
+                        <Text className="txt-medium text-ui-fg-subtle">
+                          {cart.shipping_address?.address_1}{" "}
+                          {cart.shipping_address?.address_2}
+                        </Text>
+                        <Text className="txt-medium text-ui-fg-subtle">
+                          {cart.shipping_address?.postal_code},{" "}
+                          {cart.shipping_address?.city}
+                        </Text>
+                        <Text className="txt-medium text-ui-fg-subtle">
+                          {cart.shipping_address?.country_code?.toUpperCase()}
+                        </Text>
+                      </>
+                    )}
                   </div>
 
                   <div
@@ -127,44 +193,11 @@ const Addresses = ({
                       Contacto
                     </Text>
                     <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.phone}
+                      {cart.shipping_address?.phone || cart.billing_address?.phone}
                     </Text>
                     <Text className="txt-medium text-ui-fg-subtle">
                       {cart.email}
                     </Text>
-                  </div>
-
-                  <div
-                    className="flex flex-col w-1/3"
-                    data-testid="billing-address-summary"
-                  >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                      Dirección de Facturación
-                    </Text>
-
-                    {sameAsBilling ? (
-                      <Text className="txt-medium text-ui-fg-subtle">
-                        Las direcciones de facturación y entrega son las mismas.
-                      </Text>
-                    ) : (
-                      <>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.first_name}{" "}
-                          {cart.billing_address?.last_name}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.address_1}{" "}
-                          {cart.billing_address?.address_2}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.postal_code},{" "}
-                          {cart.billing_address?.city}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.country_code?.toUpperCase()}
-                        </Text>
-                      </>
-                    )}
                   </div>
                 </div>
               </div>

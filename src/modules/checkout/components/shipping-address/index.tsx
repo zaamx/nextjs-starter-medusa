@@ -1,6 +1,5 @@
 import { HttpTypes } from "@medusajs/types"
 import { Container } from "@medusajs/ui"
-import Checkbox from "@modules/common/components/checkbox"
 import Input from "@modules/common/components/input"
 import { mapKeys } from "lodash"
 import React, { useEffect, useMemo, useState } from "react"
@@ -11,13 +10,9 @@ import ProvinceSelect from "../province-select"
 const ShippingAddress = ({
   customer,
   cart,
-  checked,
-  onChange,
 }: {
   customer: HttpTypes.StoreCustomer | null
   cart: HttpTypes.StoreCart | null
-  checked: boolean
-  onChange: () => void
 }) => {
   // Helper function to parse address fields from address_1 and address_2
   const parseAddressFields = (address_1?: string, address_2?: string, metadata?: Record<string, any>) => {
@@ -55,7 +50,6 @@ const ShippingAddress = ({
     "shipping_address.province": cart?.shipping_address?.province || "",
     "shipping_address.phone": cart?.shipping_address?.phone || "",
     "shipping_address.referencias": parsedFields.referencias,
-    email: cart?.email || "",
   })
 
   const countriesInRegion = useMemo(
@@ -99,13 +93,6 @@ const ShippingAddress = ({
         "shipping_address.referencias": parsed.referencias,
       }))
     }
-
-    if (email) {
-      setFormData((prevState: Record<string, any>) => ({
-        ...prevState,
-        email: email,
-      }))
-    }
   }
 
   useEffect(() => {
@@ -124,11 +111,7 @@ const ShippingAddress = ({
         "shipping_address.localidad": cart.shipping_address?.city || parsed.localidad,
         "shipping_address.referencias": parsed.referencias,
       }))
-      setFormAddress(cart?.shipping_address, cart?.email)
-    }
-
-    if (cart && !cart.email && customer?.email) {
-      setFormAddress(undefined, customer.email)
+      setFormAddress(cart?.shipping_address)
     }
   }, [cart]) // Add cart as a dependency
 
@@ -155,7 +138,7 @@ const ShippingAddress = ({
       {customer && (addressesInRegion?.length || 0) > 0 && (
         <Container className="mb-6 flex flex-col gap-y-4 p-5">
           <p className="text-small-regular">
-            {`Hi ${customer.first_name}, do you want to use one of your saved addresses?`}
+            {`Hola ${customer.first_name}, ¿deseas usar una de tus direcciones guardadas?`}
           </p>
           <AddressSelect
             addresses={customer.addresses}
@@ -265,6 +248,14 @@ const ShippingAddress = ({
           onChange={handleChange}
           data-testid="shipping-referencias-input"
         />
+        <Input
+          label="Teléfono"
+          name="shipping_address.phone"
+          autoComplete="tel"
+          value={formData["shipping_address.phone"]}
+          onChange={handleChange}
+          data-testid="shipping-phone-input"
+        />
       </div>
       {/* Hidden inputs for backward compatibility with Medusa API */}
       <input
@@ -282,36 +273,6 @@ const ShippingAddress = ({
         name="shipping_address.city"
         value={formData["shipping_address.localidad"] || ""}
       />
-      <div className="my-8">
-        <Checkbox
-                      label="Dirección de facturación igual a la de envío"
-          name="same_as_billing"
-          checked={checked}
-          onChange={onChange}
-          data-testid="billing-address-checkbox"
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <Input
-          label="Correo electrónico"
-          name="email"
-          type="email"
-                          title="Ingresa una dirección de email válida."
-          autoComplete="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          data-testid="shipping-email-input"
-        />
-        <Input
-          label="Teléfono"
-          name="shipping_address.phone"
-          autoComplete="tel"
-          value={formData["shipping_address.phone"]}
-          onChange={handleChange}
-          data-testid="shipping-phone-input"
-        />
-      </div>
     </>
   )
 }
