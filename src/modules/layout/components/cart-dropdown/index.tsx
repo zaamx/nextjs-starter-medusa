@@ -176,12 +176,12 @@ const CartDropdown = ({
                 </div>
                 <div className="p-4 flex flex-col gap-y-4 text-small-regular">
                   <div className="flex items-center justify-between">
-                    <span className="text-ui-fg-base font-semibold">
+                    <span className="text-lg font-bold text-gray-900">
                       Subtotal{" "}
-                      <span className="font-normal">(excl. impuestos)</span>
+                      <span className="text-xs font-normal text-gray-500">(excl. impuestos)</span>
                     </span>
                     <span
-                      className="text-large-semi"
+                      className="text-2xl font-extrabold text-gray-900"
                       data-testid="cart-subtotal"
                       data-value={subtotal}
                     >
