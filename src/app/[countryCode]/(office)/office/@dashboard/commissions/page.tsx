@@ -430,11 +430,11 @@ export default function CommissionsPage() {
             
             {/* Year Badge Selector */}
             {(() => {
-              const yearsWithData = [...new Set(
+              const yearsWithData = Array.from(new Set(
                 commissionSummary
                   .map(s => s.period_name.split('-')[0])
                   .filter(Boolean)
-              )].map(Number).sort((a, b) => a - b)
+              )).map(Number).sort((a, b) => a - b)
 
               if (yearsWithData.length === 0) return null
 

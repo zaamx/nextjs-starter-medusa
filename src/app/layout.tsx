@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Inter, Barlow_Condensed } from "next/font/google"
 import "styles/globals.css"
+import BugReportButton from "@modules/common/components/bug-report-button"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const barlowCondensed = Barlow_Condensed({
@@ -39,6 +40,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     <html lang="en" data-mode="light" className={`${inter.variable} ${barlowCondensed.variable}`}>
       <body className={inter.className}>
         <main className="relative">{props.children}</main>
+        <BugReportButton />
         <Analytics />
         <SpeedInsights />
       </body>

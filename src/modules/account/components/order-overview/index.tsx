@@ -6,7 +6,12 @@ import OrderCard from "../order-card"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 
-const OrderOverview = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {
+type OrderOverviewProps = {
+  orders: HttpTypes.StoreOrder[]
+  networkOrdersMap?: Record<number, any>
+}
+
+const OrderOverview = ({ orders, networkOrdersMap }: OrderOverviewProps) => {
   if (orders?.length) {
     return (
       <div className="flex flex-col gap-y-8 w-full">
@@ -15,7 +20,7 @@ const OrderOverview = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {
             key={o.id}
             className="border-b border-gray-200 pb-6 last:pb-0 last:border-none"
           >
-            <OrderCard order={o} />
+            <OrderCard order={o} networkOrder={networkOrdersMap?.[Number(o.display_id)]} />
           </div>
         ))}
       </div>

@@ -62,7 +62,7 @@ export default function MarketingMaterialsClient({ netmeProfileId }: MarketingMa
         <span className="text-3xl font-bold text-gray-700">Próximamente</span>
       </div> */}
       {/* Page content below (will be covered by overlay) */}
-      <h1 className="text-2xl font-bold mb-2">Materiales de Marketing</h1>
+      <h1 className="text-2xl font-bold mb-2">Sitio Replicado</h1>
       <p className="text-sm text-gray-500 mb-8">
         Herramientas para duplicación y crecimiento de tu negocio.
       </p>

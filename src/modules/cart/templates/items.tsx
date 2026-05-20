@@ -7,15 +7,15 @@ import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
 import BundleCartItem from "@modules/cart/components/bundle-cart-item"
 
 // Utility functions for bundle grouping
-function isBundleParent(item) {
+function isBundleParent(item: any) {
   return !!item.metadata?.bundle_id;
 }
-function isBundleChild(item) {
+function isBundleChild(item: any) {
   return !!item.metadata?.bundled_by;
 }
-function getBundleChildren(parent, items) {
+function getBundleChildren(parent: any, items: any[]) {
   return items.filter(
-    (item) => item.metadata?.bundled_by === parent.metadata.bundle_id
+    (item: any) => item.metadata?.bundled_by === parent.metadata.bundle_id
   );
 }
 
@@ -57,15 +57,15 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
                 const bundleChildren = getBundleChildren(parent, children);
                 return (
                   <BundleCartItem
-                    key={parent.id}
-                    parentItem={parent}
-                    childItems={bundleChildren}
-                    currencyCode={cart?.currency_code}
+                     key={parent.id}
+                     parentItem={parent}
+                     childItems={bundleChildren}
+                     currencyCode={cart?.currency_code || ""}
                   />
                 );
               })}
               {regulars.map(item => (
-                <Item key={item.id} item={item} currencyCode={cart?.currency_code} />
+                <Item key={item.id} item={item} currencyCode={cart?.currency_code || ""} />
               ))}
             </>
           ) : (

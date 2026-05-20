@@ -37,7 +37,7 @@ const navGroups = [
   {
     label: "Recursos",
     items: [
-      { name: "Materiales de Marketing", href: "/office/marketing-materials" },
+      { name: "Sitio Replicado", href: "/office/replicated-site" },
       { name: "Centro de Formación", href: "/office/training-center" },
       { name: "Soporte & Cumplimiento", href: "/office/support-compliance" },
     ],
@@ -82,10 +82,10 @@ const OfficeSideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }
                   {/* Header */}
                   <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 flex-shrink-0">
                     <div>
-                      <span className="font-display text-base tracking-widest text-brand-magenta leading-none">
+                      <span className="font-display text-[20px] tracking-widest text-brand-magenta leading-none font-bold">
                         WE NOW
                       </span>
-                      <p className="text-[9px] text-white/30 tracking-widest uppercase mt-0.5">
+                      <p className="text-[11px] text-white/40 tracking-widest uppercase mt-0.5">
                         Oficina Virtual
                       </p>
                     </div>

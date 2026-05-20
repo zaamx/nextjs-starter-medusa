@@ -39,7 +39,7 @@ const TravelBanner = () => {
             {isExpanded ? (
               <>Ocultar <FaChevronUp className="w-3 h-3 opacity-70" /></>
             ) : (
-              <>Ver Oferta <FaChevronDown className="w-3 h-3 opacity-70" /></>
+              <>Ver Destinos <FaChevronDown className="w-3 h-3 opacity-70" /></>
             )}
           </button>
         </div>

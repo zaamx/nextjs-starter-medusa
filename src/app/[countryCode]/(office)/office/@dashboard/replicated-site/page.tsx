@@ -4,7 +4,7 @@ import { retrieveCustomer } from "@lib/data/customer"
 import MarketingMaterialsClient from "./MarketingMaterialsClient"
 
 export const metadata: Metadata = {
-  title: "Oficina Virtual - Materiales de Marketing",
+  title: "Oficina Virtual - Sitio Replicado",
   description: "Herramientas para duplicación y crecimiento de tu negocio",
 }
 
@@ -20,7 +20,7 @@ export default async function MarketingMaterialsPage() {
         <MarketingMaterialsClient netmeProfileId={Number(netmeProfileId)} />
       ) : (
         <div className="relative p-8">
-          <h1 className="text-2xl font-bold mb-2">Materiales de Marketing</h1>
+          <h1 className="text-2xl font-bold mb-2">Sitio Replicado</h1>
           <p className="text-sm text-gray-500 mb-8">
             Herramientas para duplicación y crecimiento de tu negocio.
           </p>

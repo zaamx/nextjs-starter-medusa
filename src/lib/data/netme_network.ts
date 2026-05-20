@@ -323,3 +323,23 @@ export const fetchMatrixData = async (profileId: number): Promise<ApiResponse<an
     return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
+
+// 11. Member own orders history
+export const fetchMemberOwnOrders = async (profileId: number): Promise<ApiResponse<any[]>> => {
+  try {
+    const { data, error } = await supabase
+      .from('vw_network_activity_member_orders')
+      .select('*')
+      .eq('buyer_profile', profileId)
+      .order('transaction_date', { ascending: false })
+    if (error) {
+      console.error('Error fetching member own orders:', error)
+      return { success: false, data: [], error: error.message }
+    }
+    return { success: true, data: data || [], error: null }
+  } catch (error) {
+    console.error('Error in fetchMemberOwnOrders:', error)
+    return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
+  }
+}
+

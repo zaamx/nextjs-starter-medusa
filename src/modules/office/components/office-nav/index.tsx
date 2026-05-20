@@ -92,11 +92,11 @@ export default function OfficeNav() {
           </div>
 
           {/* Brand — desktop only (sidebar shows it on mobile) */}
-          <div className="hidden small:flex flex-col justify-center">
-            <span className="font-display text-sm tracking-widest text-brand-magenta leading-none">
+          <div className="hidden small:flex flex-col justify-center h-full">
+            <span className="font-display text-lg tracking-widest text-brand-magenta leading-tight font-bold">
               WE NOW
             </span>
-            <span className="text-[9px] text-white/30 tracking-widest uppercase">
+            <span className="text-[11px] text-white/40 tracking-widest uppercase mt-0.5 leading-none">
               Oficina Virtual
             </span>
           </div>

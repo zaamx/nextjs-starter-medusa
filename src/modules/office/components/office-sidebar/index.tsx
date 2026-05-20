@@ -34,7 +34,7 @@ const navGroups = [
   {
     label: "Recursos",
     items: [
-      { name: "Materiales de Marketing", href: "/office/marketing-materials" },
+      { name: "Sitio Replicado", href: "/office/replicated-site" },
       { name: "Centro de Formación", href: "/office/training-center" },
       { name: "Soporte & Cumplimiento", href: "/office/support-compliance" },
     ],
