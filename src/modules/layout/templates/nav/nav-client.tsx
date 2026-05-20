@@ -38,7 +38,7 @@ export default function NavClient({ regions, cart, isAuthenticated }: NavClientP
           {/* Logo */}
           <LocalizedClientLink href="/" className="flex-shrink-0">
             <span className="font-display text-2xl tracking-wider text-gray-900">
-              WENOW
+              WE NOW
             </span>
           </LocalizedClientLink>
 
@@ -140,7 +140,7 @@ export default function NavClient({ regions, cart, isAuthenticated }: NavClientP
             <DialogPanel className="fixed inset-y-0 left-0 w-72 bg-white flex flex-col shadow-xl">
               {/* Header */}
               <div className="flex items-center justify-between px-6 h-16 border-b border-gray-200">
-                <span className="font-display text-xl tracking-wider text-gray-900">WENOW</span>
+                <span className="font-display text-xl tracking-wider text-gray-900">WE NOW</span>
                 <button
                   onClick={() => setMobileOpen(false)}
                   className="text-gray-500 hover:text-gray-900"
