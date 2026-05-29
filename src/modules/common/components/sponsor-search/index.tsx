@@ -74,11 +74,6 @@ const SponsorSearch: React.FC<SponsorSearchProps> = ({
   }, [query])
 
   const handleSelectSponsor = (sponsor: SponsorProfile) => {
-    console.log('=== SPONSOR SEARCH SELECTION ===')
-    console.log('Selected sponsor object:', sponsor)
-    // console.log('Sponsor netme_id:', sponsor.netme_id)
-    // console.log('Sponsor netme_id type:', typeof sponsor.netme_id)
-    // console.log('Converting to string:', sponsor.netme_id.toString())
     onSelect(sponsor.netme_id?.toString() || "", sponsor)
     onClose()
   }

@@ -50,22 +50,16 @@ export const MystoreProvider: React.FC<MystoreProviderProps> = ({ children }) =>
         // Check if we already have this value stored to prevent overwriting
         const existingData = getMystoreSponsor()
         if (existingData && existingData.sponsorId === mystoreValue) {
-          console.log('=== MYSTORE ALREADY STORED ===')
-          console.log('Mystore value already exists:', mystoreValue)
           setMystoreData(existingData)
           setHasProcessed(true)
           setIsProcessing(false)
           return
         }
 
-        console.log('=== MYSTORE PARAMETER DETECTED ===')
-        console.log('Mystore value:', mystoreValue)
-        
         // Store the mystore sponsor ID in localStorage
         const success = storeMystoreSponsor(mystoreValue, true)
-        
+
         if (success) {
-          console.log('Mystore sponsor ID stored in localStorage')
           const newData = { sponsorId: mystoreValue, isLocked: true }
           setMystoreData(newData)
         } else {

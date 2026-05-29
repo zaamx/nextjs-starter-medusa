@@ -62,9 +62,6 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
       const data = mystoreData || getMystoreSponsor()
       
       if (data && isMounted) {
-        console.log('=== MYSTORE SPONSOR FOUND ===')
-        console.log('Mystore data:', data)
-        
         setIsLocked(data.isLocked)
         setIsLoadingMystore(true)
         
@@ -80,9 +77,6 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
             )
             
             if (matchingSponsor && isMounted) {
-              console.log('=== MYSTORE SPONSOR FOUND AND SELECTED ===')
-              console.log('Matching sponsor:', matchingSponsor)
-              
               setSelectedSponsorId(data.sponsorId)
               setSelectedSponsorInfo(matchingSponsor)
               onChange?.(data.sponsorId)
@@ -133,16 +127,9 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
   const handleSponsorSelect = (sponsorId: string, sponsorInfo?: any) => {
     // Don't allow changes if locked
     if (isLocked) {
-      console.log('=== SPONSOR INPUT LOCKED ===')
-      console.log('Cannot change sponsor - locked by mystore parameter')
       return
     }
-    
-    console.log('=== SPONSOR INPUT SELECTION ===')
-    console.log('SponsorInput received sponsorId:', sponsorId)
-    console.log('SponsorInput received sponsorInfo:', sponsorInfo)
-    console.log('SponsorInput sponsorId type:', typeof sponsorId)
-    
+
     const trimmedSponsorId = sponsorId.trim()
     setSelectedSponsorId(trimmedSponsorId === "" ? undefined : trimmedSponsorId)
     setSelectedSponsorInfo(sponsorInfo || null)
@@ -155,21 +142,24 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
   // Remove direct input change handler - only allow selection via modal
   const handleInputClick = () => {
     if (isLocked) {
-      console.log('=== SPONSOR INPUT LOCKED ===')
-      console.log('Cannot open search modal - locked by mystore parameter')
       return
     }
+    setIsModalOpen(true)
+  }
+
+  // Allow the prospect to override the sponsor pre-filled by a mystore
+  // referral link: unlock the field and open the search modal.
+  const handleChangeSponsor = () => {
+    setIsLocked(false)
     setIsModalOpen(true)
   }
 
   const handleClearSponsor = () => {
     // Don't allow clearing if locked
     if (isLocked) {
-      console.log('=== SPONSOR INPUT LOCKED ===')
-      console.log('Cannot clear sponsor - locked by mystore parameter')
       return
     }
-    
+
     setSelectedSponsorId(undefined)
     setSelectedSponsorInfo(null)
     setValidationError(null)
@@ -182,9 +172,6 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
       onChange?.(selectedSponsorId)
     }
   }, [selectedSponsorId, onChange])
-
-  // Log render state
-  console.log('=== SPONSOR INPUT RENDER ===', { value, selectedSponsorId, name, validationError })
 
   return (
     <>
@@ -257,11 +244,20 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
             </div>
             {isLocked && (
               <div className="text-blue-500 text-xs mt-1">
-                Este patrocinador fue asignado automáticamente y no puede ser cambiado
+                Este patrocinador fue asignado automáticamente desde un enlace de referido. Puedes mantenerlo o elegir otro.
               </div>
             )}
           </div>
-          {!isLocked && (
+          {isLocked ? (
+            <button
+              type="button"
+              onClick={handleChangeSponsor}
+              className="text-sm text-blue-600 hover:text-blue-800 mt-2 underline"
+              data-testid={`${dataTestId}-change-button`}
+            >
+              Cambiar patrocinador
+            </button>
+          ) : (
             <button
               type="button"
               onClick={handleClearSponsor}

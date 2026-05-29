@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useActionState, useRef, useState } from "react"
+import { useActionState, useRef, useState } from "react"
 import Input from "@modules/common/components/input"
 import SponsorInput from "@modules/common/components/sponsor-input"
 import { LOGIN_VIEW } from "@modules/account/templates/login-template"
@@ -25,30 +25,16 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
   const [sponsorId, setSponsorId] = useState("")
 
   const handleSponsorSelect = (sponsorId: string, sponsorInfo?: any) => {
-    console.log('=== SPONSOR SELECTION ===')
-    console.log('Selected sponsor ID:', sponsorId)
-    console.log('Selected sponsor info:', sponsorInfo)
-    console.log('Selected sponsor ID type:', typeof sponsorId)
     setSponsorId(sponsorId)
   }
 
   const handleSponsorInfoLoaded = (sponsorInfo: any) => {
-    console.log('=== SPONSOR INFO LOADED ===')
-    console.log('Sponsor info loaded:', sponsorInfo)
     // You can add additional logic here if needed when sponsor info is loaded
   }
 
   // Check if user has required product in cart
   const hasRequiredProduct = hasRequiredRegistrationProduct(cart || null)
   const productUrl = getRequiredProductUrl()
-
-  // Log render state
-  console.log('=== REGISTER RENDER ===', { sponsorId, hasRequiredProduct })
-
-  // Log when sponsorId changes
-  React.useEffect(() => {
-    console.log('=== REGISTER SPONSOR ID CHANGE ===', { sponsorId })
-  }, [sponsorId])
 
   // If user doesn't have required product, show gating message
   if (!hasRequiredProduct) {
@@ -118,10 +104,6 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
         className="w-full flex flex-col"
         action={formAction}
         onSubmit={(e) => {
-          console.log('=== FORM SUBMISSION ===')
-          console.log('Form submitted')
-          console.log('Current sponsorId state:', sponsorId)
-
           // Client-side validation for sponsor ID
           if (!sponsorId || sponsorId.trim() === "") {
             e.preventDefault()
@@ -134,12 +116,6 @@ const Register = ({ setCurrentView, cart, countryCode }: Props) => {
             alert("Formato de ID de patrocinador inválido. Por favor selecciona un patrocinador usando la función de búsqueda.")
             return
           }
-
-          console.log('Form elements:')
-          const formData = new FormData(e.currentTarget)
-          Array.from(formData.entries()).forEach(([key, value]) => {
-            console.log(`${key}: ${value}`)
-          })
         }}
       >
         <div className="flex flex-col w-full gap-y-3">
