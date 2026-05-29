@@ -21,16 +21,11 @@ export default async function Checkout({ params }: { params: Promise<{ countryCo
 
   if (!customer) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] py-12">
-        <h2 className="text-2xl font-semibold mb-4">Inicia sesión para continuar con la compra</h2>
-        <div className="w-full max-w-md">
-          <LoginTemplate 
-            redirectTo={`/${countryCode}/checkout`} 
-            cart={cart}
-            countryCode={countryCode}
-          />
-        </div>
-      </div>
+      <LoginTemplate
+        redirectTo={`/${countryCode}/checkout`}
+        cart={cart}
+        countryCode={countryCode}
+      />
     );
   }
 
