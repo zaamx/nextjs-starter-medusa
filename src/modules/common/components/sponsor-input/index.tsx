@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Input from "@modules/common/components/input"
 import SponsorSearch from "@modules/common/components/sponsor-search"
 import { getMystoreSponsor } from "@lib/util/mystore-utils"
@@ -46,6 +46,11 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
   // Use mystore context
   const { mystoreData, isProcessing } = useMystore()
 
+  // Pre-fill from a mystore referral link only once. Once applied (or once the
+  // prospect changes the sponsor), we never let the effect override the
+  // current selection again.
+  const hasAppliedMystoreRef = useRef(false)
+
   // Set client flag to prevent hydration issues
   useEffect(() => {
     setIsClient(true)
@@ -54,14 +59,17 @@ const SponsorInput: React.FC<SponsorInputProps> = ({
   // Check for mystore parameter on component mount
   useEffect(() => {
     if (!isClient) return // Only run on client side
-    
+    if (hasAppliedMystoreRef.current) return // Never override a manual change
+
     let isMounted = true
-    
+
     const checkMystoreSponsor = async () => {
       // First check context, then fallback to localStorage
       const data = mystoreData || getMystoreSponsor()
-      
+
       if (data && isMounted) {
+        // Mark as applied synchronously so re-renders can't re-run the pre-fill
+        hasAppliedMystoreRef.current = true
         setIsLocked(data.isLocked)
         setIsLoadingMystore(true)
         
