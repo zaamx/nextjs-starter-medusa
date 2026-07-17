@@ -41,10 +41,10 @@ export async function checkActivationEligibility() {
   }
 
   if (qualifiedInfo) {
-    // Validamos que los días sin calificación sean al menos 56 (8 semanas)
+    // Validamos que los días sin calificación sean al menos 35 (5 semanas)
     return {
       isLoggedIn: true,
-      isEligible: qualifiedInfo.days_without_qualified >= 56
+      isEligible: qualifiedInfo.days_without_qualified >= 35
     }
   }
 

@@ -1,6 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
 
-const ENROLLMENT_SKUS = ["WNSTART", "WNSTARTSAPPHIRE", "WNSTARTEMERALD"]
+const ENROLLMENT_SKUS = ["WNSTART", "WNSTARTSAPPHIRE", "WNSTARTEMERALD", "WNSTARTCAPS"]
 
 export function hasRequiredRegistrationProduct(cart: HttpTypes.StoreCart | null): boolean {
   if (!cart || !cart.items || cart.items.length === 0) {

@@ -85,7 +85,7 @@ export default function ActivationGate({ product, countryCode, children }: Props
             Oferta Exclusiva
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-400">
-            Este paquete es exclusivo para usuarios con más de 8 semanas de inactividad. Sigue explorando nuestros productos para encontrar más ofertas diseñadas para ti.
+            Este paquete es exclusivo para usuarios con más de 5 semanas de inactividad. Sigue explorando nuestros productos para encontrar más ofertas diseñadas para ti.
           </p>
         </div>
       </div>
