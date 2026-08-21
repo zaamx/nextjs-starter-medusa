@@ -323,3 +323,23 @@ export const fetchMatrixData = async (profileId: number): Promise<ApiResponse<an
     return { success: false, data: [], error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
+
+// 11. Current period - Periodo vigente (para consumidores fuera de OfficeProvider)
+export const fetchCurrentPeriod = async (): Promise<ApiResponse<{ id: number; name: string } | null>> => {
+  try {
+    const { data, error } = await supabase
+      .from('netme_periods')
+      .select('id, name')
+      .eq('current', true)
+      .single()
+
+    if (error) {
+      console.error('Error fetching current period:', error)
+      return { success: false, data: null, error: error.message }
+    }
+    return { success: true, data: data || null, error: null }
+  } catch (error) {
+    console.error('Error in fetchCurrentPeriod:', error)
+    return { success: false, data: null, error: error instanceof Error ? error.message : 'Unknown error' }
+  }
+}

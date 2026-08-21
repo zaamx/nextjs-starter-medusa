@@ -2,6 +2,7 @@
 
 import { sdk } from "@lib/config"
 import { getAuthHeaders, getQualifiedInfoCookie, setQualifiedInfo } from "./cookies"
+import { retrieveCustomer } from "./customer"
 
 export async function checkActivationEligibility() {
   const authHeaders = await getAuthHeaders()
@@ -49,4 +50,28 @@ export async function checkActivationEligibility() {
   }
 
   return { isLoggedIn: true, isEligible: false }
+}
+
+/**
+ * Devuelve el netme_profile_id del cliente logueado.
+ * Lo usan los gates de producto que necesitan consultar reportes de la red
+ * (netme_*) fuera de la oficina virtual, donde no existe OfficeProvider.
+ */
+export async function getCustomerNetmeProfileId(): Promise<{
+  isLoggedIn: boolean
+  profileId: number | null
+}> {
+  const customer = await retrieveCustomer().catch(() => null)
+
+  if (!customer) {
+    return { isLoggedIn: false, profileId: null }
+  }
+
+  const rawProfileId = (customer.metadata as any)?.netme_profile_id
+  const profileId = Number(rawProfileId)
+
+  return {
+    isLoggedIn: true,
+    profileId: Number.isFinite(profileId) && profileId > 0 ? profileId : null,
+  }
 }

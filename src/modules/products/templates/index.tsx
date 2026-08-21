@@ -13,6 +13,7 @@ import ProductTemplateWrapper from "./product-template-wrapper"
 import BundleAwareActions from "@modules/products/components/bundle-aware-actions"
 import { HttpTypes } from "@medusajs/types"
 import ActivationGate from "@modules/products/components/activation-gate"
+import ActiveMemberGate from "@modules/products/components/active-member-gate"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -60,11 +61,13 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
               }
             >
               <ActivationGate product={product} countryCode={countryCode}>
-                <BundleAwareActions
-                  product={product}
-                  region={region}
-                  countryCode={countryCode}
-                />
+                <ActiveMemberGate product={product} countryCode={countryCode}>
+                  <BundleAwareActions
+                    product={product}
+                    region={region}
+                    countryCode={countryCode}
+                  />
+                </ActiveMemberGate>
               </ActivationGate>
             </Suspense>
             {/* Descripción debajo de las acciones */}
