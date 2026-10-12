@@ -4,7 +4,19 @@ import { sdk } from "@lib/config"
 import { getAuthHeaders, getQualifiedInfoCookie, setQualifiedInfo } from "./cookies"
 import { retrieveCustomer } from "./customer"
 
-export async function checkActivationEligibility() {
+/**
+ * Evalúa si el cliente logueado cumple el bloqueo de reactivación de un producto.
+ *
+ * Los parámetros los decide `getProductGateConfig` a partir de la metadata del
+ * producto, para que comercial pueda moverlos desde el admin de Medusa.
+ *
+ * @param minDaysInactive      Días mínimos sin calificar. 0 = sin ventana.
+ * @param requireEverQualified Si true, quien nunca calificó queda bloqueado.
+ */
+export async function checkActivationEligibility(
+  minDaysInactive: number = 0,
+  requireEverQualified: boolean = false
+) {
   const authHeaders = await getAuthHeaders()
 
   if (!authHeaders || !("authorization" in authHeaders)) {
@@ -42,14 +54,18 @@ export async function checkActivationEligibility() {
   }
 
   if (qualifiedInfo) {
-    // Validamos que los días sin calificación sean al menos 35 (5 semanas)
+    // days_without_qualified viene negativo cuando el socio calificó en el periodo
+    // vigente, cuyo end_date aún no llega. Eso es "cero días de inactividad".
+    const daysInactive = Math.max(0, Number(qualifiedInfo.days_without_qualified) || 0)
+
     return {
       isLoggedIn: true,
-      isEligible: qualifiedInfo.days_without_qualified >= 35
+      isEligible: daysInactive >= minDaysInactive
     }
   }
 
-  return { isLoggedIn: true, isEligible: false }
+  // Sin fila de calificación: el socio nunca acumuló 75 QV en un periodo.
+  return { isLoggedIn: true, isEligible: !requireEverQualified }
 }
 
 /**

@@ -7,12 +7,7 @@ import { useRouter, usePathname } from "next/navigation"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { getCustomerNetmeProfileId } from "@lib/data/customer-status"
 import { fetchCurrentPeriod, fetchRenewalStatus } from "@lib/data/netme_network"
-
-// SKUs de variantes restringidas a socios activos.
-const ACTIVE_ONLY_SKUS = ["WNBONUS", "WNWAREHOUSE"]
-
-// Producto al que mandamos a los socios inactivos para reactivarse.
-const RENEWAL_PRODUCT_HREF = "/products/paquete-de-recompra"
+import { getProductGateConfig, RENEWAL_PRODUCT_HREF } from "@lib/util/product-gates"
 
 type Props = {
   product: HttpTypes.StoreProduct
@@ -23,10 +18,13 @@ type Props = {
 type GateStatus = "loading" | "logged-out" | "blocked" | "allowed"
 
 /**
- * Bloquea la compra del Paquete Bonus (SKU WNBONUS) a los socios que no estén activos.
+ * Bloquea la compra a los socios que no estén activos.
  *
  * "Activo" = netme_next_renewal devuelve una renovación con days_left > 0, es decir,
  * el socio hizo al menos 75 QV dentro de las últimas 4 semanas.
+ *
+ * Se enciende con `gate_active_members_only` en la metadata del producto. Por
+ * defecto aplica a los SKUs listados en product-gates.ts.
  *
  * Falla cerrado: si no hay sesión, no hay netme_profile_id, la RPC truena o el socio
  * nunca calificó, se bloquea la compra.
@@ -38,13 +36,10 @@ export default function ActiveMemberGate({ product, countryCode, children }: Pro
   const [status, setStatus] = useState<GateStatus>("loading")
   const [renewalPeriodName, setRenewalPeriodName] = useState<string | null>(null)
 
-  // Solo aplicamos la validación a las variantes restringidas.
-  const isRestricted = !!product.variants?.some((variant) =>
-    ACTIVE_ONLY_SKUS.includes((variant.sku ?? "").toUpperCase())
-  )
+  const { activeMembersOnly } = getProductGateConfig(product)
 
   useEffect(() => {
-    if (!isRestricted) {
+    if (!activeMembersOnly) {
       return
     }
 
@@ -100,9 +95,9 @@ export default function ActiveMemberGate({ product, countryCode, children }: Pro
     return () => {
       active = false
     }
-  }, [isRestricted, product.id])
+  }, [activeMembersOnly, product.id])
 
-  if (!isRestricted) {
+  if (!activeMembersOnly) {
     return <>{children}</>
   }
 

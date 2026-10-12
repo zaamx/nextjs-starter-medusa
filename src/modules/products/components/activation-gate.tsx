@@ -4,54 +4,76 @@ import React, { useEffect, useState } from "react"
 import { HttpTypes } from "@medusajs/types"
 import { useRouter, usePathname } from "next/navigation"
 
+import { checkActivationEligibility } from "@lib/data/customer-status"
+import { getProductGateConfig } from "@lib/util/product-gates"
+
 type Props = {
   product: HttpTypes.StoreProduct
   countryCode: string
   children: React.ReactNode
 }
 
-import { checkActivationEligibility } from "@lib/data/customer-status"
+type GateStatus = "loading" | "logged-out" | "blocked" | "allowed"
 
+/**
+ * Bloquea la compra a quien no cumpla la ventana de inactividad (oferta de reactivación).
+ *
+ * Se enciende con `gate_reactivation_only` en la metadata del producto y se afina con
+ * `gate_min_days_inactive` y `gate_require_ever_qualified`. Con los defaults actuales
+ * solo exige sesión iniciada, así que cualquier socio inscrito puede comprar.
+ */
 export default function ActivationGate({ product, countryCode, children }: Props) {
-  // Solo aplicamos la validación a este producto en particular.
-  if (product.handle !== "paquete-activacion-100") {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const [status, setStatus] = useState<GateStatus>("loading")
+
+  const { reactivationOnly, minDaysInactive, requireEverQualified } =
+    getProductGateConfig(product)
+
+  useEffect(() => {
+    if (!reactivationOnly) {
+      return
+    }
+
+    let active = true
+
+    checkActivationEligibility(minDaysInactive, requireEverQualified)
+      .then((result) => {
+        if (!active) return
+
+        if (!result.isLoggedIn) {
+          setStatus("logged-out")
+          return
+        }
+
+        setStatus(result.isEligible ? "allowed" : "blocked")
+      })
+      .catch((err) => {
+        console.error("Error checking activation eligibility:", err)
+        if (active) {
+          setStatus("blocked")
+        }
+      })
+
+    return () => {
+      active = false
+    }
+  }, [reactivationOnly, minDaysInactive, requireEverQualified, product.id])
+
+  if (!reactivationOnly) {
     return <>{children}</>
   }
 
-  const router = useRouter()
-  const pathname = usePathname()
-  
-  const [mounted, setMounted] = useState(false)
-  const [isEligible, setIsEligible] = useState(false)
-  const [isLoggedOut, setIsLoggedOut] = useState(false)
-
-  useEffect(() => {
-    let active = true
-
-    checkActivationEligibility().then((result) => {
-      if (!active) return
-
-      if (!result.isLoggedIn) {
-        setIsLoggedOut(true)
-      } else if (result.isEligible) {
-        setIsEligible(true)
-      }
-      setMounted(true)
-    })
-
-    return () => { active = false }
-  }, [])
-
-  // Evitamos problemas de hidratación en SSR renderizando un skeleton o null hasta que se monte
-  if (!mounted) {
+  // Evitamos problemas de hidratación renderizando un skeleton hasta resolver el estatus.
+  if (status === "loading") {
     return (
       <div className="w-full min-h-[150px] animate-pulse bg-ui-bg-subtle rounded-3xl" />
     )
   }
 
-  if (isLoggedOut) {
+  if (status === "logged-out") {
     const handleLoginRedirect = () => {
-      // Mandamos al usuario a la vista de login con el redirect de regreso a este producto
       router.push(`/${countryCode}/account?redirect=${encodeURIComponent(pathname)}`)
     }
 
@@ -76,7 +98,7 @@ export default function ActivationGate({ product, countryCode, children }: Props
     )
   }
 
-  if (!isEligible) {
+  if (status === "blocked") {
     return (
       <div className="w-full relative overflow-hidden rounded-3xl bg-[#0B0F19] px-6 py-16 shadow-2xl sm:px-12 my-8 border border-white/5">
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-[80%] h-48 bg-purple-600/20 blur-[80px] rounded-full pointer-events-none" />
@@ -85,7 +107,9 @@ export default function ActivationGate({ product, countryCode, children }: Props
             Oferta Exclusiva
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-400">
-            Este paquete es exclusivo para usuarios con más de 5 semanas de inactividad. Sigue explorando nuestros productos para encontrar más ofertas diseñadas para ti.
+            {minDaysInactive > 0
+              ? `Este paquete es exclusivo para usuarios con más de ${minDaysInactive} días de inactividad. Sigue explorando nuestros productos para encontrar más ofertas diseñadas para ti.`
+              : "Este paquete no está disponible para tu cuenta en este momento. Sigue explorando nuestros productos para encontrar más ofertas diseñadas para ti."}
           </p>
         </div>
       </div>
@@ -106,7 +130,7 @@ export default function ActivationGate({ product, countryCode, children }: Props
           </p>
         </div>
       </div>
-      
+
       <div className="pt-4">
         {children}
       </div>
