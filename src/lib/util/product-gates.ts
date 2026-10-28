@@ -27,7 +27,14 @@ export const GATE_METADATA_KEYS = [
   "gate_reactivation_only",
   "gate_min_days_inactive",
   "gate_require_ever_qualified",
+  "gate_min_rank",
+  "gate_rank_source",
 ] as const
+
+/** De cuál de los tres rangos del perfil se lee el nivel. */
+export type RankSource = "current" | "lifetime" | "monthly"
+
+const RANK_SOURCES: RankSource[] = ["current", "lifetime", "monthly"]
 
 export type ProductGateConfig = {
   /** Exige socio activo: netme_next_renewal con days_left > 0. */
@@ -38,6 +45,14 @@ export type ProductGateConfig = {
   minDaysInactive: number
   /** Exige haber calificado alguna vez (≥75 QV en algún periodo). */
   requireEverQualified: boolean
+  /**
+   * Rango mínimo, tal cual lo escribió comercial: un nombre ("Esmeralda") o un
+   * nivel ("3"). Se resuelve contra el catálogo netme_ranks en el componente,
+   * porque aquí no podemos consultar Supabase. null = gate apagado.
+   */
+  minRank: string | null
+  /** Cuál rango se evalúa. Por defecto el del periodo vigente. */
+  rankSource: RankSource
 }
 
 function toBoolean(raw: unknown, fallback: boolean): boolean {
@@ -88,6 +103,21 @@ function warnOnUnknownGateKeys(
   }
 }
 
+function toRankLabel(raw: unknown): string | null {
+  if (raw === undefined || raw === null) {
+    return null
+  }
+  const label = String(raw).trim()
+  return label === "" ? null : label
+}
+
+function toRankSource(raw: unknown): RankSource {
+  const normalized = String(raw ?? "").trim().toLowerCase()
+  return RANK_SOURCES.includes(normalized as RankSource)
+    ? (normalized as RankSource)
+    : "current"
+}
+
 export function getProductGateConfig(
   product: HttpTypes.StoreProduct
 ): ProductGateConfig {
@@ -113,5 +143,7 @@ export function getProductGateConfig(
     ),
     minDaysInactive: Math.max(0, toNumber(metadata.gate_min_days_inactive, 0)),
     requireEverQualified: toBoolean(metadata.gate_require_ever_qualified, false),
+    minRank: toRankLabel(metadata.gate_min_rank),
+    rankSource: toRankSource(metadata.gate_rank_source),
   }
 }

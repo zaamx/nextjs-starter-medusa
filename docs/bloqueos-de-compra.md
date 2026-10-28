@@ -18,6 +18,8 @@ Ese documento es el que se le pasa a comercial. Lo de abajo es la referencia té
 | `gate_reactivation_only` | boolean | ON en los handles de `DEFAULT_REACTIVATION_ONLY_HANDLES` | Exige sesión iniciada y, si se configura, inactividad |
 | `gate_min_days_inactive` | number | `0` | Días mínimos sin calificar. Solo aplica con `gate_reactivation_only` |
 | `gate_require_ever_qualified` | boolean | `false` | Exige haber calificado alguna vez. Solo aplica con `gate_reactivation_only` |
+| `gate_min_rank` | nombre o nivel | vacío | Rango mínimo. Acepta `Esmeralda` o `3`. Vacío = apagado |
+| `gate_rank_source` | `current` / `lifetime` / `monthly` | `current` | Cuál de los tres rangos se evalúa |
 
 Los booleanos aceptan `true`/`false`, `1`/`0`, `si`/`no`, `on`/`off`, como string o
 como booleano real. Una llave `gate_*` no reconocida dispara un `console.warn` en vez
@@ -31,6 +33,7 @@ de fallar en silencio.
 | `src/lib/data/customer-status.ts` | `checkActivationEligibility(minDaysInactive, requireEverQualified)` |
 | `src/modules/products/components/active-member-gate.tsx` | Gate de socios activos |
 | `src/modules/products/components/activation-gate.tsx` | Gate de reactivación |
+| `src/modules/products/components/rank-gate.tsx` | Gate de rango |
 
 Ambos gates envuelven las acciones de compra en
 `src/modules/products/templates/index.tsx`.
@@ -43,6 +46,34 @@ Ambos gates envuelven las acciones de compra en
 | Paquete de Almacén | `WNWAREHOUSE` | Solo socios activos |
 | Paquete Activación 100 | `WNACTIVATION100` | Cualquier socio con sesión iniciada |
 | Resto del catálogo | — | Sin restricción |
+
+## Rangos
+
+El catálogo vive en `netme_ranks`: Socio (1), Zafiro (2), Esmeralda (3), Rubí (4),
+Jade (5), Diamante (6). El rango del perfil sale del RPC
+`netme_profile_rank_summary(p_profile, p_period)`, que devuelve tres nombres:
+
+| Campo | `gate_rank_source` | Comportamiento |
+| --- | --- | --- |
+| `current_rank_name` | `current` | El del periodo vigente. Fluctúa cada semana |
+| `lifetime_rank_name` | `lifetime` | Máximo histórico. Nunca baja |
+| `last_monthly_rank_name` | `monthly` | El del periodo previo al último `is_quarterly` |
+
+El RPC devuelve nombres, no niveles; `rank-gate.tsx` los cruza contra el catálogo.
+Es seguro porque ambos leen de `netme_ranks.name`. `'Sin rango'` se trata como nivel 0.
+
+Cuántos socios pasan hoy según el mínimo configurado:
+
+| Rango mínimo | Con `current` | Con `lifetime` |
+| --- | --- | --- |
+| Socio | 3,099 | 3,099 |
+| Zafiro | 65 | 156 |
+| Esmeralda | 36 | 45 |
+| Rubí | 1 | 5 |
+| Jade | 0 | 3 |
+| Diamante | 0 | 0 |
+
+Con `current`, un `gate_min_rank` de Jade o Diamante bloquea a toda la red.
 
 ## Dos detalles de la lógica
 

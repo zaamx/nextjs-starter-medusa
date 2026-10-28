@@ -14,6 +14,7 @@ import BundleAwareActions from "@modules/products/components/bundle-aware-action
 import { HttpTypes } from "@medusajs/types"
 import ActivationGate from "@modules/products/components/activation-gate"
 import ActiveMemberGate from "@modules/products/components/active-member-gate"
+import RankGate from "@modules/products/components/rank-gate"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -62,11 +63,13 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             >
               <ActivationGate product={product} countryCode={countryCode}>
                 <ActiveMemberGate product={product} countryCode={countryCode}>
-                  <BundleAwareActions
-                    product={product}
-                    region={region}
-                    countryCode={countryCode}
-                  />
+                  <RankGate product={product} countryCode={countryCode}>
+                    <BundleAwareActions
+                      product={product}
+                      region={region}
+                      countryCode={countryCode}
+                    />
+                  </RankGate>
                 </ActiveMemberGate>
               </ActivationGate>
             </Suspense>
